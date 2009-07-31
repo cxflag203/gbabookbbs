@@ -1,0 +1,55 @@
+﻿html, body { background: url(../common/bg.jpg) fixed; }
+body, td{ margin: 0px; font: 12px Courier New, Arial, Helvetica, sans-serif; text-align: left; color: #333; }
+input, textarea, select { margin: 5px 0px; border: 1px solid #c0bbb4; font-family: Courier New; font-size: 12px; line-height: 1.3em; color: #666; background: #FFFFFF; vertical-align:middle;}
+b, strong { font-family: Arial;}
+form { margin: 0px;}
+textarea { overflow: auto;}
+.checkbox, .radio { border: 0px; background: none; vertical-align: middle; height: 16px;}
+a { text-decoration: none; color: #4f7500;}
+a:hover { text-decoration: underline; color: #09C;}
+.red { color:#F00;}
+.underline { text-decoration: underline;}
+
+/* 顶部信息 */
+.topcontainer { background: #EDF1E4; padding: 0px 22px 0px 7px; height: 30px; }
+.toplogo { float: left; padding-top: 10px; }
+.topmsg { float: right; line-height: 30px; }
+
+/* 左侧菜单 */
+.leftmenulist { margin: 2px; border: 1px solid #525C3D; width: 152px; margin: 0 auto;}
+.leftmenutext td { background: url(sub_bg.jpg) repeat-x; line-height: 16px; height: 31px !important; > height: 30px !important; height: 30px; font-weight: bold; color: #645a44; padding-left: 4px; border-bottom: 1px solid #ccc;}
+.leftmenutext a { font-size: 12px; font-weight: bold; color: #000;}
+.leftmenutd td { background: #FFFFFF;}
+.leftmenuinfo { margin-left: 8px; margin-bottom: 10px; width: 116px;}
+.leftmenuinfo td{ height: 30px; line-height: 1.6em; border-bottom: solid 1px #ccc; text-indent: 8px;}
+
+.guide td { border: 1px solid #7BCF63; background: #fbffe1; line-height: 1.2em; height: 28px; text-indent: 20px; color: #FF6600;}
+.tableborder { outline: 1px solid #525C3D; border: 0px!important; > border: 1px solid #525C3D !important; border: 1px solid #525C3D; empty-cells: show; border-collapse: separate !important; > border-collapse: collapse !important; border-collapse: collapse;}
+.tableborder td { border-bottom: 1px solid #ccc; line-height: 1.5em; height: 2em; padding-left: 12px; background: #FFF; height: 36px;}
+.tableborder tbody tr:hover th, .tableborder tbody tr:hover td { background-color: #f4fbe1; }
+.tableborder td img { margin-top: 8px;}
+.category td { color: #333333; background: #fdfce8;}
+td.altbg1, .altbg1 td {background: #FFFFFF;}
+td.altbg2, .altbg2 td {background: #FFFFFF;}
+.header td { background: url(sub_bg.jpg) repeat-x; line-height: 16px; height: 31px !important; > height: 30px !important; height: 30px; font-weight: bold; color: #645a44; border-bottom: 1px solid #525C3D;}
+.header a{ /*color: #FFFFFF;*/}
+
+.button { font: 12px Courier New, Arial, Helvetica, sans-serif; padding: 0 6px; color: #090; background: url(bg_button.gif) repeat-x; /*for Mozilla*/  outline: 1px solid #C4AB00 ; border: 1px solid #C4AB00 !important; height: 24px !important; line-height: 22px !important; /*for IE7*/ > border: 1px solid #C4AB00 !important; > height: 26px !important; > line-height: 20px !important; /*for IE*/ border: 1px solid #C4AB00; height: 26px; line-height: 20px;}
+.s_button { font: 12px Courier New, Arial, Helvetica, sans-serif; padding: 0 6px; color: #090; background: url(bg_button.gif) repeat-x; /*for Mozilla*/ outline: 1px solid #C4AB00; border: 1px solid #C4AB00 !important; height: 20px !important; line-height: 22px !important; /*for IE7*/ > border: 1px solid #C4AB00 !important; > height: 20px !important; > line-height: 20px !important; /*for IE*/ border: 1px solid #C4AB00; height: 20px; line-height: 20px; }
+
+.footer { height: 20px; margin: 20px; font-family:Tahoma; font-size:9px; text-align: center; }
+
+/* 分页 */
+.pages_btns { width: 98%; padding: 25px 0 8px; overflow: hidden; }
+.pages_btns { line-height: 26px; }
+.pages { float: left; border: 1px solid #7bcf63; background: #FBFFE1; height: 24px; line-height: 26px; overflow: hidden; }
+.pages a, .pages strong, .pages kbd { float: left; padding: 0 8px; line-height:26px; color: #000;}
+.pages a:hover { background: #d7f0ce; color: #000; }
+.pages a:visited { color: #000; }
+.pages strong { font-weight: bold; color: #000; background: #d7f0ce; }
+.pages a.prev, .pages a.next { line-height: 24px; font-family: Verdana, Arial, Helvetica, sans-serif; }
+.pages a.next { padding: 0 15px; }
+.pages kbd { margin: 0; }
+* html .pages kbd { padding: 1px 8px; }
+.pages kbd input { border: 1px solid #7BCF63; margin-top: 3px !important; * > margin-top: 1px  !important; margin: 1px 4px 0 3px; padding: 0 2px; height: 17px; }
+.pages kbd>input { margin-bottom: 2px; }

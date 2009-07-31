@@ -1,0 +1,11 @@
+User-agent: *
+
+Disallow: /cache/
+Disallow: /htmls/
+Disallow: /images/
+Disallow: /include/
+Disallow: /js/
+Disallow: /manage/
+Disallow: /attachments/
+Disallow: /plugins/
+Disallow: /wap/
