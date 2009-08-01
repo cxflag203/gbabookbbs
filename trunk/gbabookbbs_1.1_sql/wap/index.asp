@@ -17,10 +17,20 @@ WapHeader()
 Call Append(RQ.Base_Settings(0) &"<br />")
 
 If NewPmNum > 0 Then
-	Call Append("<a href=""pm.asp"">"& NewPmNum &"条传呼</a><br />")
+	Call Append("<a href=""pm.asp?action=newpmlist"">"& NewPmNum &"条新传呼</a><br />")
 End If
 
-Call Append("<br /><a href=""topiccp.asp"">查看新帖</a><br /><a href=""topiccp.asp?action=elite"">精华贴</a><br /><a href=""topiccp.asp?action=my"">我的收藏</a><br />"& IIF(RQ.AllowSearch = 1, "<a href=""search.asp"">论坛搜索</a><br />", "") &"<br />论坛版面<br />")
+Call Append("<br /><a href=""topiccp.asp"">查看新帖</a><br /><a href=""topiccp.asp?action=elite"">精华贴</a><br />")
+
+If RQ.UserID > 0 Then
+	Call Append("<a href=""topiccp.asp?action=my"">我的收藏</a><br /><a href=""pm.asp"">传呼</a><br />")
+End If
+
+If RQ.AllowSearch = 1 Then
+	Call Append("<a href=""search.asp"">论坛搜索</a><br />")
+End If
+
+Call Append("<br />论坛版面<br />")
 
 If IsArray(ForumListArray) Then
 	For i = 0 To UBound(ForumListArray, 2)
