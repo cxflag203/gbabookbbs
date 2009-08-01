@@ -3,6 +3,8 @@
 <!--#include file="../include/sinc.asp"-->
 <!--#include file="wap.fun.asp"-->
 <%
+WapHeader()
+
 Dim TopicInfo, PostInfo, PostID
 Dim Page, PageCount, RecordCount, strSQL
 Dim PostListArray, CountArray, FloorAddtion, theFloorNumber, blnBreakString, Offset, FirstMessage
@@ -75,8 +77,6 @@ If PostID = 0 Then
 
 	Call closeDatabase()
 
-	WapHeader()
-
 	Call Append("标题:"& TopicInfo(5, 0) &"("& TopicInfo(8, 0) &"条回复)<br /><br />")
 
 	CountArray = UBound(PostListArray, 2)
@@ -106,11 +106,11 @@ If PostID = 0 Then
 			End If
 
 			If blnBreakString Then
-				Call Append(blnBreakString, "<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset + 500 &""">下页</a>")
+				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset + 500 &""">下页</a>")
 			End If
 
 			If Offset > 0 Then
-				Call Append(Offset > 0, " <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset - 500 &""">上页</a>")
+				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset - 500 &""">上页</a>")
 			End If 
 
 			Call Append("<br /><br />")
@@ -148,6 +148,12 @@ If PostID = 0 Then
 			Call Append(IIF(PostListArray(8, i) > 0, " +"& PostListArray(8, i), "") &" ("& PostListArray(6, i) &")<br /><br />")
 		End If
 	Next
+
+	'显示分页
+	If PageCount > 1 Then
+		Call ShowWapPage(Page, PageCount, RecordCount, "&amp;fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID)
+		Call Append("<br /><br />")
+	End If
 Else
 	PostInfo = RQ.Query("SELECT uid, username, usershow, message, posttime, ifanonymity, ratemark FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" AND pid="& PostID)
 	If Not IsArray(TopicInfo) Then
@@ -155,8 +161,6 @@ Else
 	End If
 
 	Call closeDatabase()
-
-	WapHeader()
 
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
 	Call Append("帖子:<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& Page &""">"& TopicInfo(5, 0) &"</a><br /><br />回复("& IIF(theFloorNumber = 0, "*", theFloorNumber) &"):")

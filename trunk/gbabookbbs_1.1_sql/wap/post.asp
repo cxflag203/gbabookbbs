@@ -3,6 +3,8 @@
 <!--#include file="../include/sinc.asp"-->
 <!--#include file="wap.fun.asp"-->
 <%
+WapHeader()
+
 If RQ.ForumID = 0 Then
 	Call WapMessage("版面信息不正确。", "")
 End If
@@ -19,6 +21,7 @@ Select Case Action
 	Case Else
 		Call Main()
 End Select
+WapFooter()
 
 '========================================================
 '保存发帖
@@ -384,11 +387,7 @@ Sub Reply()
 		End If
 	End If
 
-	WapHeader()
-
 	Call Append("内容:<input type=""text"" name=""message"" value="""" format=""M*m"" /><br /><anchor title=""提交"">提交<go method=""post"" href=""post.asp?action=newreply&amp;fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"""><postfield name=""message"" value=""$(message)"" /></go></anchor><br /><br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &""">返回帖子</a><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &""">返回版块</a>")
-
-	WapFooter()
 End Sub
 
 '========================================================
@@ -398,10 +397,6 @@ Sub Main()
 	Call Check_Status_Topic()
 	Call closeDatabase()
 
-	WapHeader()
-
 	Call Append("标题:<input type=""text"" name=""title"" value="""" maxlength=""80"" format=""M*m"" /><br />内容:<input type=""text"" name=""message"" value="""" format=""M*m"" /><br /><anchor title=""提交"">提交<go method=""post"" href=""post.asp?action=newtopic&amp;fid="& RQ.ForumID &"""><postfield name=""title"" value=""$(title)"" /><postfield name=""message"" value=""$(message)"" /></go></anchor><br /><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &""">返回版块</a>")
-
-	WapFooter()
 End Sub
 %>

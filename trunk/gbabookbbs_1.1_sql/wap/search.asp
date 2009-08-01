@@ -3,6 +3,8 @@
 <!--#include file="../include/sinc.asp"-->
 <!--#include file="wap.fun.asp"-->
 <%
+WapHeader()
+
 If RQ.CheckTimeSetting(RQ.Time_Settings(3)) And RQ.DisablePeriodCtrl = 0 Then
 	Call WapMessage("在以下的时间段里才能进行搜索：<br />"& Replace(RQ.Time_Settings(3), "_", "<br />"), "")
 End If
@@ -19,6 +21,7 @@ Select Case Action
 	Case Else
 		Call Main()
 End Select
+WapFooter()
 
 '========================================================
 '按照条件进行搜索，并缓存搜索结果
@@ -196,8 +199,6 @@ Sub Main()
 	Keyword = SearchInfo(0, 0)
 	SearchType = SearchInfo(1, 0)
 
-	WapHeader()
-
 	For i = 0 To UBound(TopicListArray, 2)
 		Call Append("<a href=""viewtopic.asp?fid="& TopicListArray(1, i) &"&amp;tid="& TopicListArray(0, i) &""">"& IIF(Len(TopicListArray(2, i)) > 15, Left(TopicListArray(2, i), 15) &"...", TopicListArray(2, i)) &" ("& TopicListArray(4, i) &"/"& TopicListArray(3, i) &")</a><br />")
 	Next
@@ -207,7 +208,5 @@ Sub Main()
 	If PageCount > 1 Then
 		Call ShowPageInfo(Page, PageCount, RecordCount, "&amp;searchid="& SearchID)
 	End If
-
-	WapFooter()
 End Sub
 %>

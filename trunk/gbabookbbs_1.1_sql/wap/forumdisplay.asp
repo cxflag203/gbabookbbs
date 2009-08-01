@@ -3,6 +3,8 @@
 <!--#include file="../include/sinc.asp"-->
 <!--#include file="wap.fun.asp"-->
 <%
+WapHeader()
+
 If RQ.ForumID = 0 Then
 	Call WapMessage("错误的版面，请返回。", "")
 End If
@@ -43,7 +45,6 @@ If RQ.AllowPost = 1 Then
 	End If
 End If
 
-WapHeader()
 Call Append(RQ.Forum_Name &"<br />"& strNewTopic &"<br />帖子列表 <a href=""forumdisplay.asp?fid="& RQ.ForumID &""">刷新</a><br />")
 
 '列出置顶帖

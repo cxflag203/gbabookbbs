@@ -210,7 +210,7 @@ For i = 0 To CountArray
 		End If
 	Else
 		'带头像的样式
-		Response.Write "<div class=""thepost"& IIF(i <> CountArray, " btborder", "") &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& theFloorNumber &"', '"& IIF(PostListArray(7, i) = 0, PostListArray(3, i), PostListArray(4, i)) &"', '"& PostListArray(0, i) &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
+		Response.Write "<div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& theFloorNumber &"', '"& IIF(PostListArray(7, i) = 0, PostListArray(3, i), PostListArray(4, i)) &"', '"& PostListArray(0, i) &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
 
 		If PostListArray(7, i) = 0 Then
 			If PostListArray(2, i) > 0 Then

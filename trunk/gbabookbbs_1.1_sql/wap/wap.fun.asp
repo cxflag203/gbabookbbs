@@ -32,7 +32,7 @@ End Sub
 'wap页脚，并输出内容
 '========================================================
 Public Sub WapFooter()
-	Call Append("</p><p>"& Now() &"<br /><anchor title=""confirm""><prev/>返回</anchor> <a href=""index.asp"">首页</a><br />"& IIF(RQ.UserID > 0, "<a href=""login.asp?action=logout"">"& RQ.UserName &":退出</a>", "<a href=""login.asp"">登陆</a>") &"<br /><br />"& FormatNumber(Timer() - StartTime, 6, -1) &"</p></card></wml>")
+	Call Append("</p><p>"& Now() &"<br /><anchor title=""confirm""><prev/>返回</anchor> <a href=""index.asp"">首页</a><br />"& IIF(RQ.UserID > 0, "<a href=""login.asp?action=clearcookies"">"& RQ.UserName &":退出</a>", "<a href=""login.asp"">登陆"& IIF(RQ.Wap_Settings(1) = "1", "/注册", "") &"</a>") &"<br /><br />"& FormatNumber(Timer() - StartTime, 6, -1) &"</p></card></wml>")
 	If RQ.Wap_Settings(2) = "0" Then
 		Response.Write WapConvert(Join(Arr, ""))
 	Else
@@ -44,7 +44,6 @@ End Sub
 'wap显示提示信息
 '========================================================
 Public Sub WapMessage(strtips, url)
-	Call WapHeader()
 	Call Append(strtips & IIF(Len(url) > 0, "<a href="""& url &""">点击这里跳转</a>", ""))
 	Call WapFooter()
 	Response.End()
