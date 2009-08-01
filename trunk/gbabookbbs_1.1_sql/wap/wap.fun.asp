@@ -68,7 +68,8 @@ Public Function WapCode(str)
 	regEx.Pattern = "<(.[^>]*)>"
 	str = regEx.Replace(str, "")
 	str = Replace(str, "&", "&amp;")
-	str = Replace(str, "'", "&#39;")
+	str = Replace(str, "<", "&lt;")
+	str = Replace(str, ">", "&gt;")
 	str = Replace(str, """", "&quot;")
 	WapCode = str
 End Function
