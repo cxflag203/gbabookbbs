@@ -1,7 +1,4 @@
-﻿<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+﻿<!--#include file="wap.inc.asp"-->
 <%
 WapHeader()
 
@@ -94,8 +91,8 @@ If PostID = 0 Then
 				FirstMessage = Mid(FirstMessage, Offset)
 			End If
 
-			If Len(FirstMessage) > 500 Then
-				FirstMessage = Left(FirstMessage, 500) &"..."
+			If Len(FirstMessage) > IntCode(RQ.Wap_Settings(5)) Then
+				FirstMessage = Left(FirstMessage, IntCode(RQ.Wap_Settings(5))) &"..."
 				blnBreakString = True
 			End If
 
@@ -109,11 +106,11 @@ If PostID = 0 Then
 			End If
 
 			If blnBreakString Then
-				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset + 500 &""">下页</a>")
+				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &""">下页</a>")
 			End If
 
 			If Offset > 0 Then
-				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset - 500 &""">上页</a>")
+				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset - IntCode(RQ.Wap_Settings(5)) &""">上页</a>")
 			End If 
 
 			Call Append("<br /><br />")
@@ -134,8 +131,8 @@ If PostID = 0 Then
 			theFloorNumber = IntCode(RQ.Wap_Settings(4)) * (Page - 1) + i + FloorAddtion
 
 			Call Append("回复("& theFloorNumber &"):")
-			If Len(PostListArray(5, i)) > 200 Then
-				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& Left(Replace(PostListArray(5, i), "[br]", " "), 200) &"...</a>")
+			If Len(PostListArray(5, i)) > IntCode(RQ.Wap_Settings(5)) Then
+				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& Left(Replace(PostListArray(5, i), "[br]", " "), IntCode(RQ.Wap_Settings(5))) &"...</a>")
 			Else
 				Call Append(Replace(PostListArray(5, i), "[br]", "<br />"))
 			End If
@@ -177,8 +174,8 @@ Else
 		FirstMessage = Mid(FirstMessage, Offset)
 	End If
 
-	If Len(FirstMessage) > 500 Then
-		FirstMessage = Left(FirstMessage, 500) &"..."
+	If Len(FirstMessage) > IntCode(RQ.Wap_Settings(5)) Then
+		FirstMessage = Left(FirstMessage, IntCode(RQ.Wap_Settings(5))) &"..."
 		blnBreakString = True
 	End If
 
@@ -186,11 +183,11 @@ Else
 	Call Append(FirstMessage)
 
 	If blnBreakString Then
-		Call Append("<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset + 500 &"&amp;page="& Page &""">下页</a>")
+		Call Append("<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &"&amp;page="& Page &""">下页</a>")
 	End If
 
 	If Offset > 0 Then
-		Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset - 500 &"&amp;page="& Page &""">上页</a>")
+		Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset - IntCode(RQ.Wap_Settings(5)) &"&amp;page="& Page &""">上页</a>")
 	End If
 
 	Call Append("<br /><br />")

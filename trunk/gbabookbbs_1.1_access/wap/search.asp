@@ -1,7 +1,4 @@
-﻿<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+﻿<!--#include file="wap.inc.asp"-->
 <%
 WapHeader()
 
@@ -52,7 +49,7 @@ Sub Search()
 		lngSearchType = 1
 	End If
 
-	SearchInfo = RQ.Query("SELECT searchid, expirytime FROM "& TablePre &"searchindex WHERE keyword = N'"& SearchText &"' AND searchtype = "& lngSearchType)
+	SearchInfo = RQ.Query("SELECT searchid, expirytime FROM "& TablePre &"searchindex WHERE keyword = '"& SearchText &"' AND searchtype = "& lngSearchType)
 
 	If IsArray(SearchInfo) Then
 		SearchID = SearchInfo(0, 0)
@@ -75,7 +72,7 @@ Sub Search()
 		If lngSearchType = 1 Then
 			SqlWhere = "uid IN("& strUserID &")"
 		Else
-			SqlWhere = "title LIKE N'%"& SearchText &"%'"
+			SqlWhere = "title LIKE '%"& SearchText &"%'"
 		End If
 
 		TopicListArray = RQ.Query("SELECT TOP "& RQ.Other_Settings(2) &" tid FROM "& TablePre &"topics WHERE "& SqlWhere &" AND displayorder >= 0 ORDER BY lastupdate DESC")
@@ -95,11 +92,11 @@ Sub Search()
 		End If
 
 		If SearchID > 0 Then
-			RQ.Execute("UPDATE "& TablePre &"searchindex SET searchcount = searchcount + 1, recordcount = "& RecordCount &", tid = '"& TopicID &"', expirytime = DATEADD(n, 5, GETDATE()) WHERE searchid = "& SearchID)
+			RQ.Execute("UPDATE "& TablePre &"searchindex SET searchcount = searchcount + 1, recordcount = "& RecordCount &", tid = '"& TopicID &"', expirytime = #"& DATEADD("n", 5, Now()) &"# WHERE searchid = "& SearchID)
 		Else
-			RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchtype, recordcount, tid, expirytime) VALUES (N'"& SearchText &"', "& lngSearchType &", "& RecordCount &", '"& TopicID &"', DATEADD(n, 5, GETDATE()))")
+			RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchtype, recordcount, tid, expirytime) VALUES ('"& SearchText &"', "& lngSearchType &", "& RecordCount &", '"& TopicID &"', #"& DATEADD("n", 5, Now()) &"#)")
 
-			SearchID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
+			SearchID = Conn.Execute("SELECT MAX(searchid) FROM "& TablePre &"searchindex")(0)
 			dbQueryNum = dbQueryNum + 1
 		End If		
 	End If
@@ -114,7 +111,7 @@ End Sub
 Function Get_UserID(SearchText)
 	Dim MemberListArray, str
 
-	MemberListArray = RQ.Query("SELECT uid FROM "& TablePre &"members WHERE username = N'"& SearchText &"'")
+	MemberListArray = RQ.Query("SELECT uid FROM "& TablePre &"members WHERE username = '"& SearchText &"'")
 
 	If IsArray(MemberListArray) Then
 		For i = 0 To UBound(MemberListArray, 2)
@@ -125,10 +122,10 @@ Function Get_UserID(SearchText)
 		Next
 		Erase MemberListArray
 	Else
-		RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchtype, recordcount, tid, expirytime) VALUES (N'"& SearchText &"', 1, 0, '0', DATEADD(n, 5, GETDATE()))")
+		RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchtype, recordcount, tid, expirytime) VALUES ('"& SearchText &"', 1, 0, '0', #"& DATEADD("n", 5, Now()) &"#)")
 		str = "0"
 
-		SearchID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
+		SearchID = Conn.Execute("SELECT MAX(searchid) FROM "& TablePre &"searchindex")(0)
 		dbQueryNum = dbQueryNum + 1
 
 		blnUpdateCache = False

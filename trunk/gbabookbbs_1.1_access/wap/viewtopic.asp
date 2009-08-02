@@ -1,7 +1,4 @@
-﻿<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+﻿<!--#include file="wap.inc.asp"-->
 <%
 WapHeader()
 
@@ -10,7 +7,7 @@ Dim Page, PageCount, RecordCount, strSQL
 Dim PostListArray, CountArray, FloorAddtion, theFloorNumber, blnBreakString, Offset, FirstMessage
 Dim blnAllowReply, strError, fPage
 
-TopicInfo = RQ.Query("SELECT fid, displayorder, uid, username, usershow, title, posttime, lastupdate, posts, price, ifanonymity, iflocked, iftask FROM "& TablePre &"topics WITH(NOLOCK) WHERE tid = "& RQ.TopicID &" AND displayorder >= 0")
+TopicInfo = RQ.Query("SELECT fid, displayorder, uid, username, usershow, title, posttime, lastupdate, posts, price, ifanonymity, iflocked, iftask FROM "& TablePre &"topics WHERE tid = "& RQ.TopicID &" AND displayorder >= 0")
 
 If Not IsArray(TopicInfo) Then
 	Call WapMessage("帖子不存在或者已经被删除。", "")

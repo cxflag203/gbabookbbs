@@ -1,8 +1,7 @@
-<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+<!--#include file="wap.inc.asp"-->
 <%
+WapHeader()
+
 Dim Action, TopicInfo, RedirectInfo, strOperator
 
 Action = LCase(Request.QueryString("action"))

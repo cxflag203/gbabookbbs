@@ -1,7 +1,4 @@
-<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+<!--#include file="wap.inc.asp"-->
 <%
 WapHeader()
 
@@ -65,7 +62,7 @@ Sub Save()
 
 	If PmInfo(4, 0) = 0 Then
 		Message = RQ.UserName &":"& PmInfo(2, 0) &"<br />"& PmInfo(0, 0) &":"& PmInfo(1, 0)
-		RQ.Execute("INSERT INTO "& TablePre &"pms (pmid, uid, message, posttime) VALUES ("& PmID &", "& RQ.UserID &", N'"& Message &"', '"& PmInfo(3, 0) &"')")
+		RQ.Execute("INSERT INTO "& TablePre &"pms (pmid, uid, message, posttime) VALUES ("& PmID &", "& RQ.UserID &", '"& Message &"', '"& PmInfo(3, 0) &"')")
 	End If
 	
 	Call closeDatabase()
@@ -92,7 +89,7 @@ Sub PostReply()
 	End If
 
 	Message = Replace(Message, vbCrLf, "<br />")
-	RQ.Execute("INSERT INTO "& TablePre &"pm (msgfrom, msgfromid, msgtoid, message, remessage, posttime) VALUES (N'"& RQ.UserName &"', "& RQ.UserID &", "& PmInfo(0, 0) &", N'"& Message &"', N'"& PmInfo(1, 0) &"', GETDATE())")
+	RQ.Execute("INSERT INTO "& TablePre &"pm (msgfrom, msgfromid, msgtoid, message, remessage, posttime) VALUES ('"& RQ.UserName &"', "& RQ.UserID &", "& PmInfo(0, 0) &", '"& Message &"', '"& PmInfo(1, 0) &"', #"& Now() &"#)")
 
 	RQ.Execute("DELETE FROM "& TablePre &"pm WHERE pmid = "& PmID)
 
@@ -141,7 +138,7 @@ Sub PostNewPm()
 
 	Message = Replace(Message, vbCrLf, "<br />")
 
-	UserInfo = RQ.Query("SELECT m.uid, mf.ignorepm FROM "& TablePre &"members m INNER JOIN "& TablePre &"memberfields mf ON m.uid = mf.uid WHERE m.username = N'"& UserName &"'")
+	UserInfo = RQ.Query("SELECT m.uid, mf.ignorepm FROM "& TablePre &"members m INNER JOIN "& TablePre &"memberfields mf ON m.uid = mf.uid WHERE m.username = '"& UserName &"'")
 	If Not IsArray(UserInfo) Then
 		Call WapMessage("传呼接收人不存在。", "")
 	End If
@@ -151,7 +148,7 @@ Sub PostNewPm()
 		Call WapMessage(UserName &"无法接收您的短信。", "")
 	End If
 
-	RQ.Execute("INSERT INTO "& TablePre &"pm (msgfrom, msgfromid, msgtoid, message, posttime) VALUES (N'"& RQ.UserName &"', "& RQ.UserID &", "& UserInfo(0, 0) &", N'"& Message &"', GETDATE())")
+	RQ.Execute("INSERT INTO "& TablePre &"pm (msgfrom, msgfromid, msgtoid, message, posttime) VALUES ('"& RQ.UserName &"', "& RQ.UserID &", "& UserInfo(0, 0) &", '"& Message &"', #"& Now() &"#)")
 
 	Call closeDatabase()
 	Call Append("传呼发送完毕。<br /><a href=""pm.asp"">返回传呼首页</a>")

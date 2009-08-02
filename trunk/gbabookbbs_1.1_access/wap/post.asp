@@ -1,7 +1,4 @@
-<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+<!--#include file="wap.inc.asp"-->
 <%
 WapHeader()
 
@@ -36,7 +33,7 @@ Sub NewTopic()
 	End If
 
 	Dim Title, Message, DisplayOrder, UserShow, UserInfo
-	Dim NewPostID, strTips
+	Dim strTips
 
 	Title = SafeRequest(2, "title", 1, "", 0)
 	If Len(CheckContent(Title)) = 0 Then
@@ -113,15 +110,11 @@ Sub NewTopic()
 	RQ.Execute("INSERT INTO "& TablePre &"topics (fid, typeid, displayorder, uid, username, usershow, title, types, special, price, leagueid, iflocked, ifanonymity, ifattachment) VALUES ("& RQ.ForumID &", 0, "& DisplayOrder &", "& RQ.UserID &", '"& RQ.UserName &"', '"& UserShow &"', '"& Title &"', 0, 0, 0, 0, 0, 0, 0)")
 
 	'获取主题编号
-	RQ.TopicID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
+	RQ.TopicID = Conn.Execute("SELECT MAX(tid) FROM "& TablePre &"topics")(0)
 	dbQueryNum = dbQueryNum + 1
 
 	'保存主题内容
 	RQ.Execute("INSERT INTO "& TablePre &"posts (fid, tid, iffirst, uid, username, usershow, message, userip, ifanonymity, ifattachment) VALUES ("& RQ.ForumID &", "& RQ.TopicID &", 1, "& RQ.UserID &", '"& RQ.UserName &"', '"& UserShow &"', '"& Message &"', '"& RQ.UserIP &"', 0, 0)")
-
-	'获取回复编号
-	NewPostID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
-	dbQueryNum = dbQueryNum + 1
 
 	'更新版面主题数量统计
 	If DisplayOrder = 0 Then
@@ -163,7 +156,6 @@ Sub NewReply()
 
 	Dim TopicInfo, UserInfo
 	Dim Message, UserShow, PostFloodCtrl, PageCount
-	Dim NewPostID
 
 	TopicInfo = RQ.Query("SELECT displayorder, uid, posttime, lastupdate, posts, iflocked, ifattachment FROM "& TablePre &"topics WHERE tid = "& RQ.TopicID &" AND fid = "& RQ.ForumID)
 	If Not IsArray(TopicInfo) Then
@@ -242,11 +234,8 @@ Sub NewReply()
 	'保存回复内容
 	RQ.Execute("INSERT INTO "& TablePre &"posts(fid, tid, uid, username, usershow, message, userip, ifanonymity, ratemark, ifattachment) VALUES("& RQ.ForumID &", "& RQ.TopicID &", "& RQ.UserID &", '"& RQ.UserName &"', '"& UserShow &"', '"& Message &"', '"& RQ.UserIP &"', 0, 0, 0)")
 
-	'获取回复编号
-	NewPostID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
-
 	'更新帖子回复数量; 是否更新帖子
-	RQ.Execute("UPDATE "& TablePre &"topics SET lastupdate = GETDATE(), posts = posts + 1 WHERE tid = "& RQ.TopicID)
+	RQ.Execute("UPDATE "& TablePre &"topics SET lastupdate = #"& Now() &"#, posts = posts + 1 WHERE tid = "& RQ.TopicID)
 
 	'更新版面回帖数量统计
 	RQ.Execute("UPDATE "& TablePre &"forums SET posts = posts + 1 WHERE fid = "& RQ.ForumID)
@@ -260,7 +249,7 @@ Sub NewReply()
 	PageCount = ABS(Int(-(TopicInfo(4, 0) / IntCode(RQ.Topic_Settings(4)))))
 
 	Call closeDatabase()
-	Call WapMessage("您的回复已经成功发布。<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &""">进入刚才发表的帖子</a><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &""">返回帖子列表</a>", "")
+	Call WapMessage("您的回复已经成功发布。<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& PageCount &""">进入刚才发表的帖子</a><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &""">返回帖子列表</a>", "")
 End Sub
 
 '========================================================

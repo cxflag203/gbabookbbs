@@ -1,7 +1,4 @@
-<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
-<!--#include file="../include/sinc.asp"-->
-<!--#include file="wap.fun.asp"-->
+<!--#include file="wap.inc.asp"-->
 <!--#include file="../include/md5.inc.asp"-->
 <%
 WapHeader()
@@ -55,7 +52,7 @@ Sub Login()
 	End If
 
 	Password = MD5(Password)
-	UserInfo = RQ.Query("SELECT uid, thepassword FROM "& TablePre &"members WHERE username = N'"& UserName &"'")
+	UserInfo = RQ.Query("SELECT uid, thepassword FROM "& TablePre &"members WHERE username = '"& UserName &"'")
 
 	'如果用户名有效
 	If IsArray(UserInfo) Then
@@ -94,9 +91,9 @@ Sub Login()
 			Call WapMessage("注册用户名中包含系统保留字符，请重新输入。", "")
 		End If
 
-		RQ.Execute("INSERT INTO "& TablePre &"members (username, thepassword, usergroupid, credits, regip, loginip, lastloginip) VALUES (N'"& UserName &"', '"& Password &"', 4, "& RQ.Login_Settings(5) &", '"& RQ.UserIP &"', '"& RQ.UserIP &"', '"& RQ.UserIP &"')")
+		RQ.Execute("INSERT INTO "& TablePre &"members (username, thepassword, usergroupid, credits, regip, loginip, lastloginip) VALUES ('"& UserName &"', '"& Password &"', 4, "& RQ.Login_Settings(5) &", '"& RQ.UserIP &"', '"& RQ.UserIP &"', '"& RQ.UserIP &"')")
 
-		UserID = Conn.Execute("SELECT uid FROM "& TablePre &"members WHERE username = N'"& UserName &"'")(0)
+		UserID = Conn.Execute("SELECT uid FROM "& TablePre &"members WHERE username = '"& UserName &"'")(0)
 		dbQueryNum = dbQueryNum + 1
 
 		RQ.Execute("INSERT INTO "& TablePre &"memberfields (uid) VALUES ("& UserID &")")
@@ -138,12 +135,12 @@ Sub InvateRegist()
 		Call WapMessage("注册用户名中包含系统保留字符，请重新输入。", "")
 	End If
 
-	CodeInfo = RQ.Query("SELECT 1 FROM "& TablePre &"invate WHERE invatecode = '"& InvateCode &"' AND expirytime >= GETDATE() AND status = 0")
+	CodeInfo = RQ.Query("SELECT 1 FROM "& TablePre &"invate WHERE invatecode = '"& InvateCode &"' AND expirytime >= #"& Now() &"# AND status = 0")
 	If Not IsArray(CodeInfo) Then
 		Call WapMessage("推荐码无效或者已经过期。", "")
 	End If
 
-	UserInfo = RQ.Query("SELECT 1 FROM "& TablePre &"members WHERE username = N'"& UserName &"'")
+	UserInfo = RQ.Query("SELECT 1 FROM "& TablePre &"members WHERE username = '"& UserName &"'")
 	If IsArray(UserInfo) Then
 		Call WapMessage("该用户已经被占用，请返回重新输入。", "")
 	End If
@@ -151,10 +148,10 @@ Sub InvateRegist()
 	Password = MD5(Password)
 
 	'新增用户信息
-	RQ.Execute("INSERT INTO "& TablePre &"members (username, thepassword, usergroupid, credits, regip, loginip, lastloginip) VALUES (N'"& UserName &"', '"& Password &"', 4, "& RQ.Login_Settings(5) &", '"& RQ.UserIP &"', '"& RQ.UserIP &"', '"& RQ.UserIP &"')")
+	RQ.Execute("INSERT INTO "& TablePre &"members (username, thepassword, usergroupid, credits, regip, loginip, lastloginip) VALUES ('"& UserName &"', '"& Password &"', 4, "& RQ.Login_Settings(5) &", '"& RQ.UserIP &"', '"& RQ.UserIP &"', '"& RQ.UserIP &"')")
 
 	'获取uid
-	UserID = Conn.Execute("SELECT uid FROM "& TablePre &"members WHERE username = N'"& UserName &"'")(0)
+	UserID = Conn.Execute("SELECT uid FROM "& TablePre &"members WHERE username = '"& UserName &"'")(0)
 	dbQueryNum = dbQueryNum + 1
 
 	'更新推荐码状态
@@ -164,7 +161,7 @@ Sub InvateRegist()
 	RQ.Execute("INSERT INTO "& TablePre &"memberfields (uid) VALUES ("& UserID &")")
 
 	'删除已过期的推荐码
-	RQ.Execute("DELETE FROM "& TablePre &"invate WHERE expirytime < GETDATE() AND status = 0")
+	RQ.Execute("DELETE FROM "& TablePre &"invate WHERE expirytime < #"& Now() &"# AND status = 0")
 
 	Call closeDataBase()
 
@@ -182,7 +179,7 @@ Sub CheckFailedLogins()
 	Dim FailedInfo
 
 	'删除已过期的禁止登陆记录
-	RQ.Execute("DELETE FROM "& TablePre &"failedlogins WHERE locktime < GetDate()")
+	RQ.Execute("DELETE FROM "& TablePre &"failedlogins WHERE locktime < #"& Now() &"#")
 
 	FailedInfo = RQ.Query("SELECT 1 FROM "& TablePre &"failedlogins WHERE userip = '"& RQ.UserIP &"' AND falsecount >= "& IntCode(RQ.Login_Settings(6)))
 
@@ -202,7 +199,7 @@ Sub RecordFailedLogins()
 	If IsArray(FailedInfo) Then
 		RQ.Execute("UPDATE "& TablePre &"failedlogins SET falsecount = falsecount + 1 WHERE userip = '"& RQ.UserIP &"'")
 	Else
-		RQ.Execute("INSERT INTO "& TablePre &"failedlogins (userip, locktime) VALUES ('"& RQ.UserIP &"', DateAdd(n, 30, GETDATE()))")
+		RQ.Execute("INSERT INTO "& TablePre &"failedlogins (userip, locktime) VALUES ('"& RQ.UserIP &"', #"& DateAdd("n", 30, Now()) &"#)")
 	End If
 End Sub
 

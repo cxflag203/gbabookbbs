@@ -1,20 +1,4 @@
 <%
-Response.ContentType = "text/vnd.wap.wml"
-
-Dim ItemCount, s
-ReDim Arr(50)
-itemCount = 0
-
-If RQ.Base_Settings(3) = "1" Then
-	WapHeader()
-	Call WapMessage("论坛目前临时关闭。", "")
-End If
-
-If RQ.Wap_Settings(0) = "0" Then
-	WapHeader()
-	Call WapMessage("目前WAP功能已经关闭。", "")
-End If
-
 '========================================================
 '把字符串放到动态数组中
 '========================================================
