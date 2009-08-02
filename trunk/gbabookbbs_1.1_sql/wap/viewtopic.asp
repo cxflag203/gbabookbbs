@@ -18,7 +18,7 @@ End If
 
 '检查版面id是否正确
 If TopicInfo(0, 0) <> RQ.ForumID Then
-	Call WapMessage("帖子已转移到其他版面。", "viewtopic.asp?fid="& TopicInfo(0, 0) &"&tid="& RQ.TopicID)
+	Call WapMessage("帖子已转移到其他版面。", "viewtopic.asp?fid="& TopicInfo(0, 0) &"&amp;tid="& RQ.TopicID)
 End If
 
 '如果帖子设置了金钱限制,则检查金钱是否足够

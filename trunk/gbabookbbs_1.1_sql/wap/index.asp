@@ -1,4 +1,4 @@
-﻿<!--#include file="../include/common.inc.asp"-->
+<!--#include file="../include/common.inc.asp"-->
 <% ScriptName = "wap" %>
 <!--#include file="../include/sinc.asp"-->
 <!--#include file="wap.fun.asp"-->
@@ -20,10 +20,10 @@ If NewPmNum > 0 Then
 	Call Append("<a href=""pm.asp?action=newpmlist"">"& NewPmNum &"条新传呼</a><br />")
 End If
 
-Call Append("<br /><a href=""topiccp.asp"">查看新帖</a><br /><a href=""topiccp.asp?action=elite"">精华贴</a><br />")
+Call Append("<br /><a href=""membermisc.asp?action=newtopic"">查看新帖</a><br /><a href=""membermisc.asp?action=elitetopic"">精华贴</a><br />")
 
 If RQ.UserID > 0 Then
-	Call Append("<a href=""topiccp.asp?action=my"">我的收藏</a><br /><a href=""pm.asp"">传呼</a><br />")
+	Call Append("<a href=""membermisc.asp"">我的收藏</a><br /><a href=""pm.asp"">传呼</a><br />")
 End If
 
 If RQ.AllowSearch = 1 Then
