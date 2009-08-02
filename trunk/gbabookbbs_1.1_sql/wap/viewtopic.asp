@@ -8,7 +8,7 @@ WapHeader()
 Dim TopicInfo, PostInfo, PostID
 Dim Page, PageCount, RecordCount, strSQL
 Dim PostListArray, CountArray, FloorAddtion, theFloorNumber, blnBreakString, Offset, FirstMessage
-Dim blnAllowReply, strError
+Dim blnAllowReply, strError, fPage
 
 TopicInfo = RQ.Query("SELECT fid, displayorder, uid, username, usershow, title, posttime, lastupdate, posts, price, ifanonymity, iflocked, iftask FROM "& TablePre &"topics WITH(NOLOCK) WHERE tid = "& RQ.TopicID &" AND displayorder >= 0")
 
@@ -18,7 +18,9 @@ End If
 
 '检查版面id是否正确
 If TopicInfo(0, 0) <> RQ.ForumID Then
-	Call WapMessage("帖子已转移到其他版面。", "viewtopic.asp?fid="& TopicInfo(0, 0) &"&amp;tid="& RQ.TopicID)
+	Call closeDatabase()
+	Response.Redirect "viewtopic.asp?fid="& TopicInfo(0, 0) &"&amp;tid="& RQ.TopicID
+	Response.End()
 End If
 
 '如果帖子设置了金钱限制,则检查金钱是否足够
@@ -51,6 +53,7 @@ End If
 PostID = SafeRequest(3, "pid", 0, 0, 0)
 Offset = SafeRequest(3, "offset", 0, 0, 0)
 Page = SafeRequest(3, "page", 0, 1, 0)
+fPage = SafeRequest(3, "fpage", 0, 1, 0)
 
 '验证当前用户状态是否允许回帖
 Call Check_Status_Post()
@@ -58,15 +61,15 @@ Call Check_Status_Post()
 If PostID = 0 Then
 	RecordCount = TopicInfo(8, 0)
 	RecordCount = IIF(RecordCount = 0, 1, RecordCount)
-	PageCount = ABS(Int(-(RecordCount / 10)))
+	PageCount = ABS(Int(-(RecordCount / IntCode(RQ.Wap_Settings(4)))))
 	Page = IIF(Page > PageCount, PageCount, Page)
 	FloorAddtion = IIF(Page = 1, 0, 1)
 
 	'拼接sql语句
 	If Page = 1 Then
-		strSQL = "SELECT TOP 11 pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM gb_posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC"
+		strSQL = "SELECT TOP "& IntCode(RQ.Wap_Settings(4)) + 1 &" pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM gb_posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC"
 	Else
-		strSQL = "SELECT TOP 10 pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM gb_posts WHERE tid = "& RQ.TopicID &" AND posttime > (SELECT MAX(posttime) FROM (SELECT TOP "& 10 * (Page - 1) + 1 &" posttime FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC) AS tblTemp) ORDER BY posttime ASC"
+		strSQL = "SELECT TOP "& RQ.Wap_Settings(4) &" pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM gb_posts WHERE tid = "& RQ.TopicID &" AND posttime > (SELECT MAX(posttime) FROM (SELECT TOP "& IntCode(RQ.Wap_Settings(4)) * (Page - 1) + 1 &" posttime FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC) AS tblTemp) ORDER BY posttime ASC"
 	End If
 
 	'查询回复
@@ -128,11 +131,11 @@ If PostID = 0 Then
 			End If
 		Else
 			'楼层数字
-			theFloorNumber = 10 * (Page - 1) + i + FloorAddtion
+			theFloorNumber = IntCode(RQ.Wap_Settings(4)) * (Page - 1) + i + FloorAddtion
 
 			Call Append("回复("& theFloorNumber &"):")
 			If Len(PostListArray(5, i)) > 200 Then
-				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& Left(Replace(PostListArray(5, i), "[br]", "，"), 200) &"...</a>")
+				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& Left(Replace(PostListArray(5, i), "[br]", " "), 200) &"...</a>")
 			Else
 				Call Append(Replace(PostListArray(5, i), "[br]", "<br />"))
 			End If
@@ -201,7 +204,7 @@ If RQ.UserID > 0 Then
 	Call Append("<a href=""membermisc.asp?action=savefavor&amp;tid="& RQ.TopicID &""">设为我的收藏</a><br /><br />")
 End If
 
-Call Append("&gt;&gt;<a href=""redirect.asp?action=next&amp;tid="& RQ.TopicID &""">下一帖</a><br />&lt;&lt;<a href=""redirect.asp?action=previous&amp;tid="& RQ.TopicID &""">上一帖</a><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &""">返回帖子列表</a>")
+Call Append("&gt;&gt;<a href=""redirect.asp?action=next&amp;tid="& RQ.TopicID &""">下一帖</a><br />&lt;&lt;<a href=""redirect.asp?action=previous&amp;tid="& RQ.TopicID &""">上一帖</a><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &"&amp;page="& fPage &""">返回帖子列表</a>")
 
 '========================================================
 '判断是否允许回帖

@@ -41,7 +41,7 @@ If IsArray(ForumListArray) Then
 End If
 
 If RQ.AllowSearch Then
-	Call Append("<br /><br /><input type=""text"" name=""keyword"" value="""" format=""M*m"" size=""8"" emptyok=""true"" /><anchor title=""submit"">论坛搜索<go method=""get"" href=""search.asp""><postfield name=""keyword"" value=""$(keyword)"" /><postfield name=""action"" value=""search"" /></go></anchor>")
+	Call Append("<br /><br /><input type=""text"" name=""keyword"" value="""" format=""M*m"" size=""8"" emptyok=""true"" /><anchor title=""submit"">论坛搜索<go method=""post"" href=""search.asp?action=search""><postfield name=""keyword"" value=""$(keyword)"" /></go></anchor>")
 End If
 
 WapFooter()
