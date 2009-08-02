@@ -59,18 +59,19 @@ Public Function WapCode(str)
 	regEx.Global = True
 	regEx.Pattern = "<br(.*?)>"
 	str = regEx.Replace(str, "[br]")
-	regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
-	str = regEx.Replace(str, "[隐藏内容]")
-	regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
-	str = regEx.Replace(str, "[隐藏内容]")
-	regEx.Pattern = "\[attach\](\d+)\[\/attach\]"
-	str = regEx.Replace(str, "")
+	'regEx.Pattern = "<(?!\/?br)(.[^>]*)>"
 	regEx.Pattern = "<(.[^>]*)>"
 	str = regEx.Replace(str, "")
+	Set regEx = Nothing
+	str = Replace(str, "&#39;", "'")
 	str = Replace(str, "&", "&amp;")
 	str = Replace(str, "<", "&lt;")
+	str = Replace(str, "&amp;lt;", "&lt;")
 	str = Replace(str, ">", "&gt;")
+	str = Replace(str, "&amp;gt;", "&gt;")
 	str = Replace(str, """", "&quot;")
+	str = Replace(str, "&amp;quot;", "&quot;")
+	str = Replace(str, "[br]", "<br />")
 	WapCode = str
 End Function
 

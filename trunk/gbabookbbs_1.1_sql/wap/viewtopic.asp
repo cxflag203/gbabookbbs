@@ -77,11 +77,11 @@ If PostID = 0 Then
 
 	Call closeDatabase()
 
-	Call Append("标题:"& TopicInfo(5, 0) &"("& TopicInfo(8, 0) &"条回复)<br /><br />")
+	Call Append("标题:"& TopicCode(TopicInfo(5, 0)) &"("& TopicInfo(8, 0) &"条回复)<br /><br />")
 
 	CountArray = UBound(PostListArray, 2)
 	For i = 0 To CountArray
-		FirstMessage = WapCode(PostListArray(5, i))
+		FirstMessage = TopicCode(PostListArray(5, i))
 		If PostListArray(1, i) = 1 Then
 			If Offset > Len(FirstMessage) Then
 				Offset = 0
@@ -100,7 +100,7 @@ If PostID = 0 Then
 			Call Append(FirstMessage &"<br />---")
 
 			If PostListArray(2, i) > 0 And PostListArray(7, i) = 0 Then
-				Call Append("<a href=""pm.asp?action=send&amp;u="& Server.URLEncode(PostListArray(3, i)) &""">"& PostListArray(3, i) &"</a>")
+				Call Append("<a href=""pm.asp?action=sendpm&amp;u="& Server.URLEncode(PostListArray(3, i)) &""">"& PostListArray(3, i) &"</a>")
 			Else
 				Call Append(PostListArray(4, i))
 			End If
@@ -140,7 +140,7 @@ If PostID = 0 Then
 			Call Append("<br />---")
 
 			If PostListArray(2, i) > 0 And PostListArray(7, i) = 0 Then
-				Call Append("<a href=""pm.asp?action=send&amp;u="& Server.URLEncode(PostListArray(3, i)) &""">"& PostListArray(3, i) &"</a>")
+				Call Append("<a href=""pm.asp?action=sendpm&amp;u="& Server.URLEncode(PostListArray(3, i)) &""">"& PostListArray(3, i) &"</a>")
 			Else
 				Call Append(PostListArray(4, i))
 			End If
@@ -163,8 +163,8 @@ Else
 	Call closeDatabase()
 
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
-	Call Append("帖子:<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& Page &""">"& TopicInfo(5, 0) &"</a><br /><br />回复("& IIF(theFloorNumber = 0, "*", theFloorNumber) &"):")
-	FirstMessage = WapCode(PostInfo(3, 0))
+	Call Append("帖子:<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& Page &""">"& TopicCode(TopicInfo(5, 0)) &"</a><br /><br />回复("& IIF(theFloorNumber = 0, "*", theFloorNumber) &"):")
+	FirstMessage = TopicCode(PostInfo(3, 0))
 
 	If Offset > Len(FirstMessage) Then
 		Offset = 0
@@ -194,7 +194,7 @@ Else
 End If
 
 If blnAllowReply Then
-	Call Append("<input type=""text"" name=""message"" value="""" size=""15"" emptyok=""true""/><anchor title=""提交"">快速回复<go method=""post"" href=""post.asp?action=newreply&amp;fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"""><postfield name=""message"" value=""$(message)""/></go></anchor><br />")
+	Call Append("<input type=""text"" name=""message"" value="""" size=""10"" emptyok=""true""/><anchor title=""提交"">快速回复<go method=""post"" href=""post.asp?action=newreply&amp;fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"""><postfield name=""message"" value=""$(message)""/></go></anchor><br />")
 End If
 
 If RQ.UserID > 0 Then
@@ -275,6 +275,37 @@ Sub Check_Status_Post()
 
 	blnAllowReply = True
 End Sub
+
+'========================================================
+'去掉帖子内容中的html标签和隐藏内容标签
+'========================================================
+Public Function TopicCode(str)
+	Dim regEx
+	Set regEx = New Regexp
+	regEx.IgnoreCase = True
+	regEx.Global = True
+	regEx.Pattern = "<br(.*?)>"
+	str = regEx.Replace(str, "[br]")
+	regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
+	str = regEx.Replace(str, "[隐藏内容]")
+	regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
+	str = regEx.Replace(str, "[隐藏内容]")
+	regEx.Pattern = "\[attach\](\d+)\[\/attach\]"
+	str = regEx.Replace(str, "")
+	'regEx.Pattern = "<(?!\/?br)(.[^>]*)>"
+	regEx.Pattern = "<(.[^>]*)>"
+	str = regEx.Replace(str, "")
+	Set regEx = Nothing
+	str = Replace(str, "&#39;", "'")
+	str = Replace(str, "&", "&amp;")
+	str = Replace(str, "<", "&lt;")
+	str = Replace(str, "&amp;lt;", "&lt;")
+	str = Replace(str, ">", "&gt;")
+	str = Replace(str, "&amp;gt;", "&gt;")
+	str = Replace(str, """", "&quot;")
+	str = Replace(str, "&amp;quot;", "&quot;")
+	TopicCode = str
+End Function
 
 WapFooter()
 %>
