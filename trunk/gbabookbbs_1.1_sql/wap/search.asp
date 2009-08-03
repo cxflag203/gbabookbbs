@@ -202,10 +202,7 @@ Sub Show()
 	End If
 
 	For i = 0 To UBound(TopicListArray, 2)
-		TopicListArray(2, i) = WapCode(TopicListArray(2, i))
-		If Len(TopicListArray(2, i)) > 15 Then
-			TopicListArray(2, i) = Left(TopicListArray(2, i), 15) &"..."
-		End If
+		TopicListArray(2, i) = WapCode(TopicListArray(2, i), 15)
 		Call Append("<a href=""viewtopic.asp?fid="& TopicListArray(1, i) &"&amp;tid="& TopicListArray(0, i) &""">"& TopicListArray(2, i) &" ("& TopicListArray(4, i) &"/"& TopicListArray(3, i) &")</a><br />")
 	Next
 

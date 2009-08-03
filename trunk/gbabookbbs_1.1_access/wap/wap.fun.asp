@@ -42,26 +42,36 @@ End Sub
 '========================================================
 '去掉内容中的html标签和隐藏内容标签
 '========================================================
-Public Function WapCode(str)
+Function WapCode(str, length)
 	Dim regEx
+
 	Set regEx = New Regexp
 	regEx.IgnoreCase = True
 	regEx.Global = True
 	regEx.Pattern = "<br(.*?)>"
-	str = regEx.Replace(str, "[br]")
-	'regEx.Pattern = "<(?!\/?br)(.[^>]*)>"
+	str = regEx.Replace(str, Chr(12))
 	regEx.Pattern = "<(.[^>]*)>"
 	str = regEx.Replace(str, "")
 	Set regEx = Nothing
+
+	str = Replace(str, "&amp;", "&")
 	str = Replace(str, "&#39;", "'")
+	str = Replace(str, "&quot;", """")
+	str = Replace(str, "&lt;", "<")
+	str = Replace(str, "&gt;", ">")
+	str = Replace(str, "&nbsp;", " ")
+
+	If length > 0 Then
+		If Len(str) > length Then
+			str = Left(str, length) &"..."
+		End If
+	End If
+
 	str = Replace(str, "&", "&amp;")
-	str = Replace(str, "<", "&lt;")
-	str = Replace(str, "&amp;lt;", "&lt;")
-	str = Replace(str, ">", "&gt;")
-	str = Replace(str, "&amp;gt;", "&gt;")
 	str = Replace(str, """", "&quot;")
-	str = Replace(str, "&amp;quot;", "&quot;")
-	str = Replace(str, "[br]", "<br />")
+	str = Replace(str, "<", "&lt;")
+	str = Replace(str, ">", "&gt;")
+	str = Replace(str, Chr(12), "<br />")
 	WapCode = str
 End Function
 

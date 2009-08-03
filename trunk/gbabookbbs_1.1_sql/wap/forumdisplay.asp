@@ -47,10 +47,7 @@ Call Append(RQ.Forum_Name &"<br />"& strNewTopic &"<br />帖子列表 <a href=""
 '列出置顶帖
 If IsArray(StickListArray) Then
 	For i = 0 To UBound(StickListArray, 2)
-		StickListArray(2, i) = WapCode(StickListArray(2, i))
-		If Len(StickListArray(2, i)) > 15 Then
-			StickListArray(2, i) = Left(StickListArray(2, i), 15) &"..."
-		End If
+		StickListArray(2, i) = WapCode(StickListArray(2, i), 15)
 		Call Append("<a href=""viewtopic.asp?fid="& StickListArray(1, i) &"&amp;tid="& StickListArray(0, i) &""">"& StickListArray(2, i) &" ("& StickListArray(4, i) &"/"& StickListArray(3, i) &")</a>[顶]"& IIF(StickListArray(5, i) = 1, "[精]", "") &"<br />")
 	Next
 	Call RQ.ClearStickTopic()
@@ -61,10 +58,7 @@ Call closeDatabase()
 '列出普通帖子
 If IsArray(TopicListArray) Then
 	For i = 0 To UBound(TopicListArray, 2)
-		TopicListArray(1, i) = WapCode(TopicListArray(1, i))
-		If Len(TopicListArray(1, i)) > 15 Then
-			TopicListArray(1, i) = Left(TopicListArray(1, i), 15) &"..."
-		End If
+		TopicListArray(1, i) = WapCode(TopicListArray(1, i), 15)
 		Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& TopicListArray(0, i) &"&amp;fpage="& Page &""">"& TopicListArray(1, i) &" ("& TopicListArray(3, i) &"/"& TopicListArray(2, i) &")</a>"& IIF(TopicListArray(4, i) = 1, "[精]", "") &"<br />")
 	Next
 End If

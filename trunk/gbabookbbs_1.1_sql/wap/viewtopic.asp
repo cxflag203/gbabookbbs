@@ -77,12 +77,14 @@ If PostID = 0 Then
 
 	Call closeDatabase()
 
-	Call Append("标题:"& TopicCode(TopicInfo(5, 0)) &"("& TopicInfo(8, 0) &"条回复)<br /><br />")
+	Call Append("标题:"& WapCode(TopicInfo(5, 0), 0) &"("& TopicInfo(8, 0) &"条回复)<br /><br />")
 
 	CountArray = UBound(PostListArray, 2)
 	For i = 0 To CountArray
-		FirstMessage = TopicCode(PostListArray(5, i))
+		PostListArray(5, i) = TopicCode(PostListArray(5, i))
 		If PostListArray(1, i) = 1 Then
+			FirstMessage = PostListArray(5, i)
+
 			If Offset > Len(FirstMessage) Then
 				Offset = 0
 			End If
@@ -96,8 +98,7 @@ If PostID = 0 Then
 				blnBreakString = True
 			End If
 
-			FirstMessage = Replace(Trim(FirstMessage), "[br]", "<br />")
-			Call Append(FirstMessage &"<br />---")
+			Call Append(ReverseCode(FirstMessage) &"<br />---")
 
 			If PostListArray(2, i) > 0 And PostListArray(7, i) = 0 Then
 				Call Append("<a href=""pm.asp?action=sendpm&amp;u="& Server.URLEncode(PostListArray(3, i)) &""">"& PostListArray(3, i) &"</a>")
@@ -131,10 +132,11 @@ If PostID = 0 Then
 			theFloorNumber = IntCode(RQ.Wap_Settings(4)) * (Page - 1) + i + FloorAddtion
 
 			Call Append("回复("& theFloorNumber &"):")
+
 			If Len(PostListArray(5, i)) > IntCode(RQ.Wap_Settings(5)) Then
-				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& Left(Replace(PostListArray(5, i), "[br]", " "), IntCode(RQ.Wap_Settings(5))) &"...</a>")
+				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& ReverseCode(Left(Replace(PostListArray(5, i), Chr(12), " "), IntCode(RQ.Wap_Settings(5)))) &"...</a>")
 			Else
-				Call Append(Replace(PostListArray(5, i), "[br]", "<br />"))
+				Call Append(ReverseCode(PostListArray(5, i)))
 			End If
 
 			Call Append("<br />---")
@@ -164,6 +166,7 @@ Else
 
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
 	Call Append("帖子:<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& Page &""">"& TopicCode(TopicInfo(5, 0)) &"</a><br /><br />回复("& IIF(theFloorNumber = 0, "*", theFloorNumber) &"):")
+
 	FirstMessage = TopicCode(PostInfo(3, 0))
 
 	If Offset > Len(FirstMessage) Then
@@ -179,8 +182,7 @@ Else
 		blnBreakString = True
 	End If
 
-	FirstMessage = Replace(Trim(FirstMessage), "[br]", "<br />")
-	Call Append(FirstMessage)
+	Call Append(ReverseCode(FirstMessage))
 
 	If blnBreakString Then
 		Call Append("<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &"&amp;page="& Page &""">下页</a>")
@@ -277,34 +279,46 @@ Sub Check_Status_Post()
 End Sub
 
 '========================================================
-'去掉帖子内容中的html标签和隐藏内容标签
+'帖子内容转义和处理特殊内容
 '========================================================
-Public Function TopicCode(str)
+Function TopicCode(str)
 	Dim regEx
+
 	Set regEx = New Regexp
 	regEx.IgnoreCase = True
 	regEx.Global = True
 	regEx.Pattern = "<br(.*?)>"
-	str = regEx.Replace(str, "[br]")
+	str = regEx.Replace(str, Chr(12))
 	regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
 	str = regEx.Replace(str, "[隐藏内容]")
 	regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
 	str = regEx.Replace(str, "[隐藏内容]")
 	regEx.Pattern = "\[attach\](\d+)\[\/attach\]"
 	str = regEx.Replace(str, "")
-	'regEx.Pattern = "<(?!\/?br)(.[^>]*)>"
 	regEx.Pattern = "<(.[^>]*)>"
 	str = regEx.Replace(str, "")
 	Set regEx = Nothing
+
+	str = Replace(str, "&amp;", "&")
 	str = Replace(str, "&#39;", "'")
-	str = Replace(str, "&", "&amp;")
-	str = Replace(str, "<", "&lt;")
-	str = Replace(str, "&amp;lt;", "&lt;")
-	str = Replace(str, ">", "&gt;")
-	str = Replace(str, "&amp;gt;", "&gt;")
-	str = Replace(str, """", "&quot;")
-	str = Replace(str, "&amp;quot;", "&quot;")
+	str = Replace(str, "&quot;", """")
+	str = Replace(str, "&lt;", "<")
+	str = Replace(str, "&gt;", ">")
+	str = Replace(str, "&nbsp;", " ")
+
 	TopicCode = str
+End Function
+
+'========================================================
+'再次转义
+'========================================================
+Function ReverseCode(str)
+	str = Replace(str, "&", "&amp;")
+	str = Replace(str, """", "&quot;")
+	str = Replace(str, "<", "&lt;")
+	str = Replace(str, ">", "&gt;")
+	str = Replace(str, Chr(12), "<br />")
+	ReverseCode = str
 End Function
 
 WapFooter()

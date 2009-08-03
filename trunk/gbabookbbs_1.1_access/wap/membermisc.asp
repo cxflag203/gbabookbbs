@@ -28,10 +28,7 @@ Sub NewTopic()
 
 	If IsArray(TopicListArray) Then
 		For i = 0 To UBound(TopicListArray, 2)
-			TopicListArray(2, i) = WapCode(TopicListArray(2, i))
-			If Len(TopicListArray(2, i)) > 15 Then
-				TopicListArray(2, i) = Left(TopicListArray(2, i), 15) &"..."
-			End If
+			TopicListArray(2, i) = WapCode(TopicListArray(2, i), 15)
 			Call Append("<a href=""viewtopic.asp?fid="& TopicListArray(1, i) &"&amp;tid="& TopicListArray(0, i) &""">"& TopicListArray(2, i) &" ("& TopicListArray(4, i) &"/"& TopicListArray(3, i) &")</a>"& IIF(TopicListArray(5, i) = 1, "[精]", "") &"<br />")
 		Next
 	End If
@@ -67,10 +64,7 @@ Sub EliteTopic()
 	Call Append("精华帖<br /><br />")
 	If IsArray(TopicListArray) Then
 		For i = 0 To UBound(TopicListArray, 2)
-			TopicListArray(2, i) = WapCode(TopicListArray(2, i))
-			If Len(TopicListArray(2, i)) > 15 Then
-				TopicListArray(2, i) = Left(TopicListArray(2, i), 15) &"..."
-			End If
+			TopicListArray(2, i) = WapCode(TopicListArray(2, i), 15)
 			Call Append("<a href=""viewtopic.asp?fid="& TopicListArray(1, i) &"&amp;tid="& TopicListArray(0, i) &""">"& TopicListArray(2, i) &" ("& TopicListArray(4, i) &"/"& TopicListArray(3, i) &")</a>"& IIF(TopicListArray(5, i) = 1, "[精]", "") &"<br />")
 		Next
 	End If
@@ -128,10 +122,7 @@ Sub Main()
 	Call Append("我的帖子<br />")
 	If IsArray(TopicListArray) Then
 		For i = 0 To UBound(TopicListArray, 2)
-			TopicListArray(2, i) = WapCode(TopicListArray(2, i))
-			If Len(TopicListArray(2, i)) > 15 Then
-				TopicListArray(2, i) = Left(TopicListArray(2, i), 15) &"..."
-			End If
+			TopicListArray(2, i) = WapCode(TopicListArray(2, i), 15)
 			Call Append("<a href=""viewtopic.asp?fid="& TopicListArray(1, i) &"&amp;tid="& TopicListArray(0, i) &""">"& TopicListArray(2, i) &" ("& TopicListArray(4, i) &"/"& TopicListArray(3, i) &")</a>"& IIF(TopicListArray(5, i) = 1, "[精]", "") &"<br />")
 		Next
 	End If
@@ -139,10 +130,7 @@ Sub Main()
 	Call Append("<br />我的回复<br />")
 	If IsArray(PostListArray) Then
 		For i = 0 To UBound(PostListArray, 2)
-			PostListArray(2, i) = WapCode(PostListArray(2, i))
-			If Len(PostListArray(2, i)) > 20 Then
-				PostListArray(2, i) = Left(PostListArray(2, i), 20) &"..."
-			End If
+			PostListArray(2, i) = WapCode(PostListArray(2, i), 15)
 			Call Append("<a href=""viewtopic.asp?fid="& PostListArray(0, i) &"&amp;tid="& PostListArray(1, i) &""">"& PostListArray(2, i) &"</a><br />")
 		Next
 	End If
@@ -150,10 +138,7 @@ Sub Main()
 	Call Append("<br />我的收藏<br />")
 	If IsArray(FavorListArray) Then
 		For i = 0 To UBound(FavorListArray, 2)
-			FavorListArray(2, i) = WapCode(FavorListArray(2, i))
-			If Len(FavorListArray(2, i)) > 15 Then
-				FavorListArray(2, i) = Left(FavorListArray(2, i), 15) &"..."
-			End If
+			FavorListArray(2, i) = WapCode(FavorListArray(2, i), 15)
 			Call Append("<a href=""viewtopic.asp?fid="& FavorListArray(1, i) &"&amp;tid="& FavorListArray(0, i) &""">"& FavorListArray(2, i) &" ("& FavorListArray(4, i) &"/"& FavorListArray(3, i) &")</a>"& IIF(FavorListArray(5, i) = 1, "[精]", "") &"<br />")
 		Next
 	End If

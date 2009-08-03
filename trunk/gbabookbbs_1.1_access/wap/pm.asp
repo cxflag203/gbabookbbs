@@ -113,7 +113,7 @@ Sub Reply()
 		Call WapMessage("传呼不存在或者已经被删除。", "")
 	End If
 
-	Call Append(PmInfo(1, 0) &"给您发送的信息 ("& PmInfo(4, 0) &")<br />"& IIF(Len(PmInfo(3, 0)) > 0, "re:"& WapCode(PmInfo(3, 0)) &"<br />----------<br />", "") & WapCode(PmInfo(2, 0)) &"<br /><input type=""text"" name=""message"" format=""M*m"" size=""10"" /><anchor title=""回复"">回复<go method=""post"" href=""pm.asp?action=postreply&amp;pmid="& PmInfo(0, 0) &"""><postfield name=""message"" value=""$(message)"" /></go></anchor><br /><a href=""pm.asp?action=delete&amp;pmid="& PmInfo(0, 0) &""">删除</a>|<a href=""pm.asp?action=save&amp;pmid="& PmInfo(0, 0) &""">保存</a><br /><br /><a href=""pm.asp?action=sendpm"">发新传呼</a><br /><a href=""pm.asp?action=newpmlist"">返回传呼列表</a>")
+	Call Append(PmInfo(1, 0) &"给您发送的信息 ("& PmInfo(4, 0) &")<br />"& IIF(Len(PmInfo(3, 0)) > 0, "re:"& WapCode(PmInfo(3, 0), 0) &"<br />----------<br />", "") & WapCode(PmInfo(2, 0), 0) &"<br /><input type=""text"" name=""message"" format=""M*m"" size=""10"" /><anchor title=""回复"">回复<go method=""post"" href=""pm.asp?action=postreply&amp;pmid="& PmInfo(0, 0) &"""><postfield name=""message"" value=""$(message)"" /></go></anchor><br /><a href=""pm.asp?action=delete&amp;pmid="& PmInfo(0, 0) &""">删除</a>|<a href=""pm.asp?action=save&amp;pmid="& PmInfo(0, 0) &""">保存</a><br /><br /><a href=""pm.asp?action=sendpm"">发新传呼</a><br /><a href=""pm.asp?action=newpmlist"">返回传呼列表</a>")
 End Sub
 
 '========================================================
@@ -197,7 +197,7 @@ Sub ShowFavor()
 
 	If IsArray(PmListArray) Then
 		For i = 0 To UBound(PmListArray, 2)
-			Call Append("#"& IntCode(RQ.Wap_Settings(3)) * (Page - 1) + i + 1 &" "& PmListArray(2, i) &"<br />"& WapCode(PmListArray(1, i)) &"<br /><br />")
+			Call Append("#"& IntCode(RQ.Wap_Settings(3)) * (Page - 1) + i + 1 &" "& PmListArray(2, i) &"<br />"& WapCode(PmListArray(1, i), 0) &"<br /><br />")
 		Next
 
 		If PageCount > 1 Then
@@ -222,7 +222,7 @@ Sub NewPmList()
 	End If
 
 	For i = 0 To UBound(PmListArray, 2)
-		Call Append("("& i + 1 &"):"& PmListArray(1, i) &"给您发送的信息 ("& PmListArray(4, i) &")<br />"& IIF(Len(PmListArray(3, i)) > 0, "re:"& WapCode(PmListArray(3, i)) &"<br />----------<br />", "") & WapCode(PmListArray(2, i)) &"<br /><a href=""pm.asp?action=reply&amp;pmid="& PmListArray(0, i) &""">回复</a>|<a href=""pm.asp?action=delete&amp;pmid="& PmListArray(0, i) &""">删除</a>|<a href=""pm.asp?action=save&amp;pmid="& PmListArray(0, i) &""">保存</a>")
+		Call Append("("& i + 1 &"):"& PmListArray(1, i) &"给您发送的信息 ("& PmListArray(4, i) &")<br />"& IIF(Len(PmListArray(3, i)) > 0, "re:"& WapCode(PmListArray(3, i), 0) &"<br />----------<br />", "") & WapCode(PmListArray(2, i), 0) &"<br /><a href=""pm.asp?action=reply&amp;pmid="& PmListArray(0, i) &""">回复</a>|<a href=""pm.asp?action=delete&amp;pmid="& PmListArray(0, i) &""">删除</a>|<a href=""pm.asp?action=save&amp;pmid="& PmListArray(0, i) &""">保存</a>")
 	
 		If i <> UBound(PmListArray, 2) Then
 			Call Append("<br /><br />")
