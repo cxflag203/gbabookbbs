@@ -244,38 +244,4 @@ Sub SaveOrgAvatar()
 	Set tmpFolder = Nothing
 	Set Fso = Nothing
 End Sub
-
-'========================================================
-'保存头像
-'========================================================
-Sub SaveAvatar()
-	If RQ.UserID = 0 Then
-		Exit Sub
-	End If
-
-	Dim TempFile
-	TempFile = SafeRequest(3, "tempfile", 1, "", 0)
-	Call DeleteFile(TempFile)
-
-	If Request.TotalBytes = 0 Then
-		Exit Sub
-	End If
-
-	Dim SavePath, Stream
-
-	SavePath = "./avatars/"& Left(RQ.UserID, 1) &"/"
-	Call RebuildFolder(SavePath)
-
-	Set Stream = CreateObject("ADODB.Stream")
-	Stream.Mode = 3
-	Stream.Type = 1
-	Stream.Open
-	Stream.Write(Request.BinaryRead(Request.TotalBytes))
-	Stream.SaveToFile Server.MapPath(SavePath & RQ.UserID &".jpg"), 2
-	Stream.Close
-	Set Stream = Nothing
-
-	RQ.Execute("UPDATE "& TablePre &"memberfields SET avatar = '"& Left(RQ.UserID, 1) &"/"& RQ.UserID &".jpg' WHERE uid = "& RQ.UserID)
-	Call closeDatabase()
-End Sub
 %>
