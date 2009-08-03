@@ -4,7 +4,7 @@
 <!--#include file="../include/main.class.asp"-->
 <!--#include file="wap.fun.asp"-->
 <%
-dbSource = Server.MapPath("../database/#SNWgdHYqWbgdjanLsmvT.mdb")
+dbSource = "../"& dbSource
 
 '初始化类
 Dim RQ

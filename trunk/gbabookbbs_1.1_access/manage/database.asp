@@ -6,8 +6,10 @@ If RQ.AdminGroupID <> 1 Then
 	Call AdminShowTips("您无权进行访问。", "")
 End If
 
-Dim Action
+Dim Action, dbFullPath
 Action = Request.QueryString("action")
+dbFullPath = Server.MapPath(dbSource)
+
 Select Case Action
 	Case "sql"
 		Call SQL()
@@ -102,11 +104,11 @@ Sub CompressDatabase()
 	Set Conn = Nothing
 
 	'获取原始数据库大小，在提示信息中显示
-	OrgdbSize = GetdbSize(dbSource)
+	OrgdbSize = GetdbSize(dbFullPath)
 
 	Set dbEngine = Server.CreateObject("JRO.JetEngine")
 	'执行压缩，保存为tmp文件
-	dbEngine.CompactDatabase "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="& dbSource, "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="& dbSource &".tmp"
+	dbEngine.CompactDatabase "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="& dbFullPath, "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="& dbFullPath &".tmp"
 	If Err Then
 		strTips = "数据库压缩失败，原因是："& Err.Description
 		blnCompressError = True
@@ -117,18 +119,18 @@ Sub CompressDatabase()
 	If Not blnCompressError Then
 		'把压缩后的临时文件替换为网站使用的数据库
 		Set Fso = Server.CreateObject("Scripting.FileSystemObject")
-		Fso.CopyFile dbSource &".tmp", dbSource
+		Fso.CopyFile dbFullPath &".tmp", dbFullPath
 		If Err Then
-			strTips = "数据库压缩完毕，但是压缩后的临时文件无法替换目前的数据库，临时文件所在的路径是：<br />"& dbSource &".tmp"
+			strTips = "数据库压缩完毕，但是压缩后的临时文件无法替换目前的数据库，临时文件所在的路径是：<br />"& dbFullPath &".tmp"
 			Err.Clear
 		Else
 			'删除临时文件
-			Fso.DeleteFile dbSource &".tmp"
+			Fso.DeleteFile dbFullPath &".tmp"
 			If Err Then
-				strTips "数据库压缩完毕，但是系统无法删除数据库临时文件，请登陆FTP手动删除，文件路径是：<br />"& dbSource &".tmp"
+				strTips "数据库压缩完毕，但是系统无法删除数据库临时文件，请登陆FTP手动删除，文件路径是：<br />"& dbFullPath &".tmp"
 			Else
 				'获取压缩后的数据库大小
-				CompdbSize = GetdbSize(dbSource)
+				CompdbSize = GetdbSize(dbFullPath)
 				strTips = "数据库压缩完毕，压缩前数据库大小为"& OrgdbSize &"，压缩后数据库大小为"& CompdbSize &"。"
 			End If
 		End If
@@ -156,7 +158,7 @@ Sub BackupDatabase()
 		Call AdminShowTips("未定义操作。", "")
 	End If
 
-	dbBakFolder = Left(dbSource, InstrRev(dbSource, "\")) &"backup\"
+	dbBakFolder = Left(dbFullPath, InstrRev(dbFullPath, "\")) &"backup\"
 
 	On Error Resume Next
 
@@ -179,7 +181,7 @@ Sub BackupDatabase()
 		BakFileName = "backup_"& Year(Now()) & Month(Now()) & Day(Now()) & Hour(Now()) & Minute(Now()) & Second(Now()) &"_"& Rand(10) &".rar"
 
 		'复制当前数据库到备份目录
-		Fso.CopyFile dbSource, dbBakFolder & BakFileName
+		Fso.CopyFile dbFullPath, dbBakFolder & BakFileName
 		If Err Then
 			strTips = "复制数据库失败，原因是："& Err.Description
 			blnBackupError = True
@@ -216,7 +218,7 @@ Sub DeleteBackup()
 	End If
 
 	'获得当前目录完整路径以及数据库所在的目录
-	dbBakFolder = Left(dbSource, InstrRev(dbSource, "\")) &"backup\"
+	dbBakFolder = Left(dbFullPath, InstrRev(dbFullPath, "\")) &"backup\"
 	Set Fso = CreateObject("Scripting.FileSystemObject")
 	For i = 1 To Request.Form("filename").Count
 		FileName = Request.Form("filename")(i)
@@ -282,8 +284,8 @@ Sub Main()
 	Dim Fso, bakFolder, bakFiles, Files
 
 	'获得当前目录完整路径以及数据库所在的目录
-	dbBakFolder = Left(dbSource, InstrRev(dbSource, "\")) &"backup\"
-	TEMP = Split(dbSource, "\")
+	dbBakFolder = Left(dbFullPath, InstrRev(dbFullPath, "\")) &"backup\"
+	TEMP = Split(dbFullPath, "\")
 	dbFolder = TEMP(UBound(TEMP) - 1)
 
 	'打开Fso组件，读取备份文件夹

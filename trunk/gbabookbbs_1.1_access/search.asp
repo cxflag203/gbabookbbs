@@ -28,14 +28,18 @@ Sub Search()
 
 	Keyword = Replace(Replace(Replace(SafeRequest(3, "keyword", 1, "", 0), "%", "[%]"), "[", "[[]"), "_", "[_]")
 	Keyword = IIF(Keyword = "输入关键字", "", Keyword)
-	SearchType = SafeRequest(3, "searchtype", 1, "", 0)
 
 	If Len(Keyword) = 0 Then
 		Call RQ.showTips("请输入要搜索的内容。", "", "")
 	End If
 
 	Keyword = IIF(Len(Keyword) > 50, Left(Keyword, 50), Keyword)
-	lngSearchType = IIF(SearchType = "author", 1, 0)
+
+	If SafeRequest(3, "searchtype", 1, "", 0) = "author" Then
+		lngSearchType = 1
+	Else
+		lngSearchType = 0
+	End If
 
 	SearchInfo = RQ.Query("SELECT searchid, expirytime FROM "& TablePre &"searchindex WHERE keyword = '"& Keyword &"' AND searchtype = "& lngSearchType)
 
@@ -57,7 +61,7 @@ Sub Search()
 	End If
 
 	If blnUpdateCache Then
-		If SearchType = "author" Then
+		If lngSearchType = 1 Then
 			SqlWhere = "uid IN("& strUserID &")"
 		Else
 			SqlWhere = "title LIKE '%"& Keyword &"%'"

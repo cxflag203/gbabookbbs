@@ -18,7 +18,7 @@ Const INGBABOOK = True
 Const SHOWVERSION = "1.1"
 
 '数据库路径
-dbSource = Server.MapPath("database/#SNWgdHYqWbgdjanLsmvT.mdb")
+dbSource = "database/#SNWgdHYqWbgdjanLsmvT.mdb"
 
 '========================================================
 '连接数据库
@@ -26,7 +26,7 @@ dbSource = Server.MapPath("database/#SNWgdHYqWbgdjanLsmvT.mdb")
 Public Sub connectDatabase()
 	On Error Resume Next
 	Set Conn = Server.CreateObject("ADODB.Connection")
-	Conn.Open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source="& dbSource)
+	Conn.Open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source="& Server.MapPath(dbSource))
 	If Err <> 0 Then
 		Err.Clear
 		Set Conn = Nothing

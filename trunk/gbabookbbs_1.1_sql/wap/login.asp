@@ -1,4 +1,5 @@
 <!--#include file="wap.inc.asp"-->
+<!--#include file="../include/md5.inc.asp"-->
 <%
 WapHeader()
 
