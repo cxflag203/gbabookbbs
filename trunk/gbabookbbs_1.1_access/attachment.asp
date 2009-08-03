@@ -1,7 +1,7 @@
 ﻿<!--#include file="include/inc.asp"-->
 <!--#include file="include/upload.class.asp"-->
 <%
-Server.ScriptTimeout = 600
+Server.ScriptTimeout = 900
 Dim Action
 Action = Request("action")
 Select Case Action
@@ -13,10 +13,6 @@ Select Case Action
 		Call AjaxDelete()
 	Case "get"
 		Call GetAttach()
-	Case "saveorgavatar"
-		Call SaveOrgAvatar()
-	Case "saveavatar"
-		Call SaveAvatar()
 End Select
 
 '========================================================

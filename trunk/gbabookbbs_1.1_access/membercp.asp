@@ -20,12 +20,6 @@ Select Case Action
 		Call ShowItemLog()
 	Case "setbanner"
 		Call SetBanner()
-	Case "ignorepm"
-		Call IgnorePm()
-	Case "saveignorepm"
-		Call SaveIgnorePm()
-	Case "uploadavatar"
-		Call UploadAvatar()
 	Case Else
 		Call Main()
 End Select
@@ -222,124 +216,6 @@ Sub SetBanner()
 End Sub
 
 '========================================================
-'设置传呼黑名单界面
-'========================================================
-Sub IgnorePm()
-	Dim UserInfo
-	UserInfo = RQ.Query("SELECT ignorepm FROM "& TablePre &"memberfields WHERE uid = "& RQ.UserID)
-
-	Call closeDatabase()
-	RQ.Header()
-%>
-<div class="warning">
-  如果您希望不接收某人向您发送的传呼，可以在这里填入其用户名（注意不要包括称号），添加多个用户时用<strong>英文逗号</strong>隔开，例如：张三,李四。如需禁止所有用户发来的短消息，请设置为<strong>{ALL}</strong>
-</div>
-<br />
-<form method="post" action="?action=saveignorepm" onkeydown="fastpost('btnsubmit');" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
-  <input type="hidden" name="do" value="confirm" />
-  <table width="98%" border="0" cellpadding="0" cellspacing="0" class="tblborder">
-    <tr class="header">
-      <td height="25" colspan="2"><strong>设置传呼黑名单</strong></td>
-    </tr>
-    <tr height="25">
-      <td width="30%">请输入用户名</td>
-      <td style="padding: 8px 10px;"><textarea name="username" rows="5" cols="40" class="textareagrey" style="width: 90%"><%= UserInfo(0, 0) %></textarea></td>
-    </tr>
-	<tr height="25">
-      <td>&nbsp;</td>
-      <td><input type="submit" id="btnsubmit" value="确定" class="button" /></td>
-    </tr>
-  </table>
-</form>
-<%
-	RQ.Footer()
-End Sub
-
-'========================================================
-'保存传呼黑名单的设置
-'========================================================
-Sub SaveIgnorePm()
-	Dim UserName
-
-	If Request.Form("do") = "confirm" Then
-		UserName = CheckContent(SafeRequest(2, "username", 1, "", 0))
-		RQ.Execute("UPDATE "& TablePre &"memberfields SET ignorepm = '"& UserName &"' WHERE uid = "& RQ.UserID)
-	End If
-	
-	Call closeDatabase()
-	Call RQ.showTips("传呼黑名单设置成功。", "?", "")
-End Sub
-
-'========================================================
-'上传头像界面
-'========================================================
-Sub UploadAvatar()
-	Dim UserInfo
-	UserInfo = RQ.Query("SELECT avatar FROM "& TablePre &"memberfields WHERE uid = "& RQ.UserID)
-	Call closeDatabase()
-
-	RQ.Header()
-%>
-<body>
-您当前使用的头像：
-<br />
-<br />
-<span id="myavatar"><img src="<%= IIF(Len(UserInfo(0, 0)) > 0, "avatars/"& UserInfo(0, 0), "images/common/noavatar.jpg") %>" /></span>
-<br />
-<br />
-上传新头像(图片大小请控制在500KB以内)：
-<br />
-<br />
-<script language="javascript">AC_FL_RunContent = 0;</script>
-<script src="js/AC_RunActiveContent.js" language="javascript"></script>
-<script language="javascript">
-function show(_txt){
-	var uid = '<%= RQ.UserID %>';
-	$('myavatar').innerHTML = '<img src="avatars/'+ uid.substr(0, 1) +'/'+ uid +'.jpg" />';
-}
-</script>
-<script language="javascript">
-if (AC_FL_RunContent == 0) {
-	alert("This page requires AC_RunActiveContent.js.");
-} else {
-	AC_FL_RunContent(
-		'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0',
-		'width', '502',
-		'height', '470',
-		'src', 'js/uploadavatar',
-		'quality', 'high',
-		'pluginspage', 'http://www.macromedia.com/go/getflashplayer',
-		'align', 'middle',
-		'play', 'true',
-		'loop', 'true',
-		'scale', 'showall',
-		'wmode', 'window',
-		'devicefont', 'false',
-		'id', 'uploadavatar',
-		'bgcolor', '#ffffff',
-		'name', 'uploadavatar',
-		'menu', 'true',
-		'allowFullScreen', 'false',
-		'allowScriptAccess','sameDomain',
-		'movie', 'js/uploadavatar',
-		'salign', '',
-		'flashvars',''
-		); //end AC code
-}
-</script>
-<noscript>
-  <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="502" height="470" id="uploadavatar" align="middle">
-    <param name="allowScriptAccess" value="sameDomain" />
-    <param name="allowFullScreen" value="false" />
-    <param name="movie" value="js/uploadavatar.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" />
-	<embed src="js/uploadavatar.swf" quality="high" bgcolor="#ffffff" width="502" height="470" name="uploadavatar" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
-  </object>
-</noscript>
-<%
-	RQ.Footer()
-End Sub
-
-'========================================================
 '相关功能界面
 '========================================================
 Sub Main()
@@ -369,6 +245,10 @@ Sub Main()
     <td bgcolor="#CCFFCC"><a target="_self" href="pwdsafe.asp">修改密码/密码保护</a></td>
     <td bgcolor="#F2EACE">非常重要，请一定申请密码保护以免密码遗忘造成损失。<br />
       注意问题的答案不要过于简单让他人很容易猜出。</td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFCC"><a href="avatar.asp">上传头像</a></td>
+    <td bgcolor="#F2EACE">上传头像，在帖子回复中显示。</td>
   </tr>
   <tr>
     <td bgcolor="#CCFFCC"><a href="membercp.asp?action=showlog">异动报告</a></td>
@@ -408,15 +288,11 @@ Sub Main()
     <td bgcolor="#CCFFCC">传呼相关</td>
     <td bgcolor="#F2EACE">[<a href="pm.asp" class="underline" title="由于浏览器问题，有时候传呼窗口是一片空白，这种情况下可以到这里查看。">看不到传呼</a>]
       [<a href="pm.asp?action=showfavor" class="underline" title="保存下来的传呼记录请在这里查看。">传呼记录</a>]
-	  [<a href="?action=ignorepm" class="underline" title="设置传呼黑名单">传呼黑名单设置</a>]</td>
+	  [<a href="pm.asp?action=ignorepm" class="underline" title="设置传呼黑名单">传呼黑名单设置</a>]</td>
   </tr>
   <tr>
     <td bgcolor="#CCFFCC"><a href="online.asp">在线列表</a></td>
     <td bgcolor="#F2EACE">显示当前在线人数，可以直接给在线列表中的用户发送传呼。</td>
-  </tr>
-  <tr>
-    <td bgcolor="#CCFFCC"><a href="?action=uploadavatar">上传头像</a></td>
-    <td bgcolor="#F2EACE">上传头像，在帖子回复中显示。</td>
   </tr>
   <% If RQ.AllowEditUser = "1" Or RQ.AllowPunishUser = "1" Then %>
   <tr>

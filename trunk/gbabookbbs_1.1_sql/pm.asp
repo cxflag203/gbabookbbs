@@ -21,6 +21,10 @@ Select Case Action
 		Call DeleteFavor()
 	Case "deleteallfavor"
 		Call DeleteAllFavor()
+	Case "saveignorepm"
+		Call SaveIgnorePm()
+	Case "ignorepm"
+		Call IgnorePm()
 	Case Else
 		Call ShowPm()
 End Select
@@ -265,6 +269,55 @@ Sub DeleteAllFavor()
 	
 	Call closeDatabase()
 	Call RQ.showTips("传呼记录已经全部删除。", "?action=showfavor", "")
+End Sub
+
+'========================================================
+'保存传呼黑名单的设置
+'========================================================
+Sub SaveIgnorePm()
+	Dim UserName
+
+	If Request.Form("do") = "confirm" Then
+		UserName = CheckContent(SafeRequest(2, "username", 1, "", 0))
+		RQ.Execute("UPDATE "& TablePre &"memberfields SET ignorepm = '"& UserName &"' WHERE uid = "& RQ.UserID)
+	End If
+	
+	Call closeDatabase()
+	Call RQ.showTips("传呼黑名单设置成功。", "membercp.asp", "")
+End Sub
+
+'========================================================
+'设置传呼黑名单界面
+'========================================================
+Sub IgnorePm()
+	Dim UserInfo
+	UserInfo = RQ.Query("SELECT ignorepm FROM "& TablePre &"memberfields WHERE uid = "& RQ.UserID)
+
+	Call closeDatabase()
+	RQ.Header()
+%>
+<div class="warning">
+  如果您希望不接收某人向您发送的传呼，可以在这里填入其用户名（注意不要包括称号），添加多个用户时用<strong>英文逗号</strong>隔开，例如：张三,李四。如需禁止所有用户发来的短消息，请设置为<strong>{ALL}</strong>
+</div>
+<br />
+<form method="post" action="?action=saveignorepm" onkeydown="fastpost('btnsubmit');" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+  <input type="hidden" name="do" value="confirm" />
+  <table width="98%" border="0" cellpadding="0" cellspacing="0" class="tblborder">
+    <tr class="header">
+      <td height="25" colspan="2"><strong>设置传呼黑名单</strong></td>
+    </tr>
+    <tr height="25">
+      <td width="30%">请输入用户名</td>
+      <td style="padding: 8px 10px;"><textarea name="username" rows="5" cols="40" class="textareagrey" style="width: 90%"><%= UserInfo(0, 0) %></textarea></td>
+    </tr>
+	<tr height="25">
+      <td>&nbsp;</td>
+      <td><input type="submit" id="btnsubmit" value="确定" class="button" /></td>
+    </tr>
+  </table>
+</form>
+<%
+	RQ.Footer()
 End Sub
 
 '========================================================
