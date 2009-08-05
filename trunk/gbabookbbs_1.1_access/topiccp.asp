@@ -34,7 +34,6 @@ Sub AjaxQuot()
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
 	If PostID > 0 Then
 		PostInfo = RQ.Query("SELECT username, usershow, message, ifanonymity FROM "& TablePre &"posts WHERE pid = "& PostID)
-		Call closeDatabase()
 		If IsArray(PostInfo) Then
 			strQuotMessage = PostInfo(2, 0)
 			If InStr(strQuotMessage, "[/hide]") > 0 Then
@@ -45,6 +44,7 @@ Sub AjaxQuot()
 			Response.Write "<br />"& strQuotMessage &"<span style=""float: right;""><a href=""###"" onclick=""javascript:$('quot').innerHTML = $('quot_message').value = '';"" class=""bluelink"">取消引用</a></span><script type=""text/javascript"">$('quot_message').value='"& strQuotMessage &"'</script>"
 		End If
 	End If
+	Call closeDatabase()
 End Sub
 
 '========================================================
