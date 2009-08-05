@@ -58,6 +58,7 @@ Sub SaveOrgAvatar()
 	Set Upload = Nothing
 
 	'删除一天前的临时文件夹
+	On Error Resume Next
 	Dim Fso, tmpFolder, Folder
 	Set Fso = CreateObject("Scripting.FileSystemObject")
 	Set tmpFolder = Fso.GetFolder(Server.MapPath("./avatars/temp/"))
@@ -130,7 +131,7 @@ Sub Main()
 <script language="javascript">
 function show(_txt){
 	var uid = '<%= RQ.UserID %>';
-	$('myavatar').innerHTML = '<img src="avatars/'+ uid.substr(0, 1) +'/'+ uid +'.jpg?'+ Math.random() +'" class="avatar" />';
+	$('myavatar').innerHTML = '<img src="avatars/'+ uid.substr(0, 1) +'/'+ uid +'.jpg?'+ Math.random() +'" style="border: 1px #ccc solid;" />';
 }
 </script>
 <%

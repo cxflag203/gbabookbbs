@@ -18,8 +18,8 @@ Const INGBABOOK = True
 Const SHOWVERSION = "1.1"
 
 '数据库信息
-Const dbSource = "220.162.244.168"
-Const dbName = "sq_gbabook"
+Const dbSource = "(local)"
+Const dbName = "sq_bbsnew"
 Const dbUser = "sq_gbabook"
 Const dbPwd = "iloveyou"
 
