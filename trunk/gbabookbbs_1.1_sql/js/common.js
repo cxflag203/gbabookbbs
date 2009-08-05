@@ -60,20 +60,11 @@ function displayeditor(editorwidth){
 	$('disable_autowap').checked = true;
 }
 
-function showquot(f, un, pid){
+function showquot(pid, f){
 	if(!$('quot')){
 		return false;
 	}
-	var floor, s
-	floor = f !== '' ? (f == '0' ? '楼主' :f +"楼") : '';
-	s = $("pid"+ pid).innerHTML;
-	s = s.replace(/onload="(.*?)"/g, "");
-	s = s.replace(/\s*(\r\n|\n\r|\n|\r)\s*/g, "");
-	s = s.replace(/<div class=(|")showattachlist(|")>(.*?)<\/div>/gi, "");
-	s = '<div class="quotetop">引用'+ floor + un +'的回复：</div><div class="quotemain">'+ s +'</div>';
-	$('quot').innerHTML = '<br />'+ s + '<span style="float: right;"><a href="###" onclick="javascript:$(\'quot\').innerHTML = $(\'quot_message\').value = \'\';" class="bluelink">取消引用</a></span>';
-	$('quot_message').value = s;
-
+	ajax_get('topiccp.asp?action=ajaxquot&pid='+ pid +'&f='+ f, 'quot');
 }
 
 function f_autowap(){

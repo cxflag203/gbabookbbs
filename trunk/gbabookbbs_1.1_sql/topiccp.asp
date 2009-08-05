@@ -7,6 +7,8 @@ End If
 Dim Action
 Action = Request.QueryString("action")
 Select Case Action
+	Case "ajaxquot"
+		Call AjaxQuot()
 	Case "savereport"
 		Call SaveReport()
 	Case "favorites"
@@ -22,6 +24,28 @@ Select Case Action
 	Case Else
 		Call Main()
 End Select
+
+'========================================================
+'Ajax读取引用内容
+'========================================================
+Sub AjaxQuot()
+	Dim PostID, PostInfo, strQuotMessage, theFloorNumber
+	PostID = SafeRequest(3, "pid", 0, 0, 0)
+	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
+	If PostID > 0 Then
+		PostInfo = RQ.Query("SELECT username, usershow, message, ifanonymity FROM "& TablePre &"posts WHERE pid = "& PostID)
+		Call closeDatabase()
+		If IsArray(PostInfo) Then
+			strQuotMessage = PostInfo(2, 0)
+			If InStr(strQuotMessage, "[/hide]") > 0 Then
+				strQuotMessage = Preg_Replace(strQuotMessage, "\[hide\](.+?)\[\/hide\]", "***隐藏内容***")
+				strQuotMessage = Preg_Replace(strQuotMessage, "\[hide=(\d+)\](.+?)\[\/hide\]", "***隐藏内容***")
+			End If
+			strQuotMessage = "<div class=""quotetop"">引用"& IIF(theFloorNumber > 0, theFloorNumber &"楼", "") & IIF(PostInfo(3, 0) = 0, PostInfo(0, 0), PostInfo(1, 0)) &"的回复：</div><div class=""quotemain"">"& strQuotMessage &"</div>"
+			Response.Write "<br />"& strQuotMessage &"<span style=""float: right;""><a href=""###"" onclick=""javascript:$('quot').innerHTML = $('quot_message').value = '';"" class=""bluelink"">取消引用</a></span><script type=""text/javascript"">$('quot_message').value='"& strQuotMessage &"'</script>"
+		End If
+	End If
+End Sub
 
 '========================================================
 '发送举报内容

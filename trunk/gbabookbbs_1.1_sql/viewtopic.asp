@@ -175,9 +175,9 @@ For i = 0 To CountArray
 					Response.Write "<span class=""red""><strong>【楼主】</strong></span>"
 				End If
 
-				Response.Write "<a href=""#quot"" onclick=""showquot('"& theFloorNumber &"', '"& IIF(PostListArray(7, i) = 0, PostListArray(3, i), PostListArray(4, i)) &"', '"& PostListArray(0, i) &"');"" class=""bluelink"">回复</a>("& theFloorNumber &"):"
+				Response.Write "<a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"" class=""bluelink"">回复</a>("& theFloorNumber &"):"
 			Else
-				Response.Write "<a href=""#quot"" onclick=""showquot('', '"& PostListArray(3, i) &"', '"& PostListArray(0, i) &"');"" class=""bluelink"">回复</a>(*):"
+				Response.Write "<a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '');"" class=""bluelink"">回复</a>(*):"
 			End If
 			Response.Write "<span title="""& PostListArray(6, i) &""" id=""pid"& PostListArray(0, i) &""">"& PostListArray(5, i) &"</span><br />"
 		Else
@@ -210,7 +210,7 @@ For i = 0 To CountArray
 		End If
 	Else
 		'带头像的样式
-		Response.Write "<div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& theFloorNumber &"', '"& IIF(PostListArray(7, i) = 0, PostListArray(3, i), PostListArray(4, i)) &"', '"& PostListArray(0, i) &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
+		Response.Write "<div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
 
 		If PostListArray(7, i) = 0 Then
 			If PostListArray(2, i) > 0 Then
@@ -314,7 +314,6 @@ End If
     游客名字:<input type="text" name="username" size="19" maxlength="10">
     限制在10个字符以内<br />
     <% End If %>
-	<span id="thequot"></span>
     回复内容:<% If InStr(RQ.Topic_Settings(17), "reply") > 0 And RQ.blnAllowHTML(0) Then %><input type="hidden" id="message" name="message" /><input type="hidden" id="content___Config" value="" style="display:none" /><iframe id="content___Frame" src="include/editor/editor/fckeditor.html?InstanceName=message" width="400" height="200" frameborder="0" scrolling="no"></iframe><% Else %><span id="editorzone"><textarea name="message" id="message" style="width: 275px; height: 65px;"></textarea><% If RQ.blnAllowHTML(0) Then %><a href="javascript:displayeditor();" class="bluelink">编辑器</a></span><% End If %><% End If %>
     <% If RQ.UserID > 0 Then %>
     <span id="face_preview"></span>
