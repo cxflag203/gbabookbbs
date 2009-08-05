@@ -13,7 +13,8 @@ Dim StreamT, SpecialFileExt
 SpecialFileExt = "ad,adprotot,asa,asax,ascx,asxh,asmx,asp,aspx,axd,browser,cd,cdx,cer,compiled,config,cs,csproj,dd,execlude,idc,java,jsl,ldb,ldd,lddprototype,ldf,licx,master,mdb,mdf,msgx,mde,php,php3,refresh,rem,resources,resx,sd,sdm,sdmdocument,shtm,shtml,sitemap,skin,soap,stm,svc,vb,vbproj,vjsproj,vsdisco,webinfo"
 
 Class AnUpLoad
-	Private Form, Fils
+	Public Form
+	Private Fils
 	Private vCharSet, vMaxSize, vSingleSize, vErr, vVersion, vTotalSize, vExe
 
 	'==============================

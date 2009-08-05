@@ -248,13 +248,6 @@ End If
 <% If RQ.UserLeagueGroupID = 1 Or RQ.UserLeagueGroupID = 2 Then %>【<a href="topiccp.asp?action=leaguetopic&tid=<%= RQ.TopicID %>" onClick="return shows(this.href);">联盟</a>】<% End If %>
 <% End If %>
 <p>
-<script type="text/javascript">
-document.body.ondblclick = function(){
-	if (parent.$('<%= CacheName %>bodys')){
-		parent.$('<%= CacheName %>bodys').cols = parent.$('<%= CacheName %>bodys').cols !== "0,100%" ? "0,100%" : "50%,50%";
-	}
-}
-</script>
 <%
 '当前用户组是否允许回帖
 If RQ.AllowReply = 0 Then
@@ -321,6 +314,7 @@ End If
     游客名字:<input type="text" name="username" size="19" maxlength="10">
     限制在10个字符以内<br />
     <% End If %>
+	<span id="thequot"></span>
     回复内容:<% If InStr(RQ.Topic_Settings(17), "reply") > 0 And RQ.blnAllowHTML(0) Then %><input type="hidden" id="message" name="message" /><input type="hidden" id="content___Config" value="" style="display:none" /><iframe id="content___Frame" src="include/editor/editor/fckeditor.html?InstanceName=message" width="400" height="200" frameborder="0" scrolling="no"></iframe><% Else %><span id="editorzone"><textarea name="message" id="message" style="width: 275px; height: 65px;"></textarea><% If RQ.blnAllowHTML(0) Then %><a href="javascript:displayeditor();" class="bluelink">编辑器</a></span><% End If %><% End If %>
     <% If RQ.UserID > 0 Then %>
     <span id="face_preview"></span>
@@ -330,7 +324,7 @@ End If
     相关图片:<input type="text" name="imglink" maxlength="255" size="43" value="http://" /><span id="spanButtonPlaceholder"></span>
     <br />
     <a href="htmls/face.htm" target="_blank" class="bluelink">表情</a>
-    <select name="face1" id="face1" onChange="preview_face();">
+    <select name="face1" id="face1" onchange="preview_face();">
       <option value="0">0</option>
       <option value="1">1</option>
       <option value="2">2</option>
@@ -341,7 +335,7 @@ End If
       <option value="7">7</option>
       <option value="8">8</option>
       <option value="9">9</option>
-    </select><select name="face2" id="face2" onChange="preview_face();">
+    </select><select name="face2" id="face2" onchange="preview_face();">
       <option value="0">0</option>
       <option value="1">1</option>
       <option value="2">2</option>
@@ -352,7 +346,7 @@ End If
       <option value="7">7</option>
       <option value="8">8</option>
       <option value="9">9</option>
-    </select><select name="face3" id="face3" onChange="preview_face();">
+    </select><select name="face3" id="face3" onchange="preview_face();">
       <option value="0">0</option>
       <option value="1">1</option>
       <option value="2">2</option>
@@ -384,7 +378,6 @@ End If
 </form>
 <% If RQ.AllowPostAttach Then %>
 <link href="js/swfupload/default.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="js/ajax.js"></script>
 <script type="text/javascript" src="js/swfupload/swfupload.js"></script>
 <script type="text/javascript" src="js/swfupload/swfupload.queue.js"></script>
 <script type="text/javascript">
@@ -423,7 +416,15 @@ window.onload = function() {
  }
 </script>
 <% End If %>
-<script type="text/javascript">f_autowap();</script>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript">
+document.body.ondblclick = function(){
+	if (parent.$('<%= CacheName %>bodys')){
+		parent.$('<%= CacheName %>bodys').cols = parent.$('<%= CacheName %>bodys').cols !== "0,100%" ? "0,100%" : "50%,50%";
+	}
+}
+f_autowap();
+</script>
 <p><span class="blue">回帖请遵守本站规则，如果您不是很清楚建议您仔细阅读<a href="htmls/help.html" target="_blank"><span class="blue underline">用户必读</span></a>。</span>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
