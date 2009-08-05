@@ -109,7 +109,7 @@ End If
 '显示金钱达到某数量可见内容
 '========================================================
 Function ShowCreditsHidden(str)
-	Dim regEx, Matches, Match, TEMP, n
+	Dim regEx, Matches, Match
 	Set regEx = New Regexp
 	regEx.IgnoreCase = True
 	regEx.Global = True
