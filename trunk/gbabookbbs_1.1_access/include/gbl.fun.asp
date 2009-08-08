@@ -187,7 +187,7 @@ Function CutString(str, length)
 	outLen = 0
 
 	For n = 1 To strLen
-		If ABS(Asc(Mid(str, n, 1))) > 127 Then
+		If ABS(Asc(Mid(str, n, 1))) <= 1 Then
 			j = j + 2
 		Else
 			j = j + 1

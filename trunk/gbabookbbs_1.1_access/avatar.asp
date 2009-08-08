@@ -111,27 +111,35 @@ End Sub
 '上传头像界面
 '========================================================
 Sub Main()
-	Dim UserInfo
+	Dim UserInfo, PathInfo
 	UserInfo = RQ.Query("SELECT avatar FROM "& TablePre &"memberfields WHERE uid = "& RQ.UserID)
 	Call closeDatabase()
+
+	PathInfo = LCase(Request.ServerVariables("PATH_INFO"))
+	PathInfo = Left(PathInfo, InstrRev(PathInfo, "/"))
 
 	RQ.Header()
 %>
 <body>
+<div id="tabsNav" class="clearfix">
+  <ul>
+    <li><a href="pwdsafe.asp"><span>修改密码</span></a></li>
+    <li><a href="pwdsafe.asp"><span>修改密码</span></a></li>
+</div>
 您当前使用的头像：
 <br />
 <br />
-<span id="myavatar"><img src="<%= IIF(Len(UserInfo(0, 0)) > 0, "avatars/"& UserInfo(0, 0), "images/common/noavatar.jpg") %>" /></span>
+<div id="myavatar" style="border: 1px #ccc solid; width: 48px; height: 48px;"><img src="<%= IIF(Len(UserInfo(0, 0)) > 0, "avatars/"& UserInfo(0, 0), "images/common/noavatar.jpg") %>" /></div>
 <br />
 <br />
 上传新头像(图片大小请控制在500KB以内)：
 <br />
 <br />
-<embed src="js/uploadavatar.swf" quality="high" width="502" height="470" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed>
+<embed src="js/uploadavatar.swf?path=<%= PathInfo %>" quality="high" width="502" height="470" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed>
 <script language="javascript">
 function show(_txt){
 	var uid = '<%= RQ.UserID %>';
-	$('myavatar').innerHTML = '<img src="avatars/'+ uid.substr(0, 1) +'/'+ uid +'.jpg?'+ Math.random() +'" style="border: 1px #ccc solid;" />';
+	$('myavatar').innerHTML = '<img src="avatars/'+ uid.substr(0, 1) +'/'+ uid +'.jpg?'+ Math.random() +'" />';
 }
 </script>
 <%

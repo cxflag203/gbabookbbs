@@ -82,7 +82,7 @@ End Sub
 '列出附件
 '========================================================
 Sub Search()
-	Dim MinSize, MaxSize, MinDownloads, MaxDownloads, DaysBefore, FileName, UserName
+	Dim MinSize, MaxSize, MinDownloads, MaxDownloads, DaysBefore, FileName, FileExt, UserName
 	Dim strSQL, SqlWhere, SqlPage, Page, PageCount, RecordCount
 	Dim AttachListArray, Fso
 
@@ -150,7 +150,7 @@ Sub Search()
       <td colspan="9">附件列表</td>
     </tr>
     <tr class="category">
-      <td width="8%">删?</td>
+      <td>删?</td>
       <td>附件名称</td>
       <td>附件大小</td>
       <td>相关帖子</td>
@@ -161,9 +161,12 @@ Sub Search()
     </tr>
     <% If IsArray(AttachListArray) Then %>
 	<% For i = 0 To UBound(AttachListArray, 2) %>
+	<% If InStr(AttachListArray(2, i), ".") > 0 Then %>
+	<% FileExt = LCase(Right(AttachListArray(2, i), Len(AttachListArray(2, i)) - InstrRev(AttachListArray(2, i), "."))) %>
+	<% End If %>
     <tr>
       <td class="altbg1"><input type="checkbox" name="attachid" class="radio" value="<%= AttachListArray(0, i) %>" /></td>
-      <td class="altbg2"><img src="../images/attachicons/<%= ShowFileType(AttachListArray(2, i)) %>" align="bottom" />
+      <td class="altbg2"><img src="../images/attachicons/<%= ShowFileType(FileExt) %>" align="bottom" />
 	    <% If AttachListArray(6, i) = 1 Then %><a href="../attachments/<%= AttachListArray(4, i) %>" target="_blank"><% Else %><a href="../attachment.asp?action=get&aid=<%= AttachListArray(0, i) %>" target="_blank"><% End If %><%= AttachListArray(2, i) %></a></td>
       <td class="altbg1"><%= ShowFileSize(AttachListArray(3, i)) %></td>
       <td class="altbg2"><% If AttachListArray(8, i) > 0 Then %><a href="../topicmisc.asp?action=redirectpost&pid=<%= AttachListArray(1, i) %>" target="_blank"><%= dfc(AttachListArray(9, i) )%></a><% Else %><em>该附件还没有关联到任何帖子</em><% End If %></td>
