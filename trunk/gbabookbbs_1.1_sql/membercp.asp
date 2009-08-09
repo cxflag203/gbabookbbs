@@ -274,7 +274,7 @@ Sub Main()
     <td bgcolor="#F2EACE">上传头像，在帖子回复中显示。</td>
   </tr>
   <tr>
-    <td bgcolor="#CCFFCC"><a href="avatar.asp">设置回帖样式</a></td>
+    <td bgcolor="#CCFFCC">设置回帖样式</td>
     <td bgcolor="#F2EACE">[<a href="?action=viewtopicstyle&style=simple" class="underline">简单样式</a>]
 	  [<a href="?action=viewtopicstyle&style=avatar" class="underline">头像样式</a>]</td>
   </tr>

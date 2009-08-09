@@ -15,7 +15,7 @@ Const CacheName = "EQSbqV"
 Const TablePre = "gb_"
 Const PrivateKey = "ELTLwVpJhs"
 Const INGBABOOK = True
-Const SHOWVERSION = "1.1"
+Const SHOWVERSION = "1.2"
 
 '数据库信息
 Const dbSource = "(local)"

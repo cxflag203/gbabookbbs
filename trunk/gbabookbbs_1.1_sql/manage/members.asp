@@ -94,9 +94,13 @@ Sub Update_UserGroup()
 	Reason = Trim(SafeRequest(2, "reason", 1, "", 0))
 	SubTract_Credits = SafeRequest(2, "subtract_credits", 0, 0, 0)
 
-	UserInfo = RQ.Query("SELECT m.username, m.usergroupid, m.admingroupid, g.name, g.types FROM "& TablePre &"members m INNER JOIN "& TablePre &"usergroups g ON m.usergroupid = g.gid WHERE m.uid = "& UserID)
+	UserInfo = RQ.Query("SELECT m.uid, m.username, m.usergroupid, m.admingroupid, g.name, g.types FROM "& TablePre &"members m INNER JOIN "& TablePre &"usergroups g ON m.usergroupid = g.gid WHERE m.uid = "& UserID)
 	If Not IsArray(UserInfo) Then
 		Call AdminshowTips("该用户不存在或者已经被删除。", "")
+	End If
+
+	If UserInfo(0, 0) = 1 Then
+		Call AdminshowTips("该用户是创始人，不允许进行用户组的更改。", "")
 	End If
 
 	If GroupID = 0 Then
@@ -112,8 +116,8 @@ Sub Update_UserGroup()
 		If GroupInfo(1, 0) = "restricted" Then
 			strOperation = strOperation &"<span style=""color: #FF0080;"">列入"& GroupInfo(0, 0) &"</span>"
 		Else
-			If UserInfo(4, 0) = "restricted" And GroupInfo(1, 0) <> "restricted" Then
-				strOperation = strOperation &"<span style=""color: #FF0080;"">解除"& UserInfo(3, 0) &"</span>"
+			If UserInfo(5, 0) = "restricted" And GroupInfo(1, 0) <> "restricted" Then
+				strOperation = strOperation &"<span style=""color: #FF0080;"">解除"& UserInfo(4, 0) &"</span>"
 			Else
 				strOperation = strOperation &"设置为"& GroupInfo(0, 0)
 			End If
@@ -146,7 +150,7 @@ Sub Update_UserGroup()
 		Case "moderator"
 			strSQL = strSQL &", admingroupid = "& GroupID
 		Case "restricted"
-			strSQL = strSQL &", admingroupid = "& UserInfo(2, 0)
+			strSQL = strSQL &", admingroupid = "& UserInfo(3, 0)
 		Case Else
 			strSQL = strSQL &", admingroupid = 0"
 	End Select
@@ -167,7 +171,7 @@ Sub Update_UserGroup()
 	End If
 
 	If Len(Reason) > 0 Then
-		Call RQ.SetLog(UserID, UserInfo(0, 0), strOperation, Reason)
+		Call RQ.SetLog(UserID, UserInfo(1, 0), strOperation, Reason)
 	End If
 
 	Call closeDatabase()

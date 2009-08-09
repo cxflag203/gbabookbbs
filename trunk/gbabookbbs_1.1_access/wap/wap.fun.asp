@@ -22,7 +22,7 @@ End Sub
 'wap页脚，并输出内容
 '========================================================
 Public Sub WapFooter()
-	Call Append("</p><p>"& Now() &"<br /><anchor title=""confirm""><prev/>返回</anchor> <a href=""index.asp"">首页</a><br />"& IIF(RQ.UserID > 0, "<a href=""login.asp?action=clearcookies"">"& RQ.UserName &":退出</a>", "<a href=""login.asp"">登陆"& IIF(RQ.Wap_Settings(1) = "1", "/注册", "") &"</a>") &"<br /><br />"& FormatNumber(Timer() - StartTime, 6, -1) &"</p></card></wml>")
+	Call Append("</p><p>"& Now() &"<br /><anchor title=""confirm""><prev/>返回</anchor> <a href=""index.asp"">首页</a><br />"& IIF(RQ.UserID > 0, "<a href=""login.asp?action=clearcookies"">"& RQ.UserName &":退出</a>", "<a href=""login.asp"">登陆"& IIF(RQ.Wap_Settings(1) = "1", "/注册", "") &"</a>") &"</p></card></wml>")
 	If RQ.Wap_Settings(2) = "0" Then
 		Response.Write WapConvert(Join(Arr, ""))
 	Else
