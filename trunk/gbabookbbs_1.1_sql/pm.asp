@@ -326,7 +326,7 @@ End Sub
 Sub ShowPm()
 	Dim PmListArray
 
-	PmListArray = RQ.Query("SELECT pmid, msgfrom, message, remessage, posttime FROM "& TablePre &"pm WHERE msgtoid = "& RQ.UserID &" AND posttime <= GetDate() ORDER BY posttime DESC")
+	PmListArray = RQ.Query("SELECT pmid, msgfrom, message, remessage, posttime FROM "& TablePre &"pm WHERE msgtoid = "& RQ.UserID &" AND posttime <= '"& Now() &"' ORDER BY posttime DESC")
 	Call closeDataBase()
 
 	RQ.PageTitle = "在线传呼"

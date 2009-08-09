@@ -138,7 +138,7 @@ DlgFlashScaleNoBorder	: "无边框",
 DlgFlashScaleFit	: "严格匹配",
 
 // Code Dialog
-DlgCodesTitle		: "插入代码",
+DlgCodesTitle		: "插入隐藏内容",
 DlgCodesLanguage	: "语言",
 DlgCodesContent		: "内容",
 
