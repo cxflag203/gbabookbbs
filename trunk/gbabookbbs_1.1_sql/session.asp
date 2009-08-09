@@ -22,6 +22,7 @@ With Cmd
 	.Parameters.Item("@userip") = RQ.UserIP
 	.Parameters.Item("@usergroupid") = RQ.UserGroupID
 	.Parameters.Item("@onlinehold") = IntCode(RQ.User_Settings(3))
+	.Parameters.Item("@thetime") = Now()
 	.Execute
 	NewPm = .Parameters.Item(0)
 End With

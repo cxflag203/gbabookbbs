@@ -340,7 +340,7 @@ Sub Main()
 </form>
 <p>
 <% End If %>
-<form method="post" id="sendpm" action="pm.asp?action=sendpost&r=mcp" onkeydown="fastpost('btnsend');" onsubmit="$('btnsend').value='正在提交,请稍后...';$('btnsend').disabled=true;">
+<form method="post" id="sendpm" action="pm.asp?action=sendpost&r=mcp" onkeydown="fastpost('btnsend', event);" onsubmit="$('btnsend').value='正在提交,请稍后...';$('btnsend').disabled=true;">
   <div style="border: 1px #d6bc65 solid; background: #f2eace; padding: 10px; color:#0080ff; width: 400px;">
     <h1>玩友传呼</h1>
     接收人：<% If RQ.DisablePmCtrl = 1 Then %>(如果要进行群发，将多个接收人用逗号隔开即可。)<% End If %>

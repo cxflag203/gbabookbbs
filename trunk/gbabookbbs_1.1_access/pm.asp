@@ -44,7 +44,7 @@ Sub Send()
 	RQ.Header()
 %>
 <body class="blankbg">
-<form method="post" action="?action=sendpost" name="post" onKeyDown="fastpost('btnsubmit');" onSubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+<form method="post" action="?action=sendpost" name="post" onKeyDown="fastpost('btnsubmit', event);" onSubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <input type="hidden" name="username" value="<%= UserName %>" />
   <span class="bluebg" style="color: #FFF;">发送信息给<%= UserName %></span><br />
   <textarea rows="5" name="message" cols="35"></textarea><br />
@@ -300,7 +300,7 @@ Sub IgnorePm()
   如果您希望不接收某人向您发送的传呼，可以在这里填入其用户名（注意不要包括称号），添加多个用户时用<strong>英文逗号</strong>隔开，例如：张三,李四。如需禁止所有用户发来的短消息，请设置为<strong>{ALL}</strong>
 </div>
 <br />
-<form method="post" action="?action=saveignorepm" onkeydown="fastpost('btnsubmit');" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+<form method="post" action="?action=saveignorepm" onkeydown="fastpost('btnsubmit', event);" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <input type="hidden" name="do" value="confirm" />
   <table width="98%" border="0" cellpadding="0" cellspacing="0" class="tblborder">
     <tr class="header">
@@ -341,7 +341,7 @@ Sub ShowPm()
 <% If Len(PmListArray(3, i)) > 0 Then %><span class="grey">re:<%= PmListArray(3, i) %></span><% End If %>
 <p><%= PmListArray(2, i) %></p>
 <br />
-<form method="post" action="?action=reply" name="pm_<%= PmListArray(0, i) %>" onkeydown="fastpost('btnreply_<%= PmListArray(0, i) %>');">
+<form method="post" action="?action=reply" name="pm_<%= PmListArray(0, i) %>" onkeydown="fastpost('btnreply_<%= PmListArray(0, i) %>', event);">
   <input type="hidden" name="pmid" value="<%= PmListArray(0, i) %>">
   <p>回复:<textarea rows="5" name="message" cols="35"></textarea></p>
   <p>时间:<input type="text" name="posttime" size="20" value="<%= Now() %>" /></p>

@@ -15,13 +15,13 @@ Const CacheName = "{cachename}"
 Const TablePre = "gb_"
 Const PrivateKey = "{privatekey}"
 Const INGBABOOK = True
-Const SHOWVERSION = "1.1"
+Const SHOWVERSION = "1.2"
 
-'Êı¾İ¿âÂ·¾¶
+'æ•°æ®åº“è·¯å¾„
 dbSource = "database/{dbsource}"
 
 '========================================================
-'Á¬½ÓÊı¾İ¿â
+'è¿æ¥æ•°æ®åº“
 '========================================================
 Public Sub connectDatabase()
 	On Error Resume Next
@@ -30,13 +30,13 @@ Public Sub connectDatabase()
 	If Err <> 0 Then
 		Err.Clear
 		Set Conn = Nothing
-		Response.Write "Êı¾İ¿â´óÒÌÂèÁË...."
+		Response.Write "<h1>DATABASE ERROR!</h1>"
 		Response.End()
 	End If
 End Sub
 
 '========================================================
-'¹Ø±ÕÊı¾İ¿â
+'å…³é—­æ•°æ®åº“
 '========================================================
 Public Sub closeDatabase()
 	On Error Resume Next

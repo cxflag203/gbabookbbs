@@ -646,11 +646,11 @@ End If
 %>
       </select></td>
     </tr>
-    <tr height="25">
+    <!--<tr height="25">
       <td class="altbg1"><strong>右侧默认页面</strong></td>
       <td><input type="radio" name="othersettings_4" id="othersettings_4_0" value="0"<% If Other_Settings(4) = "0" Then Response.Write " checked" End If %> class="radio" /><label for="othersettings_4_0">联盟列表</label>
 	    <input type="radio" name="othersettings_4" id="othersettings_4_1" value="1"<% If Other_Settings(4) = "1" Then Response.Write " checked" End If %> class="radio" /><label for="othersettings_4_1">四格帖子列表</label></td>
-    </tr>
+    </tr>-->
     <tr height="25">
       <td class="altbg1"><strong>新传呼通知的显示方式</strong></td>
       <td><input type="radio" name="othersettings_5" id="othersettings_5_0" value="0"<% If Other_Settings(5) = "0" Then Response.Write " checked" End If %> class="radio" /><label for="othersettings_5_0">弹出新窗口</label>

@@ -66,7 +66,7 @@ Sub Edit()
 	RQ.Header()
 %>
 <body>
-<form name="superaddition" method="post" action="?action=save" onkeydown="fastpost('btnsave');">
+<form name="superaddition" method="post" action="?action=save" onkeydown="fastpost('btnsave', event);">
   <input type="hidden" name="lid" value="<%= RQ.LeagueID %>" />
   <input type="hidden" name="eliteid" value="<%= EliteID %>" />
   <table class="tipsborder" cellspacing="0" cellpadding="0" align="center">

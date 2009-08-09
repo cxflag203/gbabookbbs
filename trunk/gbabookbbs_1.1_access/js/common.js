@@ -32,7 +32,7 @@ function preview_face(){
 	$('face_preview').innerHTML = parseInt(face_1 + face_2 + face_3) > 0 ? '<img src="face/'+ face_1 + face_2 + face_3 +'.gif" border="0" />' : '';
 }
 
-function fastpost(btn) {
+function fastpost(btn, event) {
 	if ((event.altKey && event.keyCode == 83) || (event.ctrlKey && event.keyCode == 13)){
 		$(btn).click();
 	}
@@ -108,7 +108,6 @@ function insert_attach(aid){
 	}
 }
 
-var authort;
 function showauthor(id) {
 	$(id).style.display = 'block';
 	if(!$(id).onmouseover) {

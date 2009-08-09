@@ -345,7 +345,7 @@ Sub Main()
 	RQ.Header()
 %>
 <body>
-<form name="tmodify" method="post" action="?action=submitmodify" onKeyDown="fastpost('btnsubmit');">
+<form name="tmodify" method="post" action="?action=submitmodify" onKeyDown="fastpost('btnsubmit', event);">
   <input type="hidden" name="fid" value="<%= PostInfo(7, 0) %>" />
   <input type="hidden" name="pid" value="<%= PostID %>" />
   <table class="tipsborder" cellspacing="0" cellpadding="0" align="center">

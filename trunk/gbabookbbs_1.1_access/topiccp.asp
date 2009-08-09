@@ -349,7 +349,7 @@ Sub Main()
 	RQ.Header()
 %>
 <body class="blankbg">
-<form id="report" method="post" action="?action=savereport" onKeyDown="fastpost('btnsubmit');" onSubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+<form id="report" method="post" action="?action=savereport" onKeyDown="fastpost('btnsubmit', event);" onSubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <input type="hidden" name="tid" value="<%= RQ.TopicID %>" />
   如果您发现不良行为或不良信息可通过该功能通知管理员，请不要乱用。 <br />
   <span style="background: #F00; color: #FFF">举报范围</span>：涉及反动，色情(含有色情倾向的图片)，宣扬邪教，泄露国家机密，破坏安定团结(含谣言与煽动性的言论)，破坏国家领导人形象，以及任何国家法律法规禁止发布的内容。破坏其他用户正常浏览的行为(如不良Html代码，不完整的Html代码，大面积的重复问题或图片，名目张胆的抢楼行为)。 <br />

@@ -10,7 +10,7 @@ Response.CharSet = "utf-8"
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<%= Response.Charset %>" />
-<title>GBABOOK BBS 1.1 for SQL Server安装程序</title>
+<title>GBABOOK BBS 1.2 for SQL Server安装程序</title>
 <link rel="stylesheet" href="../images/common/common.css" />
 <script type="text/javascript" src="../js/common.js"></script>
 <script type="text/javascript">var bbsidentify = 'gbabook';</script>
@@ -206,7 +206,7 @@ Sub Main()
 <form method="post" id="install" action="?action=install" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <table width="600" border="0" cellpadding="0" cellspacing="0" class="tblborder" align="center" style="margin: 0px auto;">
     <tr class="header">
-      <td height="25" colspan="2"><strong>安装GBABOOK BBS V1.1(SQL Server版)</strong></td>
+      <td height="25" colspan="2"><strong>安装GBABOOK BBS V1.2(SQL Server版)</strong></td>
     </tr>
     <tr height="25">
       <td width="50%"><strong>数据库地址:</strong><br />如果数据库和论坛程序在一台服务器，则该处填写(local)，否则填写数据库服务器的IP地址。</td>
@@ -277,8 +277,8 @@ Sub CheckObject()
 	End If
 
 	'创建文件
-	If Not Fso.FileExists(Server.MapPath("gbabookchkobj.txt")) Then
-		Set tFile = Fso.CreateTextFile(Server.MapPath("gbabookchkobj.txt"))
+	If Not Fso.FileExists(Server.MapPath("../include/delete.me")) Then
+		Set tFile = Fso.CreateTextFile(Server.MapPath("../include/delete.me"))
 		If Err <> 0 Then
 			Call Tips("您的空间支持FSO组件，但是没有文件（目录）的写权限，请联系空间提供商。", True)
 			Err.Clear
@@ -287,7 +287,7 @@ Sub CheckObject()
 	End If
 
 	'删除文件
-	Call Fso.DeleteFile(Server.MapPath("gbabookchkobj.txt"))
+	Call Fso.DeleteFile(Server.MapPath("../include/delete.me"))
 	If Err <> 0 Then
 		Call Tips("您的空间支持FSO组件，但是没有文件（目录）的删除权限，您可以继续安装论坛，但是您无法使用论坛的全部功能（例如删除附件）。<br /><span class=""red"">在安装完成后，请务必登陆FTP，删除install目录。</span>", False)
 		Err.Clear

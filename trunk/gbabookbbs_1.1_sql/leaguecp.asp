@@ -114,7 +114,7 @@ Sub PostNews()
 	RQ.Header()
 %>
 <body>
-<form id="postnews" method="post" action="?action=savenews" onkeydown="fastpost('btnsubmit');" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+<form id="postnews" method="post" action="?action=savenews" onkeydown="fastpost('btnsubmit', event);" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <table border="0" class="tdpadding1">
     <tr>
       <td>标题&nbsp; </td>

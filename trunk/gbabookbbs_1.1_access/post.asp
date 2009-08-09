@@ -780,7 +780,7 @@ Sub Main()
 <% End If %>
 <script type="text/javascript" src="js/ajax.js"></script>
 <script type="text/javascript" src="js/rsTipBox.js"></script>
-<form name="newtopic" method="post" action="?action=newtopic" onkeydown="fastpost('btnsubmit');" onsubmit="return validinput(this);">
+<form name="newtopic" method="post" action="?action=newtopic" onkeydown="fastpost('btnsubmit', event);" onsubmit="return validinput(this);">
   <% If Len(RQ.UserName) = 0 Then %>
   游客名字:<input type="text" name="username" size="19" maxlength="10" />
   字符长度请控制在10个字以内<br />

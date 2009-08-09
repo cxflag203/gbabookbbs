@@ -154,7 +154,7 @@ Sub Show_ChangePwdPanel()
 	RQ.Header()
 %>
 <body>
-<form method="post" action="?action=updatepassword" onkeydown="fastpost('btnsubmit');" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+<form method="post" action="?action=updatepassword" onkeydown="fastpost('btnsubmit', event);" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <input type="hidden" name="username" value="<%= UserName %>" />
   <table width="98%" border="0" cellpadding="0" cellspacing="0" class="tblborder">
     <tr class="header">

@@ -5,7 +5,7 @@ If Not INGBABOOK Then
 End If
 
 '请不要修改这里的任何地方，以免以后更新程序的判断出错
-Const GBABOOKBBS_VERSION = "1.1"
+Const GBABOOKBBS_VERSION = "1.2"
 Const GBABOOKBBS_TYPE = "SQL Server"
-Const GBABOOKBBS_RELEASE = "20090607"
+Const GBABOOKBBS_RELEASE = "20090809"
 %>

@@ -10,7 +10,7 @@ Response.CharSet = "utf-8"
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<%= Response.Charset %>" />
-<title>GBABOOK BBS V1.01 安装程序</title>
+<title>GBABOOK BBS V1.2 安装程序</title>
 <link rel="stylesheet" href="../images/common/common.css" />
 <script type="text/javascript" src="../js/common.js"></script>
 <script type="text/javascript">var bbsidentify = 'gbabook';</script>
@@ -135,7 +135,7 @@ Sub Install()
 	Conn.Execute("INSERT INTO gb_memberitems (uid, itemid, num) SELECT "& UserID &", itemid, 9999 FROM gb_items")
 
 	'插入版面设置
-	Conn.Execute("INSERT INTO [gb_settings] ([site_settings], [item_settings], [wordsfilter], [banip], [banner], [todayposts], [invatenum]) VALUES ('"& BBSName &"{settings}{settings}{settings}0{settings}论坛维护中，请稍候再来。{settings}{settings}{settings}{settings}{settings}0{settings}login.asp{settings}{settings}1{settings}20{settings}100{settings}5{settings}0{settings}30{settings}1{settings}3{settings}20{settings}200{settings}5{settings}0{settings}15{settings}100{settings}10000{settings}100{settings}0{settings}100{settings}<p>{settings}标题党贴{settings}3{settings}5{settings}3{settings}1{settings}神秘黑衣大哥哥{settings}0{settings}1{settings}60{settings}{username}企图匿名, 但是可耻的失败了<img src=""face/846.gif"" />{settings}edit{settings}金币{settings}60{settings}500{settings}1{settings}0{settings}1{settings}1{settings}300{settings}5{settings}15{settings}500{settings}300{settings}20{settings}100{settings}温油的主妇{username}把房间打扫得干干净净{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}{settings}', '1{settings}60{settings}24{settings}72{settings}2{settings}4{settings}100{settings}4700{settings}470{settings}170{settings}17{settings}7', '', '', '今夜里的微风 你的笑容依旧 不知你的心中 是否真心如我', 0, 99)")
+	Conn.Execute("INSERT INTO [gb_settings] ([base_settings], [time_settings], [login_settings], [user_settings], [topic_settings], [other_settings], [chat_settings], [wap_settings], [item_settings], [wordsfilter], [banip], [banner], [todayposts], [invatenum]) VALUES ('"& BBSName &"{settings}{settings}{settings}0{settings}站点维护中', '{settings}{settings}{settings}', '0{settings}login.asp{settings}{settings}1{settings}20{settings}100{settings}5', '15{settings}3{settings}3{settings}20{settings}200{settings}5{settings}0{settings}15', '100{settings}10000{settings}100{settings}0{settings}100{settings}2{settings}<p>{settings}标题党帖{settings}3{settings}5{settings}3{settings}1{settings}神秘黑衣大哥哥{settings}0{settings}1{settings}60{settings}{username}企图匿名，但是可耻的失败了<img src="face/846.gif" />{settings}edit', '金币{settings}60{settings}1000{settings}1{settings}0{settings}1', '1{settings}300{settings}5{settings}15{settings}500{settings}300{settings}20{settings}100{settings}勤劳的家庭主妇{username}把房间打扫得干干净净。', '1{settings}0{settings}0{settings}10{settings}10{settings}500', '1{settings}60{settings}24{settings}72{settings}2{settings}4{settings}100{settings}4700{settings}470{settings}170{settings}17{settings}7', '', '', '今夜里的微风 你的笑容依旧 不知你的心中 是否真心如我', 0, 99)")
 
 	Call closeDatabase()
 
@@ -173,8 +173,8 @@ Sub CheckObject()
 	End If
 
 	'创建文件
-	If Not Fso.FileExists(Server.MapPath("gbabookchkobj.txt")) Then
-		Set tFile = Fso.CreateTextFile(Server.MapPath("gbabookchkobj.txt"))
+	If Not Fso.FileExists(Server.MapPath("../include/delete.me")) Then
+		Set tFile = Fso.CreateTextFile(Server.MapPath("../include/delete.me"))
 		If Err <> 0 Then
 			Call Tips("您的空间支持FSO组件，但是没有文件（目录）的写权限，请联系空间提供商。", True)
 			Err.Clear
@@ -183,7 +183,7 @@ Sub CheckObject()
 	End If
 
 	'删除文件
-	Call Fso.DeleteFile(Server.MapPath("gbabookchkobj.txt"))
+	Call Fso.DeleteFile(Server.MapPath("../include/delete.me"))
 	If Err <> 0 Then
 		Call Tips("您的空间支持FSO组件，但是没有文件（目录）的删除权限，您可以继续安装论坛，但是您无法使用论坛的全部功能（例如删除附件）。<br /><span class=""red"">在安装完成后，请务必登陆FTP，删除install目录。</span>", False)
 		Err.Clear
@@ -222,7 +222,7 @@ Sub Main()
 <form method="post" id="install" action="?action=install" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <table width="600" border="0" cellpadding="0" cellspacing="0" class="tblborder" align="center" style="margin: 0px auto;">
     <tr class="header">
-      <td height="25" colspan="2"><strong>安装GBABOOK BBS V1.1(ACCESS版)</strong></td>
+      <td height="25" colspan="2"><strong>安装GBABOOK BBS V1.2(ACCESS版)</strong></td>
     </tr>
 	<tr height="25">
       <td width="50%"><strong>论坛名称:</strong></td>

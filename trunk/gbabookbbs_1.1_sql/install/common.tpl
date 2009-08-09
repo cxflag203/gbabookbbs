@@ -15,7 +15,7 @@ Const CacheName = "{cachename}"
 Const TablePre = "{tablepre}"
 Const PrivateKey = "{privatekey}"
 Const INGBABOOK = True
-Const SHOWVERSION = "1.1"
+Const SHOWVERSION = "1.2"
 
 '数据库信息
 Const dbSource = "{dbsource}"
@@ -33,7 +33,7 @@ Public Sub connectDatabase()
 	If Err <> 0 Then
 		Err.Clear
 		Set Conn = Nothing
-		Response.Write "数据库大姨妈了...."
+		Response.Write "<h1>DATABASE ERROR!</h1>"
 		Response.End()
 	End If
 End Sub

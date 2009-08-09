@@ -314,7 +314,7 @@ End If
 %>
 <strong>回帖子</strong>
 <div id="quot"></div>
-<form name="newreply" method="post" action="post.asp?action=newreply" onkeydown="fastpost('btnsubmit');" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+<form name="newreply" method="post" action="post.asp?action=newreply" onkeydown="fastpost('btnsubmit', event);" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <input type="hidden" name="tid" value="<%= RQ.TopicID %>" />
   <input type="hidden" name="fid" value="<%= RQ.ForumID %>" />
   <input type="hidden" id="quot_message" name="quot_message" value="" />

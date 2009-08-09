@@ -54,6 +54,7 @@ a:hover { background-color: #eff9d0; text-decoration: none; }
 .more span a{ display: block; padding: .2em .2em .1em .2em; }
 .more span a:hover{ background-color: #e8e8e8; color: #000; }
 .more:hover span{ display: block; }
+.tselected { background-color: #eff9d0; }
 
 /* 回复列表 */
 img.avatar { background-color: #fff; border: 1px solid #ccc; padding: 0px; margin: 0 5px; float: left; }

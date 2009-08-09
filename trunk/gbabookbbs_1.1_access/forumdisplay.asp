@@ -28,7 +28,7 @@ End Select
 Sub Main()
 	RQ.Header()
 %>
-<body ondblclick="MM_timelinePlay('Timeline1')" onclick="document_onclick();" class="forumdisplay">
+<body ondblclick="MM_timelinePlay('Timeline1')" class="forumdisplay">
 <script type="text/javascript" src="js/tlistevent.js"></script>
 <script type="text/javascript" src="js/beckon.js"></script>
 <!-- 召唤面板 begin -->
