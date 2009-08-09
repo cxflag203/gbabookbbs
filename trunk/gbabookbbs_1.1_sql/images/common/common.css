@@ -59,7 +59,7 @@ a:hover { background-color: #eff9d0; text-decoration: none; }
 img.avatar { background-color: #fff; border: 1px solid #ccc; padding: 0px; margin: 0 5px; float: left; }
 a.avatar:hover img.avatar { background-color:#fff; border:1px solid #0063dc; padding:0px; }
 a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1px; }
-.thepost { font-size:12px; padding:10px 5px; white-space:normal; line-height:150%; }
+.thepost { font-size:12px; padding:10px 5px 13px 5px; white-space:normal; line-height:150%; }
 .thepost .des { font-style: normal; color:#999; }
 .btborder { border-bottom:1px solid #e0e0e0; }
 .author, .author:link, .author:visited { margin-left: 4px; font-family: Verdana; text-decoration: underline; color: #0063dc; font-weight: bold; }
@@ -71,6 +71,9 @@ a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1p
 .guest { font-family: Verdana; font-weight: bold; font-style: italic; }
 .bg0 { background: #fff; }
 .bg1 { background: #f9f9f9; }
+.userinfopanel { position: absolute; z-index: 9999;	margin: 5px 0 0 4px; width: 180px; height: 58px !important; height: 60px; border: 1px solid #7FCAE2; background: #fff; display: none; }
+.userinfoa { padding-top: 4px; float: left; }
+.panelac { float: left; padding-top: 4px; }
 
 /* 附件 */
 .showattachlist { width: 450px; }
@@ -128,17 +131,6 @@ a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1p
 .memberzone span { padding: 0px 5px 0px 5px; color: #cae4ff; }
 .mcplink:link, .mcplink:visited { text-decoration: none; color: #cae4ff; }
 .mcplink:hover { text-decoration: underline; color: #fff; background: none; }
-
-#tabsNav { padding-left: 60px; * overflow: hidden; zoom:1; border-bottom: 1px #ff6418 solid; }
-#tabsNav ul { float: left; }
-#tabsNav li { display: block; float: left; padding-right: 2px; }
-#tabsNav li a { padding-left: 10px; color: #ff6418; }
-#tabsNav li a, #tabsNav span { display: block; float: left; background: url(navbg.png) no-repeat; }
-#tabsNav li span {  padding: 0px 10px 0 0; height: 28px; line-height: 28px; cursor: pointer; white-space: nowrap; background-position: right 0; font-weight: bold; }
-#tabsNav li.current a, #tabsNav a:hover {  background-position: 0 -28px;  }
-#tabsNav li.current span, #tabsNav a:hover span { background-position: right -28px; color: #fff;}
-.clearfix { * overflow: hidden; zoom:1; }
-.clearfix:after { clear: both; height: 0; display: block; visibility: hidden; content: ".";}
 
 /* 分页 */
 .pages_btns { width: 98%; padding: 25px 0 8px; overflow: hidden; }

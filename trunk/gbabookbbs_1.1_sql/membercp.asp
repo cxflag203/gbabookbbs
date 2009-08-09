@@ -10,6 +10,8 @@ Action = Request.QueryString("action")
 Select Case Action
 	Case "clearfavor"
 		Call ClearFavor()
+	Case "viewtopicstyle"
+		Call ViewTopicStyle()
 	Case "designation"
 		Call Designation()
 	Case "designationstuff"
@@ -33,6 +35,27 @@ Sub ClearFavor()
 	End If
 	Call closeDataBase()
 	Call RQ.showTips("收藏夹已经被清空。", "?", "")
+End Sub
+
+'========================================================
+'设置回帖样式
+'========================================================
+Sub ViewTopicStyle()
+	Dim Style, StyleNumber
+
+	Style = SafeRequest(3, "style", 1, "", 0)
+	If Style = "avatar" Then
+		StyleNumber = 2
+	Else
+		StyleNumber = 1
+	End If
+
+	If StyleNumber <> RQ.UserViewTopicStyle Then
+		RQ.Execute("UPDATE "& TablePre &"members SET viewtopicstyle = "& StyleNumber &" WHERE uid = "& RQ.UserID)
+	End If
+
+	Call closeDatabase()
+	Call RQ.showTips("回帖样式设置完毕。", "?", "")
 End Sub
 
 '========================================================
@@ -249,6 +272,11 @@ Sub Main()
   <tr>
     <td bgcolor="#CCFFCC"><a href="avatar.asp">上传头像</a></td>
     <td bgcolor="#F2EACE">上传头像，在帖子回复中显示。</td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFCC"><a href="avatar.asp">设置回帖样式</a></td>
+    <td bgcolor="#F2EACE">[<a href="?action=viewtopicstyle&style=simple" class="underline">简单样式</a>]
+	  [<a href="?action=viewtopicstyle&style=avatar" class="underline">头像样式</a>]</td>
   </tr>
   <tr>
     <td bgcolor="#CCFFCC"><a href="membercp.asp?action=showlog">异动报告</a></td>

@@ -476,8 +476,8 @@ Sub TopicSettings()
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>帖子回复页面的样式:</strong></td>
-      <td><input type="radio" name="topicsettings_5" id="topicsettings_5_1" value="0" class="radio"<% If Topic_Settings(5) = "0" Then Response.Write " checked" End If %> onclick="show_stylepanel();" /><label for="topicsettings_5_1">简洁样式</label><br />
-	    <input type="radio" name="topicsettings_5" id="topicsettings_5_2" value="1" class="radio"<% If Topic_Settings(5) = "1" Then Response.Write " checked" End If %> onclick="show_stylepanel();" /><label for="topicsettings_5_2">带头像的样式</label></td>
+      <td><input type="radio" name="topicsettings_5" id="topicsettings_5_1" value="1" class="radio"<% If Topic_Settings(5) = "1" Then Response.Write " checked" End If %> onclick="show_stylepanel();" /><label for="topicsettings_5_1">简洁样式</label><br />
+	    <input type="radio" name="topicsettings_5" id="topicsettings_5_2" value="2" class="radio"<% If Topic_Settings(5) = "2" Then Response.Write " checked" End If %> onclick="show_stylepanel();" /><label for="topicsettings_5_2">带头像的样式</label></td>
     </tr>
     <tr height="25" id="topicsettings_6_disp" style="display: none;">
       <td class="altbg1"><strong>帖子回复的楼层分隔符:</strong><br />允许使用HTML</td>
@@ -562,8 +562,8 @@ Sub SaveTopicSettings()
 	Topic_Settings(3) = SafeRequest(2, "topicsettings_3", 0, 0, 0)
 	Topic_Settings(4) = SafeRequest(2, "topicsettings_4", 0, 100, 0)
 	Topic_Settings(5) = SafeRequest(2, "topicsettings_5", 0, 0, 0)
-	If Not InArray(Array(0, 1), Topic_Settings(5)) Then
-		Topic_Settings(5) = 0
+	If Not InArray(Array(1, 2), Topic_Settings(5)) Then
+		Topic_Settings(5) = 1
 	End If
 
 	Topic_Settings(6) = SafeRequest(2, "topicsettings_6", 1, "", 1)

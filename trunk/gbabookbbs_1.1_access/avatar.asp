@@ -121,11 +121,6 @@ Sub Main()
 	RQ.Header()
 %>
 <body>
-<div id="tabsNav" class="clearfix">
-  <ul>
-    <li><a href="pwdsafe.asp"><span>修改密码</span></a></li>
-    <li><a href="pwdsafe.asp"><span>修改密码</span></a></li>
-</div>
 您当前使用的头像：
 <br />
 <br />
@@ -135,7 +130,7 @@ Sub Main()
 上传新头像(图片大小请控制在500KB以内)：
 <br />
 <br />
-<embed src="js/uploadavatar.swf?path=<%= PathInfo %>" quality="high" width="502" height="470" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed>
+<embed src="js/uploadavatar.swf?path=<%= PathInfo %>" quality="high" width="453" height="403" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed>
 <script language="javascript">
 function show(_txt){
 	var uid = '<%= RQ.UserID %>';

@@ -108,6 +108,21 @@ function insert_attach(aid){
 	}
 }
 
+var authort;
+function showauthor(id) {
+	$(id).style.display = 'block';
+	if(!$(id).onmouseover) {
+		$(id + '_ma').innerHTML = $(id + '_a').innerHTML;
+		$(id).onmouseover = function() {
+			$(id).style.display = 'block';
+		}
+		$(id).onmouseout = function() {
+			$(id).style.display = 'none';
+		}
+	}
+
+}
+
 function postvalue(action, name, value){
 	var deleteform = document.createElement("form");
 	deleteform.id = 'deleteform';

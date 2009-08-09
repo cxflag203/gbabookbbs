@@ -90,9 +90,9 @@ Function ShowAttachInPost(AttachID, FileName, FileSize, SavePath, Downloads, IfI
 		End If
 	Else
 		If InPost Then
-			ShowAttachInPost = "<a href=""attachments/"& SavePath &""" target=""_blank""><img src=""attachments/"& SavePath &""" alt="""& Description &""" /></a>"
+			ShowAttachInPost = "<a href=""attachments/"& SavePath &""" target=""_blank""><img src=""attachments/"& SavePath &""" alt="""& Description &""" onload=""if(this.width>document.body.clientWidth-100)this.width=document.body.clientWidth-100"" /></a>"
 		Else
-			ShowAttachInPost = "<dl class=""t_attachlist"" id="""& AttachID &"""><dt></dt><dd><p><a href=""attachments/"& SavePath &""" target=""_blank""><img src=""attachments/"& SavePath &"""  alt="""& Description &""" /></a></p></dd></dl>"
+			ShowAttachInPost = "<dl class=""t_attachlist"" id="""& AttachID &"""><dt></dt><dd><p><a href=""attachments/"& SavePath &""" target=""_blank""><img src=""attachments/"& SavePath &"""  alt="""& Description &""" onload=""if(this.width>document.body.clientWidth-110)this.width=document.body.clientWidth-110"" /></a></p></dd></dl>"
 		End If
 	End If
 End Function

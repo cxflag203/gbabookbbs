@@ -59,7 +59,7 @@ a:hover { background-color: #eff9d0; text-decoration: none; }
 img.avatar { background-color: #fff; border: 1px solid #ccc; padding: 0px; margin: 0 5px; float: left; }
 a.avatar:hover img.avatar { background-color:#fff; border:1px solid #0063dc; padding:0px; }
 a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1px; }
-.thepost { font-size:12px; padding:10px 5px; white-space:normal; line-height:150%; }
+.thepost { font-size:12px; padding:10px 5px 13px 5px; white-space:normal; line-height:150%; }
 .thepost .des { font-style: normal; color:#999; }
 .btborder { border-bottom:1px solid #e0e0e0; }
 .author, .author:link, .author:visited { margin-left: 4px; font-family: Verdana; text-decoration: underline; color: #0063dc; font-weight: bold; }
@@ -71,6 +71,9 @@ a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1p
 .guest { font-family: Verdana; font-weight: bold; font-style: italic; }
 .bg0 { background: #fff; }
 .bg1 { background: #f9f9f9; }
+.userinfopanel { position: absolute; z-index: 9999;	margin: 5px 0 0 4px; width: 180px; height: 58px !important; height: 60px; border: 1px solid #7FCAE2; background: #fff; display: none; }
+.userinfoa { padding-top: 4px; float: left; }
+.panelac { float: left; padding-top: 4px; }
 
 /* 附件 */
 .showattachlist { width: 450px; }

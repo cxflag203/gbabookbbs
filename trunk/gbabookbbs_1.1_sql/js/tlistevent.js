@@ -16,7 +16,7 @@ function hideSoundBar(){
 }
 
 function showSoundBar(){
-	soundBarNow = 570;
+	soundBarNow = '70%';
 	changeFrame();
 }
 
