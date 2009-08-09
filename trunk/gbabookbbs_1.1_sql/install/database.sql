@@ -145,7 +145,14 @@ CREATE NONCLUSTERED INDEX [IX_{tablepre}sticktopic_1] ON [dbo].[{tablepre}stickt
 ) ON [PRIMARY]
 {next}
 CREATE TABLE [dbo].[{tablepre}settings](
-	[site_settings] [ntext] NOT NULL,
+	[base_settings] [ntext] NOT NULL,
+	[time_settings] [ntext] NOT NULL,
+	[login_settings] [ntext] NOT NULL,
+	[user_settings] [ntext] NOT NULL,
+	[topic_settings] [ntext] NOT NULL,
+	[other_settings] [ntext] NOT NULL,
+	[chat_settings] [ntext] NOT NULL,
+	[wap_settings] [ntext] NOT NULL,
 	[item_settings] [ntext] NOT NULL,
 	[wordsfilter] [ntext] NOT NULL,
 	[banip] [text] NOT NULL,
@@ -324,6 +331,7 @@ CREATE TABLE [dbo].[{tablepre}members](
 	[groupexpiry] [int] NOT NULL,
 	[newpm] [tinyint] NOT NULL,
 	[leaguegid] [tinyint] NOT NULL,
+	[viewtopicstyle] [tinyint] NOT NULL,
  CONSTRAINT [PK_{tablepre}members] PRIMARY KEY CLUSTERED 
 (
 	[uid] ASC
@@ -379,6 +387,7 @@ CREATE TABLE [dbo].[{tablepre}memberfields](
 	[designation] [nvarchar](100) NOT NULL,
 	[signature] [ntext] NOT NULL,
 	[ignorepm] [ntext] NOT NULL,
+	[avatar] [varchar](100) NOT NULL,
  CONSTRAINT [PK_{tablepre}memberfields] PRIMARY KEY CLUSTERED 
 (
 	[uid] ASC
@@ -886,6 +895,68 @@ CREATE NONCLUSTERED INDEX [IX_{tablepre}attachments_2] ON [dbo].[{tablepre}attac
 	[posttime] ASC
 ) ON [PRIMARY]
 {next}
+CREATE PROCEDURE [dbo].[{tablepre}sp_postlist]
+@tid int,
+@viewauthorid int,
+@viewstyle tinyint,
+@page int, 
+@posts int,
+@pagesize smallint
+
+AS
+SET NOCOUNT ON
+
+DECLARE @recordcount int
+DECLARE @pagecount int
+DECLARE @sql nvarchar(2000)
+DECLARE @sqlpre nvarchar(500)
+DECLARE @sqladdon nvarchar(200)
+
+SET @sqladdon = ''
+
+IF @viewstyle = 0
+	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM {tablepre}posts p'
+ELSE
+	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, m.designation, m.avatar FROM {tablepre}posts p LEFT JOIN {tablepre}memberfields m ON p.uid = m.uid'
+
+IF @viewauthorid = 0
+	SET @recordcount = @posts
+ELSE
+	BEGIN
+		SELECT @recordcount = COUNT(pid) FROM {tablepre}posts WHERE tid = @tid AND uid = @viewauthorid AND ifanonymity = 0
+		SET @sqladdon = N'AND p.uid = '+ CAST(@viewauthorid AS varchar(10)) +' AND p.ifanonymity = 0'
+	END
+
+IF @recordcount = 0
+	SET @recordcount = 1
+	
+SET @pagecount = CEILING(@recordcount * 1.0 / @pagesize)
+IF @page > @pagecount
+	SET @page = @pagecount
+
+IF @page = 1
+	SET @sql = N'SELECT TOP '+ CAST((@pagesize + 1) AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' ORDER BY p.posttime ASC'
+ELSE
+	SET @sql = N'SELECT TOP '+ CAST(@pagesize AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' AND p.posttime > (
+			SELECT MAX(posttime) 
+			FROM (
+					SELECT TOP '+ CAST((@pagesize * (@page - 1) + 1) AS varchar(10))+' posttime
+					FROM {tablepre}posts
+					WHERE tid = @tid '+ @sqladdon +'
+					ORDER BY posttime ASC
+				) 
+			AS tblTemp
+		)
+		ORDER BY p.posttime ASC'
+
+EXEC sp_executesql @sql, N'@tid int', @tid = @tid
+
+UPDATE {tablepre}topics SET clicks = clicks + 1 WHERE tid = @tid
+
+RETURN @recordcount
+
+SET NOCOUNT OFF
+{next}
 CREATE PROCEDURE [dbo].[{tablepre}sp_topiclist]
 @fid smallint,
 @page int,             
@@ -1276,6 +1347,8 @@ ALTER TABLE [dbo].[{tablepre}memberfields] ADD  CONSTRAINT [DF_{tablepre}memberf
 {next}
 ALTER TABLE [dbo].[{tablepre}memberfields] ADD  CONSTRAINT [DF_{tablepre}memberfields_ignorepm]  DEFAULT ('') FOR [ignorepm]
 {next}
+ALTER TABLE [dbo].[{tablepre}memberfields] ADD  CONSTRAINT [DF_{tablepre}memberfields_avatar]  DEFAULT ('') FOR [avatar]
+{next}
 ALTER TABLE [dbo].[{tablepre}memberprofiles] ADD  CONSTRAINT [DF_{tablepre}memberprofiles_profile]  DEFAULT ('') FOR [profile]
 {next}
 ALTER TABLE [dbo].[{tablepre}memberprofiles] ADD  CONSTRAINT [DF_{tablepre}memberprofiles_province]  DEFAULT ('') FOR [province]
@@ -1323,6 +1396,8 @@ ALTER TABLE [dbo].[{tablepre}members] ADD  CONSTRAINT [DF_{tablepre}members_grou
 ALTER TABLE [dbo].[{tablepre}members] ADD  CONSTRAINT [DF_{tablepre}members_newpm]  DEFAULT ((0)) FOR [newpm]
 {next}
 ALTER TABLE [dbo].[{tablepre}members] ADD  CONSTRAINT [DF_{tablepre}members_leaguegid]  DEFAULT ((0)) FOR [leaguegid]
+{next}
+ALTER TABLE [dbo].[{tablepre}members] ADD  CONSTRAINT [DF_{tablepre}members_viewtopicstyle]  DEFAULT ((0)) FOR [viewtopicstyle]
 {next}
 ALTER TABLE [dbo].[{tablepre}online] ADD  CONSTRAINT [DF_{tablepre}online_lastupdate]  DEFAULT (getdate()) FOR [lastupdate]
 {next}

@@ -6,8 +6,7 @@
 Response.Buffer = True
 Response.CharSet = "utf-8"
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<%= Response.Charset %>" />
 <title>GBABOOK BBS 1.2 for SQL Server安装程序</title>
@@ -192,7 +191,7 @@ Sub Install()
 	Fso.DeleteFolder Server.MapPath("../install")
 	Set Fso = Nothing
 	
-	Call Tips("安装完成，<span class=""red"">请登录FTP，如果发现install目录还存在，请手动删除。</span><br /><a href=""../index.asp"" class=""bluelink"">点击这里进入论坛</a><img src=""http://stat.gbabook.net/stat.asp?url=http://"& Request.ServerVariables("SERVER_NAME") & ROOTPATH &""" width=""0"" height=""0"" border=""0"" />", True)
+	Call Tips("安装完成，<a href=""../index.asp"" class=""bluelink"">点击这里进入论坛</a>。<span class=""red"">请登录FTP，如果发现install目录还存在，请手动删除。</span><img src=""http://stat.gbabook.net/stat.asp?url=http://"& Request.ServerVariables("SERVER_NAME") & ROOTPATH &""" width=""0"" height=""0"" border=""0"" />", True)
 End Sub
 
 '========================================================
