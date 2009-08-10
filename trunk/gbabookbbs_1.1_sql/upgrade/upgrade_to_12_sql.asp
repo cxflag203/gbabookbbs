@@ -1,12 +1,12 @@
-<!--#include file="include/common.inc.asp"-->
-<!--#include file="gbl.fun.asp"-->
+<!--#include file="../include/common.inc.asp"-->
+<% Response.Charset = "utf-8" %>
+<!--#include file="../include/gbl.fun.asp"-->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<%= Response.Charset %>" />
 <title>GBABOOK BBS 1.2 for SQL Server安装程序</title>
 <link rel="stylesheet" href="../images/common/common.css" />
 <script type="text/javascript" src="../js/common.js"></script>
-<script type="text/javascript">var bbsidentify = 'gbabook';</script>
 </head>
 <%
 Dim Action
@@ -39,13 +39,26 @@ Sub Upgrade()
 
 	Execute("ALTER procedure [dbo].["& TablePre &"sp_online_newpm]"& vbCrLf &"@sid char(10),"& vbCrLf &"@uid int,"& vbCrLf &"@username nvarchar(20),"& vbCrLf &"@userip char(15),"& vbCrLf &"@usergroupid smallint,"& vbCrLf &"@onlinehold smallint,"& vbCrLf &"@thetime datetime"& vbCrLf &"AS"& vbCrLf & vbCrLf &"SET NOCOUNT ON"& vbCrLf & vbCrLf &"IF EXISTS(SELECT 1 FROM "& TablePre &"online WHERE sid = @sid AND uid = @uid)"& vbCrLf &"	UPDATE "& TablePre &"online SET uid = @uid, username = @username, userip = @userip, usergroupid = @usergroupid, lastupdate = GetDate() WHERE sid = @sid"& vbCrLf &"ELSE"& vbCrLf &"	BEGIN"& vbCrLf &"		DELETE FROM "& TablePre &"online WHERE sid = @sid OR lastupdate < DATEADD(n, -@onlinehold, GETDATE()) OR (uid > 0 AND uid = @uid) OR (uid = 0 AND userip = @userip AND lastupdate < DATEADD(n, -60, GETDATE()))"& vbCrLf &"		INSERT INTO "& TablePre &"online (sid, uid, username, userip, usergroupid) VALUES (@sid, @uid, @username, @userip, @usergroupid)"& vbCrLf &"	END"& vbCrLf & vbCrLf &"--输出是否有新传呼"& vbCrLf &"IF @uid > 0"& vbCrLf &"	BEGIN"& vbCrLf &"		IF EXISTS(SELECT 1 FROM "& TablePre &"pm WHERE msgtoid = @uid AND posttime <= @thetime)"& vbCrLf &"			RETURN 1"& vbCrLf &"	END"& vbCrLf & vbCrLf &"SET NOCOUNT OFF")
 
-	Execute("CREATE PROCEDURE [dbo].[{tablepre}sp_postlist]"& vbCrLf &"@tid int,"& vbCrLf &"@viewauthorid int,"& vbCrLf &"@viewstyle tinyint,"& vbCrLf &"@page int, "& vbCrLf &"@posts int,"& vbCrLf &"@pagesize smallint"& vbCrLf & vbCrLf &"AS"& vbCrLf &"SET NOCOUNT ON"& vbCrLf & vbCrLf &"DECLARE @recordcount int"& vbCrLf &"DECLARE @pagecount int"& vbCrLf &"DECLARE @sql nvarchar(2000)"& vbCrLf &"DECLARE @sqlpre nvarchar(500)"& vbCrLf &"DECLARE @sqladdon nvarchar(200)"& vbCrLf & vbCrLf &"SET @sqladdon = ''"& vbCrLf & vbCrLf &"IF @viewstyle = 0"& vbCrLf &"	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM {tablepre}posts p'"& vbCrLf &"ELSE"& vbCrLf &"	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, m.designation, m.avatar FROM {tablepre}posts p LEFT JOIN {tablepre}memberfields m ON p.uid = m.uid'"& vbCrLf & vbCrLf &"IF @viewauthorid = 0"& vbCrLf &"	SET @recordcount = @posts"& vbCrLf &"ELSE"& vbCrLf &"	BEGIN"& vbCrLf &"		SELECT @recordcount = COUNT(pid) FROM {tablepre}posts WHERE tid = @tid AND uid = @viewauthorid AND ifanonymity = 0"& vbCrLf &"		SET @sqladdon = N'AND p.uid = '+ CAST(@viewauthorid AS varchar(10)) +' AND p.ifanonymity = 0'"& vbCrLf &"	END"& vbCrLf & vbCrLf &"IF @recordcount = 0"& vbCrLf &"	SET @recordcount = 1"& vbCrLf &"	"& vbCrLf &"SET @pagecount = CEILING(@recordcount * 1.0 / @pagesize)"& vbCrLf &"IF @page > @pagecount"& vbCrLf &"	SET @page = @pagecount"& vbCrLf & vbCrLf &"IF @page = 1"& vbCrLf &"	SET @sql = N'SELECT TOP '+ CAST((@pagesize + 1) AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' ORDER BY p.posttime ASC'"& vbCrLf &"ELSE"& vbCrLf &"	SET @sql = N'SELECT TOP '+ CAST(@pagesize AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' AND p.posttime > ("& vbCrLf &"			SELECT MAX(posttime) "& vbCrLf &"			FROM ("& vbCrLf &"					SELECT TOP '+ CAST((@pagesize * (@page - 1) + 1) AS varchar(10))+' posttime"& vbCrLf &"					FROM {tablepre}posts"& vbCrLf &"					WHERE tid = @tid '+ @sqladdon +'"& vbCrLf &"					ORDER BY posttime ASC"& vbCrLf &"				) "& vbCrLf &"			AS tblTemp"& vbCrLf &"		)"& vbCrLf &"		ORDER BY p.posttime ASC'"& vbCrLf & vbCrLf &"EXEC sp_executesql @sql, N'@tid int', @tid = @tid"& vbCrLf & vbCrLf &"UPDATE {tablepre}topics SET clicks = clicks + 1 WHERE tid = @tid"& vbCrLf & vbCrLf &"RETURN @recordcount"& vbCrLf & vbCrLf &"SET NOCOUNT OFF")
+	Execute("CREATE PROCEDURE [dbo].["& TablePre &"sp_postlist]"& vbCrLf &"@tid int,"& vbCrLf &"@viewauthorid int,"& vbCrLf &"@viewstyle tinyint,"& vbCrLf &"@page int, "& vbCrLf &"@posts int,"& vbCrLf &"@pagesize smallint"& vbCrLf & vbCrLf &"AS"& vbCrLf &"SET NOCOUNT ON"& vbCrLf & vbCrLf &"DECLARE @recordcount int"& vbCrLf &"DECLARE @pagecount int"& vbCrLf &"DECLARE @sql nvarchar(2000)"& vbCrLf &"DECLARE @sqlpre nvarchar(500)"& vbCrLf &"DECLARE @sqladdon nvarchar(200)"& vbCrLf & vbCrLf &"SET @sqladdon = ''"& vbCrLf & vbCrLf &"IF @viewstyle = 0"& vbCrLf &"	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM "& TablePre &"posts p'"& vbCrLf &"ELSE"& vbCrLf &"	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, m.designation, m.avatar FROM "& TablePre &"posts p LEFT JOIN "& TablePre &"memberfields m ON p.uid = m.uid'"& vbCrLf & vbCrLf &"IF @viewauthorid = 0"& vbCrLf &"	SET @recordcount = @posts"& vbCrLf &"ELSE"& vbCrLf &"	BEGIN"& vbCrLf &"		SELECT @recordcount = COUNT(pid) FROM "& TablePre &"posts WHERE tid = @tid AND uid = @viewauthorid AND ifanonymity = 0"& vbCrLf &"		SET @sqladdon = N'AND p.uid = '+ CAST(@viewauthorid AS varchar(10)) +' AND p.ifanonymity = 0'"& vbCrLf &"	END"& vbCrLf & vbCrLf &"IF @recordcount = 0"& vbCrLf &"	SET @recordcount = 1"& vbCrLf &"	"& vbCrLf &"SET @pagecount = CEILING(@recordcount * 1.0 / @pagesize)"& vbCrLf &"IF @page > @pagecount"& vbCrLf &"	SET @page = @pagecount"& vbCrLf & vbCrLf &"IF @page = 1"& vbCrLf &"	SET @sql = N'SELECT TOP '+ CAST((@pagesize + 1) AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' ORDER BY p.posttime ASC'"& vbCrLf &"ELSE"& vbCrLf &"	SET @sql = N'SELECT TOP '+ CAST(@pagesize AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' AND p.posttime > ("& vbCrLf &"			SELECT MAX(posttime) "& vbCrLf &"			FROM ("& vbCrLf &"					SELECT TOP '+ CAST((@pagesize * (@page - 1) + 1) AS varchar(10))+' posttime"& vbCrLf &"					FROM "& TablePre &"posts"& vbCrLf &"					WHERE tid = @tid '+ @sqladdon +'"& vbCrLf &"					ORDER BY posttime ASC"& vbCrLf &"				) "& vbCrLf &"			AS tblTemp"& vbCrLf &"		)"& vbCrLf &"		ORDER BY p.posttime ASC'"& vbCrLf & vbCrLf &"EXEC sp_executesql @sql, N'@tid int', @tid = @tid"& vbCrLf & vbCrLf &"UPDATE "& TablePre &"topics SET clicks = clicks + 1 WHERE tid = @tid"& vbCrLf & vbCrLf &"RETURN @recordcount"& vbCrLf & vbCrLf &"SET NOCOUNT OFF")
 
+	Execute("SELECT * INTO "& TablePre &"settings_tmp FROM "& TablePre &"settings")
+
+	Execute("DROP TABLE "& TablePre &"settings")
+
+	Execute("CREATE TABLE [dbo].["& TablePre &"settings]([base_settings] [ntext] NOT NULL,[time_settings] [ntext] NOT NULL,[login_settings] [ntext] NOT NULL,[user_settings] [ntext] NOT NULL,[topic_settings] [ntext] NOT NULL,[other_settings] [ntext] NOT NULL,[chat_settings] [ntext] NOT NULL,[wap_settings] [ntext] NOT NULL,[item_settings] [ntext] NOT NULL,[wordsfilter] [ntext] NOT NULL,[banip] [text] NOT NULL,[banner] [ntext] NOT NULL,[todayposts] [int] NOT NULL,[invatenum] [int] NOT NULL) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]")
+
+	Execute("ALTER TABLE [dbo].["& TablePre &"settings] ADD  CONSTRAINT [DF_"& TablePre &"settings_wordsfilter]  DEFAULT ('') FOR [wordsfilter]")
+
+	Execute("ALTER TABLE [dbo].["& TablePre &"settings] ADD  CONSTRAINT [DF_"& TablePre &"settings_banip]  DEFAULT ('') FOR [banip]")
+
+	Execute("ALTER TABLE [dbo].["& TablePre &"settings] ADD  CONSTRAINT [DF_"& TablePre &"settings_todayposts]  DEFAULT ((0)) FOR [todayposts]")
+
+	Execute("ALTER TABLE [dbo].["& TablePre &"settings] ADD  CONSTRAINT [DF_"& TablePre &"settings_invatenum]  DEFAULT ((0)) FOR [invatenum]")
 
 	Dim SettingsInfo, Settings
 	Dim Base_Settings(4), Time_Settings(3), Login_Settings(6), User_Settings(7), Topic_Settings(17), Other_Settings(5), Chat_Settings(8)
 
-	SettingsInfo = Query("SELECT site_settings FROM "& TablePre &"settings")
+	SettingsInfo = Query("SELECT site_settings, item_settings, wordsfilter, banip, banner, todayposts, invatenum FROM "& TablePre &"settings_tmp")
 	If Not IsArray(SettingsInfo) Then
 		Call showTips("错误的站点设置。", "", "")
 	End If
@@ -83,31 +96,35 @@ Sub Upgrade()
 		Chat_Settings(i) = Settings(i + 48)
 	Next
 
-	Execute("UPDATE "& TablePre &"settings SET base_settings = '"& Join(base_settings, "{settings}") &"', time_settings = '"& Join(time_settings, "{settings}") &"', login_settings = '"& Join(login_settings, "{settings}") &"', user_settings = '"& Join(user_settings, "{settings}") &"', topic_settings = '"& Join(topic_settings, "{settings}") &"', other_settings = '"& Join(other_settings, "{settings}") &"', chat_settings = '"& Join(chat_settings, "{settings}") &"'")
+	SettingsInfo(1, 0) = Replace(SettingsInfo(1, 0), "_____SETTINGS_____", "{settings}")
+
+	Execute("INSERT INTO "& TablePre &"settings (base_settings, time_settings, login_settings, user_settings, topic_settings, other_settings, chat_settings, wap_settings, item_settings, wordsfilter, banip, banner, todayposts, invatenum) VALUES ('"& Join(base_settings, "{settings}") &"', '"& Join(time_settings, "{settings}") &"', '"& Join(login_settings, "{settings}") &"', '"& Join(user_settings, "{settings}") &"', '"& Join(topic_settings, "{settings}") &"', '"& Join(other_settings, "{settings}") &"', '"& Join(chat_settings, "{settings}") &"', '1{settings}0{settings}0{settings}10{settings}10{settings}500', '"& SettingsInfo(1, 0) &"', '"& SettingsInfo(2, 0) &"', '"& SettingsInfo(3, 0) &"', '"& SettingsInfo(4, 0) &"', "& SettingsInfo(5, 0) &", "& SettingsInfo(6, 0) &")")
+
+	Execute("DROP TABLE "& TablePre &"settings_tmp")
 
 	'更新缓存
-	Dim SettingsInfo
 	SettingsInfo = Query("SELECT TOP 1 * FROM "& TablePre &"settings")
-
 	If Not IsArray(SettingsInfo) Then
-		Call Tips("站点配置错误。", True)
+		Call Tips("错误的站点设置。", True)
 	End If
+
 	Call setCache(CacheName &"_site_settings", SettingsInfo)
 
 	Call closeDatabase()
 
 	Dim strCommon
-	strCommon = LoadFile("./include/common.inc.asp")
+	strCommon = LoadFile("../include/common.inc.asp")
 	strCommon = Preg_Replace(strCommon, "Const SHOWVERSION = ""(.*?)""", "Const SHOWVERSION = ""1.2""")
-	Call MakeFile(strCommon, "./include/common.inc.asp")
+	strCommon = Preg_Replace(strCommon, "Const ROOTPATH = ""(.*?)(\r\n|\n\r|\r|\n)""", "$2")
+	Call MakeFile(strCommon, "../include/common.inc.asp")
 
 	On Error Resume Next
 	Dim Fso
 	Set Fso = Server.CreateObject("Scripting.FileSystemObject")
-	Call Fso.DeleteFile(Server.MapPath("./upgrade_to_12_sql.asp"))
+	Call Fso.DeleteFolder(Server.MapPath("../upgrade"))
 	Set Fso = Nothing
 
-	Call Tips("升级完毕。<span class=""red"">请登陆FTP，如果发现升级文件还存在，请务必手动删除。</span><br /><a href=""index.asp"" class=""bluelink"">点击这里进入论坛</a>", TRUE)
+	Call Tips("升级完毕。<span class=""red"">请登陆FTP，如果发现upgrade目录还存在，请务必手动删除。</span><br /><a href=""../index.asp"" class=""bluelink"">点击这里进入论坛</a>", TRUE)
 End Sub
 
 '========================================================
@@ -182,7 +199,7 @@ Sub Main()
 <form method="post" id="install" action="?action=upgrade" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <table width="600" border="0" cellpadding="0" cellspacing="0" class="tblborder" align="center" style="margin: 0px auto;">
     <tr class="header">
-      <td height="25" colspan="2"><strong>GBABOOK BBS V1.01升级V1.1(SQL Server版)</strong></td>
+      <td height="25" colspan="2"><strong>GBABOOK BBS V1.1升级V1.2(SQL Server版)</strong></td>
     </tr>
 	<tr height="25">
       <td>&nbsp;</td>
