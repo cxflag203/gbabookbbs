@@ -908,9 +908,42 @@ function closelightbox(){
 End Sub
 
 '========================================================
+'显示金钱达到某数量可见内容
+'========================================================
+Function ShowCreditsHidden(str)
+	Dim regEx, Matches, Match
+	Set regEx = New Regexp
+	regEx.IgnoreCase = True
+	regEx.Global = True
+	regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
+	Set Matches = regEx.Execute(str)
+	regEx.Global = False
+	For Each Match In Matches
+		If RQ.UserCredits < IntCode(Match.SubMatches(0)) And Not RQ.IsModerator Then
+			str = regEx.Replace(str, "<div class=""viewdenied"" style=""width: 300px;"">本帖隐藏的内容需要"& RQ.Other_Settings(0) &"达到$1才可以浏览</div>")
+		Else
+			str = regEx.Replace(str, "<div class=""viewdenied"">本帖隐藏的内容需要"& RQ.Other_Settings(0) &"达到$1才可以浏览：<br /><span class=""pink"">$2</span></div>")
+		End If
+	Next
+	Set regEx = Nothing
+	ShowCreditsHidden = str
+End Function
+
+'========================================================
 '是否过滤HTML代码
 '========================================================
 Function ShowHtml(Content, switch)
+	If InStr(Content, "[/hide]") > 0 Then
+		'处理回复可见内容
+		If InStr(Content, "[hide]") > 0 Then
+			Content = Preg_Replace(Content, "\[hide\](.+?)\[\/hide\]", "<div class=""viewdenied"">本帖隐藏的内容需要回复才可以浏览：<br /><span class=""pink"">$1</span></div>")
+		End If
+
+		'金钱达到某数量可见内容
+		If InStr(Content, "[hide=") > 0 Then
+			Content = ShowCreditsHidden(Content)
+		End If
+	End If
 	ShowHtml = IIF(switch = 0, strFilter(Content), Content)
 End Function
 

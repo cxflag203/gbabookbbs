@@ -120,6 +120,7 @@ Function ShowCreditsHidden(str)
 	regEx.Global = True
 	regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
 	Set Matches = regEx.Execute(str)
+	regEx.Global = False
 	For Each Match In Matches
 		If RQ.UserCredits < IntCode(Match.SubMatches(0)) And Not RQ.IsModerator Then
 			str = regEx.Replace(str, "<div class=""viewdenied"" style=""width: 300px;"">本帖隐藏的内容需要"& RQ.Other_Settings(0) &"达到$1才可以浏览</div>")
