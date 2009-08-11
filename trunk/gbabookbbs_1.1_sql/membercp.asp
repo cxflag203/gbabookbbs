@@ -283,7 +283,7 @@ Sub Main()
     <td bgcolor="#F2EACE">如发现状态有异常或者<%= RQ.Other_Settings(0) %>、道具有变化，请在这里查询以获知原因。</td>
   </tr>
   <tr>
-    <td bgcolor="#CCFFCC"><a href="plugins/batchcreditstransfer.asp"><%= RQ.Other_Settings(0) %>转让</a></td>
+    <td bgcolor="#CCFFCC"><a href="batchcreditstransfer.asp"><%= RQ.Other_Settings(0) %>转让</a></td>
     <td bgcolor="#F2EACE">把<%= RQ.Other_Settings(0) %>转让给其他用户。</td>
   </tr>
   <tr>

@@ -128,7 +128,7 @@ Sub CreditsTransfer()
 	RQ.Execute("INSERT INTO "& TablePre &"logs (uid, username, userip, targetuid, targetusername, operation, reason) SELECT "& RQ.UserID &", N'"& RQ.UserName &"', '"& RQ.UserIP &"', uid, username, N'"& RQ.Other_Settings(0) &"批转，发放总量为："& CreditsTotalNum &"，平均每人获得"& CreditsTransNum & RQ.Other_Settings(0) &"。<span class=""pink"">但是由于接收人的"& RQ.Other_Settings(0) &"未达到"& RQ.User_Settings(7) &"，没有接收到。</span>', N'"& Reason &"' FROM "& TablePre &"members WHERE uid IN("& UserIDs &") AND credits < "& IntCode(RQ.User_Settings(7)))
 
 	Call closeDatabase()
-	Call RQ.showTips(RQ.Other_Settings(0) &"转让完毕，转让记录已经计入您的异动报告。", "../membercp.asp", "")
+	Call RQ.showTips(RQ.Other_Settings(0) &"转让完毕，转让记录已经计入您的异动报告。", "membercp.asp", "")
 End Sub
 
 '========================================================
