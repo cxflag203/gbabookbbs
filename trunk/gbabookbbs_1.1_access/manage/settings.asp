@@ -621,7 +621,7 @@ Sub OtherSettings()
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>论坛货币名称</strong></td>
-      <td><input type="text" name="othersettings_0" size="10" value="金币" /></td>
+      <td><input type="text" name="othersettings_0" size="10" value="<%= Other_Settings(0) %>" /></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>清除过期的异动报告</strong></td>

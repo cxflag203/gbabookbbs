@@ -111,7 +111,7 @@ Sub SaveBaseSettings()
 	Base_Settings(3) = SafeRequest(2, "basesettings_3", 0, 0, 0)
 	Base_Settings(4) = SafeRequest(2, "basesettings_4", 1, "", 1)
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET base_settings = '"& Join(Base_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET base_settings = N'"& Join(Base_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 
 	Call closeDatabase()
@@ -211,7 +211,7 @@ Sub SaveTimeSettings()
 	Time_Settings(2) = CheckTimeFormat(SafeRequest(2, "timesettings_2", 1, "", 0))
 	Time_Settings(3) = CheckTimeFormat(SafeRequest(2, "timesettings_3", 1, "", 0))
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET time_settings = '"& Join(Time_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET time_settings = N'"& Join(Time_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 	
 	Call closeDatabase()
@@ -321,7 +321,7 @@ Sub SaveLoginSettings()
 	Login_Settings(5) = SafeRequest(2, "loginsettings_5", 0, 0, 0)
 	Login_Settings(6) = SafeRequest(2, "loginsettings_6", 0, 0, 0)
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET login_settings = '"& Join(Login_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET login_settings = N'"& Join(Login_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 
 	Call closeDatabase()
@@ -420,7 +420,7 @@ Sub SaveUserSettings()
 	User_Settings(6) = SafeRequest(2, "usersettings_6", 0, 0, 0)
 	User_Settings(7) = SafeRequest(2, "usersettings_7", 0, 0, 0)
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET user_settings = '"& Join(User_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET user_settings = N'"& Join(User_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 
 	Call closeDatabase()
@@ -583,7 +583,7 @@ Sub SaveTopicSettings()
 	Topic_Settings(16) = Left(SafeRequest(2, "topicsettings_16", 1, "", 1), 70)
 	Topic_Settings(17) = Replace(SafeRequest(2, "topicsettings_17", 1, "", 0), " ", "")
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET topic_settings = '"& Join(Topic_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET topic_settings = N'"& Join(Topic_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 	
 	Call closeDatabase()
@@ -621,7 +621,7 @@ Sub OtherSettings()
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>论坛货币名称</strong></td>
-      <td><input type="text" name="othersettings_0" size="10" value="金币" /></td>
+      <td><input type="text" name="othersettings_0" size="10" value="<%= Other_Settings(0) %>" /></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>清除过期的异动报告</strong></td>
@@ -690,7 +690,7 @@ Sub SaveOtherSettings()
 	Other_Settings(4) = SafeRequest(2, "othersettings_4", 0, 0, 0)
 	Other_Settings(5) = SafeRequest(2, "othersettings_5", 0, 0, 0)
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET other_settings = '"& Join(Other_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET other_settings = N'"& Join(Other_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 	
 	Call closeDatabase()
@@ -791,7 +791,7 @@ Sub SaveChatSettings()
 	Chat_Settings(7) = SafeRequest(2, "chatsettings_7", 0, 1, 0)
 	Chat_Settings(8) = SafeRequest(2, "chatsettings_8", 1, "", 1)
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET chat_settings = '"& Join(Chat_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET chat_settings = N'"& Join(Chat_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 	
 	Call closeDatabase()
@@ -878,7 +878,7 @@ Sub SaveWapSettings()
 	Wap_Settings(4) = SafeRequest(2, "wapsettings_4", 0, 10, 0)
 	Wap_Settings(5) = SafeRequest(2, "wapsettings_5", 0, 300, 0)
 
-	RQ.Execute("UPDATE "& TablePre &"settings SET wap_settings = '"& Join(Wap_Settings, "{settings}") &"'")
+	RQ.Execute("UPDATE "& TablePre &"settings SET wap_settings = N'"& Join(Wap_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()
 	
 	Call closeDatabase()
