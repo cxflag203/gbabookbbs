@@ -1,4 +1,4 @@
-﻿<!--#include file="../include/inc.asp"-->
+﻿<!--#include file="include/inc.asp"-->
 <%
 If RQ.UserID = 0 Then
 	Call RQ.showTips("请先登陆。", "", "NOPERM")
