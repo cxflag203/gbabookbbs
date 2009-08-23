@@ -209,7 +209,7 @@ Sub Show()
 	Erase TopicListArray
 	
 	If PageCount > 1 Then
-		Call ShowWapPage(Page, PageCount, RecordCount, "&amp;action=show&amp;searchid="& SearchID)
+		Call ShowWapPage(Page, PageCount, RecordCount, "search.asp?action=show&amp;searchid="& SearchID)
 	End If
 End Sub
 

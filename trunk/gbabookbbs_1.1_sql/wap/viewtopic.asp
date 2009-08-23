@@ -64,9 +64,9 @@ If PostID = 0 Then
 
 	'拼接sql语句
 	If Page = 1 Then
-		strSQL = "SELECT TOP "& IntCode(RQ.Wap_Settings(4)) + 1 &" pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM gb_posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC"
+		strSQL = "SELECT TOP "& IntCode(RQ.Wap_Settings(4)) + 1 &" pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC"
 	Else
-		strSQL = "SELECT TOP "& RQ.Wap_Settings(4) &" pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM gb_posts WHERE tid = "& RQ.TopicID &" AND posttime > (SELECT MAX(posttime) FROM (SELECT TOP "& IntCode(RQ.Wap_Settings(4)) * (Page - 1) + 1 &" posttime FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC) AS tblTemp) ORDER BY posttime ASC"
+		strSQL = "SELECT TOP "& RQ.Wap_Settings(4) &" pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" AND posttime > (SELECT MAX(posttime) FROM (SELECT TOP "& IntCode(RQ.Wap_Settings(4)) * (Page - 1) + 1 &" posttime FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" ORDER BY posttime ASC) AS tblTemp) ORDER BY posttime ASC"
 	End If
 
 	'查询回复
