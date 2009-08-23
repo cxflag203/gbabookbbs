@@ -65,7 +65,7 @@ End If
 
 '显示分页
 If PageCount > 1 Then
-	Call ShowWapPage(Page, PageCount, RecordCount, "&amp;fid="& RQ.ForumID)
+	Call ShowWapPage(Page, PageCount, RecordCount, "forumdisplay.asp?fid="& RQ.ForumID)
 End If
 
 Call Append("<br /><br />"& strNewTopic)

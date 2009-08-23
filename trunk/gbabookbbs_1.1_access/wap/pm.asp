@@ -201,7 +201,7 @@ Sub ShowFavor()
 		Next
 
 		If PageCount > 1 Then
-			Call ShowWapPage(Page, PageCount, RecordCount, "&amp;action=showfavor")
+			Call ShowWapPage(Page, PageCount, RecordCount, "pm.asp?action=showfavor")
 		End If
 	End If
 

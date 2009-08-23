@@ -153,7 +153,7 @@ If PostID = 0 Then
 
 	'显示分页
 	If PageCount > 1 Then
-		Call ShowWapPage(Page, PageCount, RecordCount, "&amp;fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID)
+		Call ShowWapPage(Page, PageCount, RecordCount, "viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID)
 		Call Append("<br /><br />")
 	End If
 Else

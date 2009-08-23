@@ -78,7 +78,7 @@ End Function
 '========================================================
 'wap显示分页
 '========================================================
-Public Sub ShowWapPage(Page, PageCount, RecordCount, Condition)
+Public Sub ShowWapPage(Page, PageCount, RecordCount, URL)
 	Dim StartPage
 
 	If Page > PageCount - 9 And PageCount > 9 Then
@@ -93,11 +93,13 @@ Public Sub ShowWapPage(Page, PageCount, RecordCount, Condition)
 		StartPage = 1
 	End If
 
+	URL = URL & IIF(InStr(URL, "?") > 0, "&amp;", "?")
+
 	If PageCount + 1 > Page And Page > 1 Then
 		If StartPage > 1 Then
-			Call Append("<a href=""?page=1"& Condition &""">1...</a> ")
+			Call Append("<a href="""& URL &"page=1"">1...</a> ")
 		End If
-		Call Append("<a href=""?page="& Page - 1 & Condition &""">上页</a> ")
+		Call Append("<a href="""& URL &"page="& Page - 1 &""">上页</a> ")
 	End If
 
 	For i = StartPage To StartPage + 9
@@ -108,16 +110,16 @@ Public Sub ShowWapPage(Page, PageCount, RecordCount, Condition)
 		If i = Page Then
 			Call Append(i &" ")
 		Else
-			Call Append("<a href=""?page="& i & Condition &""">"& i &"</a> ")
+			Call Append("<a href="""& URL &"page="& i &""">"& i &"</a> ")
 		End If
 	Next
 
 	If PageCount > Page Then
-		Call Append("<a href=""?page="& Page + 1 & Condition &""">下页</a> ")
+		Call Append("<a href="""& URL &"page="& Page + 1 &""">下页</a> ")
 	End If
 
 	If StartPage + 9 < PageCount Then
-		Call Append("<a href=""?page="& PageCount & Condition &""">"& PageCount &"...</a>")
+		Call Append("<a href="""& URL &"page="& PageCount &""">"& PageCount &"...</a>")
 	End If
 End Sub
 
