@@ -75,7 +75,7 @@ RQ.UserViewTopicStyle = IIF(RQ.UserViewTopicStyle > 0, RQ.UserViewTopicStyle, In
 
 '根据显示样式读取数据库
 If RQ.UserViewTopicStyle = 0 Then
-	strPre = " p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM gb_posts p"
+	strPre = " p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM "& TablePre &"posts p"
 Else
 	strPre = " p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, m.designation, m.avatar FROM "& TablePre &"posts p LEFT JOIN "& TablePre &"memberfields m ON p.uid = m.uid"
 End If
