@@ -85,6 +85,7 @@ With Cmd
 		PostListArray = 0
 	End If
 	RecordCount = .Parameters.Item(0)
+	PageCount = ABS(Int(-(RecordCount / IntCode(RQ.Topic_Settings(4)))))
 End With
 Set Cmd = Nothing
 dbQueryNum = dbQueryNum + 1
