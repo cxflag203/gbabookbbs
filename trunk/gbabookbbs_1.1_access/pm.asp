@@ -160,7 +160,7 @@ Sub Reply()
 		Message = Replace(Message, vbCrLf, "<br />")
 		PostTime = SafeRequest(2, "posttime", 2, Now(), 0)
 
-		RQ.Execute("INSERT INTO "& TablePre &"pm (msgfrom, msgfromid, msgtoid, message, remessage, posttime) VALUES ('"& RQ.UserName &"', "& RQ.UserID &", "& PmInfo(0, 0) &", '"& Message &"', #"& PmInfo(1, 0) &"#, '"& PostTime &"')")
+		RQ.Execute("INSERT INTO "& TablePre &"pm (msgfrom, msgfromid, msgtoid, message, remessage, posttime) VALUES ('"& RQ.UserName &"', "& RQ.UserID &", "& PmInfo(0, 0) &", '"& Message &"', '"& PmInfo(1, 0) &"', #"& PostTime &"#)")
 
 		RQ.Execute("DELETE FROM "& TablePre &"pm WHERE pmid = "& PmID)
 	
