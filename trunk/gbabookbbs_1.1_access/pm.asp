@@ -199,7 +199,7 @@ Sub Save()
 
 	If PmInfo(4, 0) = 0 Then
 		Message = RQ.UserName &":"& PmInfo(2, 0) &"<br />"& PmInfo(0, 0) &":"& PmInfo(1, 0)
-		RQ.Execute("INSERT INTO "& TablePre &"pms (pmid, uid, message, posttime) VALUES (999, "& RQ.UserID &", '"& Message &"', #"& PmInfo(3, 0) &"#)")
+		RQ.Execute("INSERT INTO "& TablePre &"pms (pmid, uid, message, posttime) VALUES ("& PmID &", "& RQ.UserID &", '"& Message &"', #"& PmInfo(3, 0) &"#)")
 	End If
 
 	IfSaved = True
