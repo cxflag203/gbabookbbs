@@ -595,7 +595,7 @@ Sub Search()
 			Page = SafeRequest(3, "page", 0, 1, 0)
 			Page = IIF(Page > PageCount, PageCount, Page)
 
-			strSQL = "SELECT TOP 50 mp.province, mp.area, mp.birthyear, mp.birthmonth, mp.birthday, m.username FROM "& TablePre &"memberprofiles mp INNER JOIN "& TablePre &"members m ON mp.uid = m.uid WHERE 1 = 1"& SqlWhere
+			strSQL = "SELECT TOP 50 mp.uid, mp.province, mp.area, mp.birthyear, mp.birthmonth, mp.birthday, m.username FROM "& TablePre &"memberprofiles mp INNER JOIN "& TablePre &"members m ON mp.uid = m.uid WHERE 1 = 1"& SqlWhere
 
 			If Page > 1 Then
 				strSQL = strSQL &" AND mp.uid < (SELECT MIN(uid) FROM (SELECT TOP "& 50 * (Page - 1) &" mp.uid FROM "& TablePre &"memberprofiles mp INNER JOIN "& TablePre &"members m ON mp.uid = m.uid WHERE 1 = 1"& SqlWhere &" ORDER BY uid DESC) AS tblTemp)"
@@ -739,7 +739,7 @@ Sub Search()
 			Response.Write "找到"& RecordCount &"个<p><table border=""0"" cellpadding=""2"" cellspacing=""2"" width=""100%"">"
 
 			For i = 0 To UBound(MemberListArray, 2)
-				Response.Write IIF(i Mod 2 = 0, "<tr>", "") &"<td width=""33%""><a href=""?u="& MemberListArray(5, i) &""" title="""& MemberListArray(0, i) & MemberListArray(1, i) &""" onclick=""return shows3(this.href);"">"& MemberListArray(5, i) &"</a> ("& MemberListArray(2, i) &"-"& MemberListArray(3, i) &"-"& MemberListArray(4, i) &")</td>"& IIF(i Mod 2 <> 0, "</tr>", "")
+				Response.Write IIF(i Mod 2 = 0, "<tr>", "") &"<td width=""33%""><a href=""?uid="& MemberListArray(0, i) &""" title="""& MemberListArray(1, i) & MemberListArray(2, i) &""" onclick=""return shows3(this.href);"">"& MemberListArray(6, i) &"</a> ("& MemberListArray(3, i) &"-"& MemberListArray(4, i) &"-"& MemberListArray(5, i) &")</td>"& IIF(i Mod 2 <> 0, "</tr>", "")
 			Next
 
 			Erase MemberListArray
@@ -798,6 +798,7 @@ Sub Main()
 	If Not IsArray(UserInfo) Then
 		Call RQ.showTips("用户不存在或者已经被删除。", "", "")
 	End If
+	UserName = Server.URLEncode(UserInfo(1, 0))
 
 	UserProfile = RQ.Query("SELECT profile, constellation FROM "& TablePre &"memberprofiles WHERE uid = "& UserInfo(0, 0))
 	Call closeDataBase()
