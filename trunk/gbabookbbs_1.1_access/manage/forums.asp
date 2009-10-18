@@ -121,11 +121,11 @@ Sub Save_Forum()
 	Forum_GetAttachPerm = Replace(SafeRequest(2, "getattachperm", 1, "", 0), " ", "")
 
 	'验证版面是否存在帖子分类
-	TopicTypeInfo = RQ.Query("SELECT TOP 1 1 FROM "& TablePre &"topictypes WHERE fid = "& ForumID)
-	If Not IsArray(TopicTypeInfo) Then
-		F_ShowTopicType = 0
-		F_ChooseTopicType = 0
-	End If
+	'TopicTypeInfo = RQ.Query("SELECT TOP 1 1 FROM "& TablePre &"topictypes WHERE fid = "& ForumID)
+	'If Not IsArray(TopicTypeInfo) Then
+	'	F_ShowTopicType = 0
+	'	F_ChooseTopicType = 0
+	'End If
 
 	If Action = "save_forum" Then
 		DisplayOrder = Conn.Execute("SELECT IIF(MAX(displayorder) IS NULL, 0, MAX(displayorder)) + 1 FROM "& TablePre &"forums WHERE parentid = 0")(0)
