@@ -305,7 +305,7 @@ Sub Main()
 		Else
 			'否则显示用户信息
 			Call closeDatabase()
-			Response.Redirect "profile.asp?u="& PostInfo(2, 0) &"&pid="& PostID
+			Response.Redirect "profile.asp?uid="& PostInfo(1, 0) &"&pid="& PostID
 		End If
 	End If
 

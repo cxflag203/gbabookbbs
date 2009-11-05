@@ -270,7 +270,7 @@ Sub DeletePost()
 		Posts = Conn.Execute("SELECT COUNT(pid) - 1 FROM "& TablePre &"posts WHERE tid = "& PostInfo(0, 0))(0)
 
 		'发言是否有附件
-		Attachments = Conn.Execute("SELECT COUNT(aid) FROM "& TablePre &"attachments WHERE pid = "& PostID)(0)
+		Attachments = Conn.Execute("SELECT COUNT(aid) FROM "& TablePre &"attachments WHERE tid = "& PostInfo(0, 0))(0)
 		IfAttachment = IIF(Attachments = 0, 0, 1)
 
 		'更新版面回复统计
@@ -320,7 +320,7 @@ Sub Main()
 		Else
 			'否则显示用户信息
 			Call closeDatabase()
-			Response.Redirect "profile.asp?u="& PostInfo(2, 0) &"&pid="& PostID
+			Response.Redirect "profile.asp?uid="& PostInfo(1, 0) &"&pid="& PostID
 		End If
 	End If
 

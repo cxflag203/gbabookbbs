@@ -123,7 +123,7 @@ Function ShowCreditsHidden(str)
 	regEx.Global = False
 	For Each Match In Matches
 		If RQ.UserCredits < IntCode(Match.SubMatches(0)) And Not RQ.IsModerator Then
-			str = regEx.Replace(str, "<div class=""viewdenied"" style=""width: 300px;"">本帖隐藏的内容需要"& RQ.Other_Settings(0) &"达到$1才可以浏览</div>")
+			str = regEx.Replace(str, "<div class=""viewdenied"">本帖隐藏的内容需要"& RQ.Other_Settings(0) &"达到$1才可以浏览</div>")
 		Else
 			str = regEx.Replace(str, "<div class=""viewdenied"">本帖隐藏的内容需要"& RQ.Other_Settings(0) &"达到$1才可以浏览：<br /><span class=""pink"">$2</span></div>")
 		End If
@@ -152,7 +152,7 @@ For i = 0 To CountArray
 			If Not Conn.Execute("SELECT TOP 1 1 FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" AND "& IIF(RQ.UserID > 0, "uid = "& RQ.UserID, "uid = 0 AND userip = '"& RQ.UserIP &"'")).EOF Then
 				PostListArray(5, i) = Preg_Replace(PostListArray(5, i), "\[hide\](.+?)\[\/hide\]", "<div class=""viewdenied"">本帖隐藏的内容需要回复才可以浏览：<br /><span class=""pink"">$1</span></div>")
 			Else
-				PostListArray(5, i) = Preg_Replace(PostListArray(5, i), "\[hide\](.+?)\[\/hide\]", "<div class=""viewdenied"" style=""width: 300px;"">本帖隐藏的内容需要回复才可以浏览</div>")
+				PostListArray(5, i) = Preg_Replace(PostListArray(5, i), "\[hide\](.+?)\[\/hide\]", "<div class=""viewdenied"">本帖隐藏的内容需要回复才可以浏览</div>")
 			End If
 			dbQueryNum = dbQueryNum + 1
 		End If
