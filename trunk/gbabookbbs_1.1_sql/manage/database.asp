@@ -26,7 +26,7 @@ AdminFooter()
 Sub ExecuteSQL()
 	Dim strSQL, n
 
-	strSQL = SafeRequest(2, "sql", 1, "", 0)
+	strSQL = Request.Form("sql")
 	If Len(strSQL) = 0 Then
 		Call AdminshowTips("请输入要执行的SQL语句。", "")
 	End If

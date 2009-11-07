@@ -96,7 +96,7 @@ If Not IsArray(PostListArray) Then
 End If
 
 '读取投票信息
-If TopicInfo(9, 0) = 1 Then
+If TopicInfo(9, 0) = 1 And Page = 1 Then
 	Call Include("./include/poll.inc.asp")
 	PostListArray(5, 0) = PostListArray(5, 0) & getPollContent()
 End If
@@ -193,7 +193,7 @@ For i = 0 To CountArray
 		'是否游客发言
 		If PostListArray(2, i) > 0 Then
 			If PostListArray(7, i) = 0 Then
-				Response.Write "<a href=""pm.asp?action=send&u="& PostListArray(3, i) &""" onclick=""return shows(this.href);"">---</a><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""showun"" onclick=""return shows3(this.href);"">"& PostListArray(4, i) &"</a>"
+				Response.Write "<a href=""pm.asp?action=send&u="& Server.URLEncode(PostListArray(3, i)) &""" onclick=""return shows(this.href);"">---</a><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""showun"" onclick=""return shows3(this.href);"">"& PostListArray(4, i) &"</a>"
 			Else
 				Response.Write "---<a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""showun"" onclick=""return shows3(this.href);"">"& PostListArray(4, i) &"</a>"
 			End If
@@ -216,7 +216,7 @@ For i = 0 To CountArray
 		End If
 	Else
 		'带头像的样式
-		Response.Write "<div id=""userinfo"& PostListArray(0, i) &""" class=""userinfopanel""><div id=""userinfo"& PostListArray(0, i) &"_ma"" class=""userinfoa""></div><div class=""panelac""><a href=""pm.asp?action=send&u="& PostListArray(3, i) &""" class=""author"" onclick=""return shows(this.href);"">发送传呼</a><br /><a href=""?fid="& RQ.ForumID &"&tid="& RQ.TopicID &"&authorid="& PostListArray(2, i) &""" class=""author"">只看该人</a></div></div><div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
+		Response.Write "<div id=""userinfo"& PostListArray(0, i) &""" class=""userinfopanel""><div id=""userinfo"& PostListArray(0, i) &"_ma"" class=""userinfoa""></div><div class=""panelac""><a href=""pm.asp?action=send&u="& Server.URLEncode(PostListArray(3, i)) &""" class=""author"" onclick=""return shows(this.href);"">发送传呼</a><br /><a href=""?fid="& RQ.ForumID &"&tid="& RQ.TopicID &"&authorid="& PostListArray(2, i) &""" class=""author"">只看该人</a></div></div><div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
 
 		If PostListArray(7, i) = 0 Then
 			If PostListArray(2, i) > 0 Then
@@ -258,6 +258,13 @@ End If
 <% If RQ.UserLeagueGroupID = 1 Or RQ.UserLeagueGroupID = 2 Then %>【<a href="topiccp.asp?action=leaguetopic&tid=<%= RQ.TopicID %>" onClick="return shows(this.href);">联盟</a>】<% End If %>
 <% End If %>
 <p>
+<script type="text/javascript">
+document.body.ondblclick = function(){
+	if (parent.$('<%= CacheName %>bodys')){
+		parent.$('<%= CacheName %>bodys').cols = parent.$('<%= CacheName %>bodys').cols !== "0,100%" ? "0,100%" : "50%,50%";
+	}
+}
+</script>
 <%
 '当前用户组是否允许回帖
 If RQ.AllowReply = 0 Then
@@ -426,14 +433,7 @@ window.onload = function() {
 </script>
 <% End If %>
 <script type="text/javascript" src="js/ajax.js"></script>
-<script type="text/javascript">
-document.body.ondblclick = function(){
-	if (parent.$('<%= CacheName %>bodys')){
-		parent.$('<%= CacheName %>bodys').cols = parent.$('<%= CacheName %>bodys').cols !== "0,100%" ? "0,100%" : "50%,50%";
-	}
-}
-f_autowap();
-</script>
+<script type="text/javascript">f_autowap();</script>
 <p><span class="blue">回帖请遵守本站规则，如果您不是很清楚建议您仔细阅读<a href="htmls/help.html" target="_blank"><span class="blue underline">用户必读</span></a>。</span>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
