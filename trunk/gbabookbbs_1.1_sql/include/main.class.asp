@@ -12,7 +12,7 @@ Class Cls_Forum
 
 	'版面内容
 	Public ForumInfo, Forum_Name, Forum_ParentID, Forum_Childs, Forum_RootFID, Forum_Topics
-	Public Forum_Posts, Forum_Moderators, Forum_ViewPerm, Forum_PostTopicPerm, Forum_PostReplyPerm
+	Public Forum_Posts, Forum_Rules, Forum_Redirect, Forum_Moderators, Forum_ViewPerm, Forum_PostTopicPerm, Forum_PostReplyPerm
 	Public Forum_PostAttachPerm, Forum_GetAttachPerm, Forum_TopicType
 
 	'联盟内容
@@ -163,26 +163,35 @@ Class Cls_Forum
 			Forum_Childs = ForumInfo(3, 0)
 			Forum_RootFID = ForumInfo(4, 0)
 			Forum_Topics = ForumInfo(6, 0)
-			Forum_Moderators = ForumInfo(22, 0)
-			Forum_ViewPerm = ForumInfo(23, 0)
-			Forum_PostTopicPerm = ForumInfo(24, 0)
-			Forum_PostReplyPerm = ForumInfo(25, 0)
-			Forum_PostAttachPerm = ForumInfo(26, 0)
-			Forum_GetAttachPerm = ForumInfo(27, 0)
-			Forum_TopicType = ForumInfo(28, 0)
+			Forum_Rules = ForumInfo(24, 0)			
+			Forum_Redirect = ForumInfo(26, 0)
+			Forum_Moderators = ForumInfo(27, 0)
+			Forum_ViewPerm = ForumInfo(28, 0)
+			Forum_PostTopicPerm = ForumInfo(29, 0)
+			Forum_PostReplyPerm = ForumInfo(30, 0)
+			Forum_PostAttachPerm = ForumInfo(31, 0)
+			Forum_GetAttachPerm = ForumInfo(32, 0)
+			Forum_TopicType = ForumInfo(33, 0)
 
-			F_AllowPost = ForumInfo(9, 0)
-			F_AdultingPost = ForumInfo(10, 0)
-			F_ShowTopicType = ForumInfo(11, 0)
-			F_ChooseTopicType = ForumInfo(12, 0)
-			F_AllowPollTopic = ForumInfo(13, 0)
-			F_AutoClose = ForumInfo(14, 0)
-			F_RecycleBin = ForumInfo(15, 0)
-			F_VisitNdCredits = ForumInfo(16, 0)
-			F_PostNdCredits = ForumInfo(17, 0)
-			F_ReplyNdCredits = ForumInfo(18, 0)
-			F_AnonymityNdCredits = ForumInfo(19, 0)
-			F_HtmlNdCredits = ForumInfo(20, 0)
+			F_AllowPost = ForumInfo(10, 0)
+			F_AdultingPost = ForumInfo(11, 0)
+			F_ShowTopicType = ForumInfo(12, 0)
+			F_ChooseTopicType = ForumInfo(13, 0)
+			F_AllowPollTopic = ForumInfo(14, 0)
+			F_AutoClose = ForumInfo(15, 0)
+			F_RecycleBin = ForumInfo(16, 0)
+			F_VisitNdCredits = ForumInfo(17, 0)
+			F_PostNdCredits = ForumInfo(18, 0)
+			F_ReplyNdCredits = ForumInfo(19, 0)
+			F_AnonymityNdCredits = ForumInfo(20, 0)
+			F_HtmlNdCredits = ForumInfo(21, 0)
+
+			'如果设置了版面跳转则直接跳转
+			If Len(Forum_Redirect) > 0 Then
+				Call closeDatabase()
+				Response.Redirect Forum_Redirect
+				Response.End()
+			End If
 
 			'检查当前用户的浏览权限
 			If Len(Forum_ViewPerm) > 0 And Not InStr(","& Forum_ViewPerm &",", ","& UserGroupID &",") > 0 Then
@@ -725,7 +734,7 @@ Class Cls_Forum
 	'页面头部内容
 	'========================================================
 	Public Sub Header()
-		Response.Write "<html><head><meta http-equiv=""Content-Type"" content=""text/html; charset="& Response.Charset &""" /><meta name=""keywords"" content="""& Base_Settings(1) &""" /><meta name=""description"" content="""& Base_Settings(2) &""" /><title>"& IIF(Len(PageTitle) > 0, PageTitle &" - ", "") & IIF(Len(Forum_Name) > 0, Forum_Name &" - ", "") & Base_Settings(0) &" - Powered by GBABook</title><link rel=""stylesheet"" href=""images/common/common.css"" /><script type=""text/javascript"">var bbsidentify = '"& CacheName &"';</script><script type=""text/javascript"" src=""js/common.js""></script>"& IIF(Len(PageBaseTarget) > 0, "<base target="""& PageBaseTarget &""" />", "") &"</head>"
+		Response.Write "<html><head><meta http-equiv=""Content-Type"" content=""text/html; charset="& Response.Charset &""" /><meta name=""keywords"" content="""& Base_Settings(1) &""" /><meta name=""description"" content="""& Base_Settings(2) &""" /><title>"& IIF(Len(PageTitle) > 0, PageTitle &" - ", "") & IIF(Len(Forum_Name) > 0, Forum_Name &" - ", "") & Base_Settings(0) &" - Powered by GBABOOK</title><link rel=""stylesheet"" href=""images/common/common.css"" /><script type=""text/javascript"">var bbsidentify = '"& CacheName &"';</script><script type=""text/javascript"" src=""js/common.js""></script>"& IIF(Len(PageBaseTarget) > 0, "<base target="""& PageBaseTarget &""" />", "") &"</head>"
 	End Sub
 
 	'========================================================
@@ -762,6 +771,14 @@ Class Cls_Forum
 		Response.Write "</p></div></div></td><td class=""transborder"" width=""8"">&nbsp;</td></tr><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""transborder"">&nbsp;</td><td class=""transborder"" width=""8"">&nbsp;</td></tr></table>"
 		Footer()
 		Response.End()
+	End Sub
+
+	Public Sub FlatHeader()
+		Response.Write "<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd""><html xmlns=""http://www.w3.org/1999/xhtml""><head><meta http-equiv=""Content-Type"" content=""text/html; charset=utf-8"" /><title>"& IIF(Len(PageTitle) > 0, PageTitle &" - ", "") & IIF(Len(Forum_Name) > 0, Forum_Name &" - ", "") & Base_Settings(0) &" - Powered by GBABOOK</title><meta name=""keywords"" content="""" /><meta name=""description"" content="" Discuz! Board  - Discuz! Board"" /><meta http-equiv=""x-ua-compatible"" content=""ie=7"" /><link rel=""stylesheet"" type=""text/css"" href=""forumdata/cache/style_1.css"" /><link rel=""stylesheet"" type=""text/css"" href=""forumdata/cache/style_1_append.css"" /><script type=""text/javascript"">var IMGDIR = 'images/default';var attackevasive = '0';var gid = 0;gid = parseInt('0');var fid = parseInt('0');var tid = parseInt('0');</script><script src=""include/javascript/common.js"" type=""text/javascript""></script><script src=""include/javascript/menu.js"" type=""text/javascript""></script><script src=""include/javascript/ajax.js"" type=""text/javascript""></script></head><body onkeydown=""if(event.keyCode==27) return false;""><div id=""append_parent""></div><div id=""ajaxwaitid""></div><div class=""wrap""><div id=""header""><h2><a href=""index.php"" title=""Discuz! Board""><img src=""images/default/logo.gif"" alt=""Discuz! Board"" border=""0"" /></a></h2><div id=""ad_headerbanner""></div></div><div id=""menu""><ul><li><cite><a href=""space.php?action=viewpro&amp;uid=1"">admin</a></cite></li><li><a href=""logging.php?action=logout"" class=""notabs"">退出</a></li><li><a href=""pm.php"" target=""_blank"">短消息</a></li><li><a href=""search.php"">搜索</a></li><li id=""my"" class=""dropmenu"" onmouseover=""showMenu(this.id)""><a href=""my.php"">我的</a></li><li id=""memcp"" class=""dropmenu"" onmouseover=""showMenu(this.id)""><a href=""memcp.php"">控制面板</a></li><li><a href=""magic.php"">道具</a></li><li><a href=""admincp.php"" target=""_blank"">系统设置</a></li><li><a href=""faq.php"">帮助</a></li></ul></div>"
+	End Sub
+
+	Public Sub FlatFooter()
+		Response.Write "</div><ul class=""popupmenu_popup headermenu_popup"" id=""memcp_menu"" style=""display: none""><li><a href=""memcp.php"">控制面板首页</a></li><li><a href=""memcp.php?action=profile"">编辑个人资料</a></li><li><a href=""memcp.php?action=credits"">积分交易</a></li><li><a href=""memcp.php?action=creditslog"">积分记录</a></li><li><a href=""memcp.php?action=usergroups"">公众用户组</a></li><li><a href=""memcp.php?action=spacemodule"" target=""_blank"">个人空间管理</a></li></ul><ul class=""popupmenu_popup headermenu_popup"" id=""my_menu"" style=""display: none""><li><a href=""my.php?item=threads"">我的话题</a></li><li><a href=""my.php?item=favorites&amp;type=thread"">我的收藏</a></li><li><a href=""my.php?item=subscriptions"">我的订阅</a></li><li><a href=""my.php?item=grouppermission"">我的权限</a></li><li><a href=""my.php?item=polls&amp;type=poll"">我的投票</a></li></ul><div id=""ad_footerbanner1""></div><div id=""ad_footerbanner2""></div><div id=""ad_footerbanner3""></div><div id=""footer""><div class=""wrap""><div id=""footlinks""><p>现在时间是 "& Now() &"&nbsp;&nbsp;<a href=""http://www.miibeian.gov.cn/"" target=""_blank"">沪ICP备05020836号</a></p><p><a href=""member.php?action=clearcookies&amp;formhash=cc2271da"">清除 Cookies</a> - <a href=""wap/"" target=""_blank"">WAP</a> - <span class=""scrolltop"" onclick=""window.scrollTo(0,0);"">TOP</span></p></div><a href=""http://www.discuz.net"" target=""_blank"" title=""Powered by Discuz!""><img src=""images/default/discuz_icon.gif"" border=""0"" alt=""Discuz!"" /></a><p id=""copyright""> Powered by <strong><a href=""http://www.gbabook.net/"" target=""_blank"">GBABOOK BBS</a></strong> <em>"& SHOWVERSION &"</em> &copy; 2004-2009</p><p id=""debuginfo"">Processed in "& FormatNumber(Timer() - StartTime, 6, -1) &" second(s), "& dbQueryNum &" queries.</p></div></div></body></html>"
 	End Sub
 End Class
 %>
