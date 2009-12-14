@@ -221,7 +221,7 @@ Sub Show_Topics()
 				Response.Write "【<a href=""?fid="& RQ.ForumID &"&typeid="& TopicListArray(1, i) &""" target=""_self"">"& ObjDictionary.Item(TopicListArray(1, i)) &"</a>】"
 			End If
 
-			Response.Write "<a href=""viewtopic.asp?fid="& RQ.ForumID &"&tid="& TopicListArray(0, i) &""" title='【"& TopicListArray(6, i) &" "& TopicListArray(2, i) &"】'>"& TopicListArray(3, i) &" ("& TopicListArray(5, i) &"/"& TopicListArray(4, i) &")</a><br />"
+			Response.Write "<a href=""viewtopic.asp?fid="& RQ.ForumID &"&tid="& TopicListArray(0, i) &""" title='【"& TopicListArray(8, i) &" "& TopicListArray(5, i) &"】'>"& TopicListArray(6, i) &" ("& TopicListArray(10, i) &"/"& TopicListArray(9, i) &")</a><br />"
 		Next
 
 		Erase TopicListArray
