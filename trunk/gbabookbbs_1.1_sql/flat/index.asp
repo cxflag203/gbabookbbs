@@ -43,7 +43,7 @@ Sub Main()
 					If RQ.UserCredits >= f_ListArray(9, i) Or f_ListArray(9, i) = 0 Then
 						If Len(f_ListArray(8, i)) > 0 Then
 							aryLastPost = Split(f_ListArray(8, i), Chr(9))
-							Dict.Item("forum_lp"& f_ListArray(0, i)) = "<a href=""redirect.asp?tid="& aryLastPost(0) &"&goto=lastpost#lastpost"">"& CutString(aryLastPost(1), 34) &"</a><cite>by "& IIF(Len(aryLastPost(3)) > 0, "<a href=""space.asp?username="& Server.URLEncode(aryLastPost(3)) &""">"& aryLastPost(3) &"</a>", "匿名") &" - "& CDate(aryLastPost(2)) &"</cite>"
+							Dict.Item("forum_lp"& f_ListArray(0, i)) = "<a href=""redirect.asp?tid="& aryLastPost(0) &"&goto=lastpost#lastpost"">"& CutString(aryLastPost(1), 34) &"</a> <cite>by "& IIF(Len(aryLastPost(3)) > 0, "<a href=""space.asp?username="& Server.URLEncode(aryLastPost(3)) &""">"& aryLastPost(3) &"</a>", "匿名") &" - "& CDate(aryLastPost(2)) &"</cite> "
 						Else
 							Dict.Item("forum_lp"& f_ListArray(0, i)) = "从未"
 						End If
@@ -109,7 +109,7 @@ Sub Main()
 </div>
 <div id="forumstats">
 <p> 今日: <em><%= TodayPosts %></em>, 昨日: <em>1</em>, 最高日: <em>1</em> &nbsp; <a href="digest.php">精华区</a> <a href="rss.php?auth=btmivDoI%2B7OhNInSB4W0fHANpw" title="RSS 订阅全部版块" target="_blank"><img src="images/common/xml.gif" alt="RSS 订阅全部版块" /></a> </p>
-<p>主题: <em><%= Topics %></em>, 帖子: <em><%= Posts %></em>, 会员: <em>1</em>, 欢迎新会员 <cite><a href="space.php?username=admin">admin</a></cite></p>
+<p>主题: <em><%= Topics %></em>, 帖子: <em><%= Posts %></em>, 会员: <em>1</em>, 欢迎新会员 <cite><a href="space.php?username=admin">admin</a></cite> </p>
 </div>
 </div>
 <div id="ad_text"></div>

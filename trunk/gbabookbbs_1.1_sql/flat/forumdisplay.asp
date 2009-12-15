@@ -122,7 +122,7 @@ Sub Main()
 
 	'第一页读取置顶帖子
 	If Page = 1 Then
-		StickListArray = RQ.Query("SELECT tid, fid, typeid, displayorder, uid, username, usershow, title, posttime, lastupdate, clicks, posts, special, price, ifelite, iflocked, ifanonymity, ifattachment FROM "& TablePre &"topics WHERE tid IN(SELECT tid FROM "& TablePre &"sticktopics WHERE fid = "& RQ.ForumID &") AND displayorder > 0"& IIF(TypeID > 0, " AND typeid = "& TypeID, "") & strAddition &" ORDER BY displayorder DESC, lastupdate DESC")
+		StickListArray = RQ.Query("SELECT tid, fid, typeid, displayorder, uid, username, usershow, title, posttime, lastupdate, lastposter, clicks, posts, special, price, ifelite, iflocked, ifanonymity, ifattachment FROM "& TablePre &"topics WHERE tid IN(SELECT tid FROM "& TablePre &"sticktopics WHERE fid = "& RQ.ForumID &") AND displayorder > 0"& IIF(TypeID > 0, " AND typeid = "& TypeID, "") & strAddition &" ORDER BY displayorder DESC, lastupdate DESC")
 
 		'如果有置顶帖则清除过期的置顶帖
 		If IsArray(StickListArray) Then
@@ -223,7 +223,7 @@ Sub Main()
 </th>
 <td class="nums"><%= subForumListArray(2, i) %></td>
 <td class="nums"><%= subForumListArray(3, i) %></td>
-<td class="lastpost"><% If RQ.UserCredits >= subForumListArray(6, i) Or subForumListArray(6, i) = 0 Then %><% If Len(subForumListArray(5, i)) > 0 Then %><% AryLastPost = Split(subForumListArray(5, i), Chr(9)) %><a href="redirect.asp?tid=<%= AryLastPost(0) %>&goto=lastpost#lastpost"><%= CutString(AryLastPost(1), 34) %></a><cite>by <% If Len(aryLastPost(3)) > 0 Then %><a href="space.asp?username=<%= Server.URLEncode(AryLastPost(3)) %>"><%= aryLastPost(3) %></a><% Else %>匿名<% End If %> - <%= CDate(AryLastPost(2)) %></cite><% Else %>从未<% End If %><% Else %>私密论坛<% End If %></td>
+<td class="lastpost"><% If RQ.UserCredits >= subForumListArray(6, i) Or subForumListArray(6, i) = 0 Then %><% If Len(subForumListArray(5, i)) > 0 Then %><% AryLastPost = Split(subForumListArray(5, i), Chr(9)) %><a href="redirect.asp?tid=<%= AryLastPost(0) %>&goto=lastpost#lastpost"><%= CutString(AryLastPost(1), 34) %></a> <cite>by <% If Len(aryLastPost(3)) > 0 Then %><a href="space.asp?username=<%= Server.URLEncode(AryLastPost(3)) %>"><%= aryLastPost(3) %></a><% Else %>匿名<% End If %> - <%= CDate(AryLastPost(2)) %></cite> <% Else %>从未<% End If %><% Else %>私密论坛<% End If %></td>
 </tr>
 </tbody>
 <% Next %>
@@ -236,8 +236,8 @@ Sub Main()
 <span class="postbtn" id="newspecial" onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu(this.id)"><a href="post.php?action=newthread&amp;fid=2&amp;extra=page%3D1" title="发新话题"><img src="images/default/newtopic.gif" alt="发新话题" /></a></span>
 </div>
 <ul class="popupmenu_popup newspecialmenu" id="newspecial_menu" style="display: none">
-<li><a href="post.php?action=newthread&amp;fid=2&amp;extra=page%3D1">发新话题</a></li>
-<li class="poll"><a href="post.php?action=newthread&amp;fid=2&amp;extra=page%3D1&amp;special=1">发布投票</a></li>
+<li><a href="post.asp?action=newtopic&fid=<%= RQ.ForumID %>&extra=page%3D1">发新话题</a></li>
+<li class="poll"><a href="post.asp?action=newtopic&fid=<%= RQ.ForumID %>&special=1&extra=page%3D1">发布投票</a></li>
 </ul>
 <div id="headfilter">
 <ul class="tabs">
@@ -270,10 +270,10 @@ Sub Main()
 <th class="common"  ondblclick="ajaxget('modcp.asp?action=editsubject&tid=<%= StickListArray(0, i) %>', 'thread_<%= StickListArray(0, i) %>', 'specialposts');doane(event);"><label><img src="images/default/pin_<%= StickListArray(3, i) %>.gif" alt="本版置顶" /> &nbsp;</label>
 <input class="checkbox" type="checkbox" name="topicid" value="<%= StickListArray(0, i) %>" />
 <span id="thread_<%= StickListArray(0, i) %>"><a href="viewthread.asp?fid=<%= StickListArray(1, i) %>&tid=<%= StickListArray(0, i) %>&extra=page%3D1"><%= StickListArray(7, i) %></a></span>
-<% If StickListArray(11, i) > PostsPerPage Then %><%= ListMorePage(StickListArray(0, i), StickListArray(11, i)) %><% End If %></th>
-<td class="author"><cite><% If StickListArray(4, i) = 0 Or StickListArray(16, i) = 1 Then %>匿名<% Else %><a href="space.asp?action=viewpro&uid=<%= StickListArray(4, i) %>"><%= StickListArray(5, i) %></a><% End If %></cite><em><%= FormatDateTime(StickListArray(8, i), 2) %></em></td>
-<td class="nums"><strong><%= StickListArray(11, i) %></strong> / <em><%= StickListArray(10, i) %></em></td>
-<td class="lastpost"><em><a href="redirect.asp?tid=<%= StickListArray(0, i) %>&goto=lastpost#lastpost"><%= StickListArray(9, i) %></a></em><cite>by <a href="space.php?action=viewpro&amp;username=admin">admin</a></cite></td>
+<% If StickListArray(12, i) > PostsPerPage Then %><%= ListMorePage(StickListArray(0, i), StickListArray(12, i)) %><% End If %></th>
+<td class="author"> <cite><% If StickListArray(4, i) = 0 Or StickListArray(17, i) = 1 Then %>匿名<% Else %><a href="space.asp?action=viewpro&uid=<%= StickListArray(4, i) %>"><%= StickListArray(5, i) %></a><% End If %></cite> <em><%= FormatDateTime(StickListArray(8, i), 2) %></em></td>
+<td class="nums"><strong><%= StickListArray(12, i) %></strong> / <em><%= StickListArray(11, i) %></em></td>
+<td class="lastpost"><em><a href="redirect.asp?tid=<%= StickListArray(0, i) %>&goto=lastpost#lastpost"><%= StickListArray(9, i) %></a></em> <cite>by <% If Len(StickListArray(10, i)) > 0 Then %><a href="space.asp?action=viewpro&username=<%= Server.URLEncode(StickListArray(10, i)) %>"><%= StickListArray(10, i) %></a><% Else %>匿名<% End If %></cite> </td>
 </tr>
 </tbody>
 <% Next %>
@@ -290,17 +290,17 @@ Sub Main()
 <!-- topics loop begin -->
 <% If IsArray(TopicListArray) Then %>
 <% For i = 0 To UBound(TopicListArray, 2) %>
-<tbody id="normalthread_21" >
+<tbody id="normalthread_<%= TopicListArray(0, i) %>" >
 <tr>
 <td class="folder"><a href="viewthread.asp?fid=<%= RQ.ForumID %>&tid=<%= TopicListArray(0, i) %>&extra=page%3D1" title="新窗口打开" target="_blank"><img src="images/default/folder_common.gif" /></a></td>
 <td class="icon">&nbsp;</td>
 <th class="common" ondblclick="ajaxget('modcp.asp?action=editsubject&tid=<%= TopicListArray(0, i) %>', 'thread_<%= TopicListArray(0, i) %>', 'specialposts');doane(event);"> <label> &nbsp;</label>
 <input class="checkbox" type="checkbox" name="topicid" value="<%= TopicListArray(0, i) %>" />
 <span id="thread_<%= TopicListArray(0, i) %>"><a href="viewthread.asp?fid=<%= RQ.ForumID %>&tid=<%= TopicListArray(0, i) %>&extra=page%3D1"><%= TopicListArray(6, i) %></a></span>
-<% If TopicListArray(10, i) > PostsPerPage Then %><%= ListMorePage(TopicListArray(0, i), TopicListArray(10, i)) %><% End If %></th>
-<td class="author"><cite><a href="space.php?action=viewpro&amp;uid=1">admin</a> </cite> <em>2009-12-13</em> </td>
-<td class="nums"><strong>0</strong> / <em>1</em></td>
-<td class="lastpost"><em><a href="redirect.php?tid=21&amp;goto=lastpost#lastpost">2009-12-13 11:59:59</a></em> <cite>by <a href="space.php?action=viewpro&amp;username=admin">admin</a></cite> </td>
+<% If TopicListArray(11, i) > PostsPerPage Then %><%= ListMorePage(TopicListArray(0, i), TopicListArray(11, i)) %><% End If %></th>
+<td class="author"> <cite><% If TopicListArray(3, i) = 0 Or TopicListArray(16, i) = 1 Then %>匿名<% Else %><a href="space.amsp?action=viewpro&uid=<%= TopicListArray(3, i) %>"><%= TopicListArray(4, i) %></a><% End If %></cite> <em><%= FormatDateTime(TopicListArray(7, i), 2) %></em></td>
+<td class="nums"><strong><%= TopicListArray(11, i) %></strong> / <em><%= TopicListArray(10, i) %></em></td>
+<td class="lastpost"><em><a href="redirect.asp?tid=<%= TopicListArray(0, i) %>&goto=lastpost#lastpost"><%= TopicListArray(8, i) %></a></em> <cite>by <% If Len(TopicListArray(9, i)) > 0 Then %><a href="space.asp?action=viewpro&username=<%= Server.URLEncode(TopicListArray(9, i)) %>"><%= TopicListArray(9, i) %></a><% End If %></cite> </td>
 </tr>
 </tbody>
 <% Next %>

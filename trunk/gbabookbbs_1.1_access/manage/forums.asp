@@ -386,7 +386,7 @@ Sub Update_Moderators()
 		For i = 0 To UBound(ModeratorListArray, 2)
 			strModerators = strModerators & ModeratorListArray(1, i)
 			If i <> UBound(ModeratorListArray, 2) Then
-				strModerators = strModerators &"_____SPLIT_____"
+				strModerators = strModerators & Chr(9)
 			End If
 		Next
 	End If
@@ -803,7 +803,7 @@ Sub Main()
 <%
 If Len(ForumListArray(5, i)) > 0 Then
 	Response.Write "<select>"
-	TEMP = Split(ForumListArray(5, i), "_____SPLIT_____")
+	TEMP = Split(ForumListArray(5, i), Chr(9))
 	For n = 0 To UBound(TEMP)
 		Response.Write "<option>"& TEMP(n	) &"</option>"
 	Next
