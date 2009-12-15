@@ -530,17 +530,17 @@ Public Sub ShowPageInfo(Page, PageCount, RecordCount, Condition)
 		Else
 			StartPage = PageCount - 9
 		End If
-	ElseIf (Page - 2) > 0 Then
+	ElseIf (Page - 2) > 0 And PageCount > 10 Then
 		StartPage = Page - 2
 	Else
 		StartPage = 1
 	End If
 
-	Response.Write "<div class=""pages_btns""><div class=""pages"">"
+	Response.Write "<div class=""pages"">"
 
 	If PageCount + 1 > Page And Page > 1 Then
 		If StartPage > 1 Then
-			Response.Write "<a href=""?page=1"& Condition &""" class=""first"" title=""第一页"" target=""_self"">1...</a>"
+			Response.Write "<a href=""?page=1"& Condition &""" class=""iffirst"" title=""第一页"" target=""_self"">1...</a>"
 		End If
 		Response.Write "<a href=""?page="& Page - 1 & Condition &""" class=""prev"" title=""上一页"" target=""_self"">&lsaquo;&lsaquo;</a>"
 	End If
@@ -565,7 +565,10 @@ Public Sub ShowPageInfo(Page, PageCount, RecordCount, Condition)
 		Response.Write "<a href=""?page="& PageCount & Condition &""" class=""last"" title=""尾页"" target=""_self"">"& PageCount &"...</a>"
 	End If
 
-	Response.Write "<kbd><input type=""text"" name=""gotopage"" size=""3"" onkeydown=""if(event.keyCode==13) {window.self.location='?page='+this.value+'"& Condition &"'; return false;}"" /></kbd></div>"
+	If PageCount > 10 Then
+		Response.Write "<kbd><input type=""text"" name=""gotopage"" size=""3"" onkeydown=""if(event.keyCode==13) {window.self.location='?page='+this.value+'"& Condition &"'; return false;}"" /></kbd>"
+	End If
+
 	Response.Write "</div>"
 End Sub
 

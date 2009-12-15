@@ -65,9 +65,13 @@ End Function
 Sub Main()
 	Dim f_ListArray, subForumListArray, AryModerators, AryLastPost
 	Dim StickListArray, TopicListArray
-	Dim Page, PageCount, RecordCount, strSQL, strAddition
+	Dim Page, PageCount, RecordCount, strSQL, SqlAddition
 	Dim strTopicTypes, strModerators, strNav, t, n
-	Dim Cmd, tFilter
+	Dim tFilter, blnExistsTopics, CountArray
+
+	If Not IsObject(Conn) Then
+		Call connectDatabase()
+	End If
 
 	'读取子版面
 	If RQ.Forum_Childs > 0 Then
@@ -113,28 +117,28 @@ Sub Main()
 	tFilter = Request.QueryString("filter")
 
 	If tFilter = "digest" Then
-		strAddition = " AND ifelite = 1"
+		SqlAddition = " AND ifelite = 1"
 	ElseIf tFilter = "poll" Then
-		strAddition = " AND special = 1"
+		SqlAddition = " AND special = 1"
+	ElseIf tFilter = "type" And TypeID > 0 Then
+		SqlAddition = " AND typeid = "& TypeID
 	Else
-		strAddition = ""
+		SqlAddition = ""
 	End If
 
 	'第一页读取置顶帖子
 	If Page = 1 Then
-		StickListArray = RQ.Query("SELECT tid, fid, typeid, displayorder, uid, username, usershow, title, posttime, lastupdate, lastposter, clicks, posts, special, price, ifelite, iflocked, ifanonymity, ifattachment FROM "& TablePre &"topics WHERE tid IN(SELECT tid FROM "& TablePre &"sticktopics WHERE fid = "& RQ.ForumID &") AND displayorder > 0"& IIF(TypeID > 0, " AND typeid = "& TypeID, "") & strAddition &" ORDER BY displayorder DESC, lastupdate DESC")
+		StickListArray = RQ.Query("SELECT tid, fid, typeid, displayorder, uid, username, usershow, title, posttime, lastupdate, lastposter, clicks, posts, special, price, ifelite, iflocked, ifanonymity, ifattachment FROM "& TablePre &"topics WHERE tid IN(SELECT tid FROM "& TablePre &"sticktopics WHERE fid = "& RQ.ForumID &") AND displayorder > 0"& SqlAddition &" ORDER BY displayorder DESC, lastupdate DESC")
 
 		'如果有置顶帖则清除过期的置顶帖
 		If IsArray(StickListArray) Then
 			Call RQ.ClearStickTopic()
+			blnExistsTopics = True
 		End If
 	End If
 
-	'计算普通帖子的数量
-	If TypeID > 0 Then
-		RecordCount = Conn.Execute("SELECT COUNT(tid) FROM "& TablePre &"topics WHERE fid = "& RQ.ForumID &" AND typeid = "& TypeID &" AND displayorder = 0")(0)
-		dbQueryNum = dbQueryNum + 1
-	ElseIf Len(strAddition) > 0 Then
+	'获取普通帖子的数量
+	If Len(SqlAddition) > 0 Then
 		RecordCount = Conn.Execute("SELECT COUNT(tid) FROM "& TablePre &"topics WHERE fid = "& RQ.ForumID &" AND displayorder = 0"& SqlAddition)(0)
 		dbQueryNum = dbQueryNum + 1
 	Else
@@ -148,30 +152,23 @@ Sub Main()
 		End If
 	End If
 
-	PageCount = ABS(Int(-(RecordCount / TopicsPerPage)))
-	Page = IIF(Page > PageCount, PageCount, Page)
+	If RecordCount > 0 Then
+		PageCount = ABS(Int(-(RecordCount / TopicsPerPage)))
+		Page = IIF(Page > PageCount, PageCount, Page)
 
-	'读取普通帖子数量
-	Set Cmd = Server.CreateObject("ADODB.Command")
-	With Cmd
-		.ActiveConnection = Conn
-		.CommandType = 4
-		.CommandText = TablePre &"sp_topiclist"
-		.Prepared = True
-		.Parameters.Item("@fid").Value = RQ.ForumID
-		.Parameters.Item("@page").Value = Page
-		.Parameters.Item("@pagesize").Value = TopicsPerPage
-		.Parameters.Item("@typeid").Value = typeid
-		Set Rs = .Execute
-
-		If Not Rs.EOF And Not Rs.BOF Then
-			TopicListArray = Rs.GetRows()
-		Else
-			TopicListArray = 0
+		'拼凑SQL语句，读取普通帖子列表
+		strSQL = "SELECT TOP "& TopicsPerPage &" tid, typeid, displayorder, uid, username, usershow, title, posttime, lastupdate, lastposter, clicks, posts, special, price, ifelite, iflocked, ifanonymity, ifattachment FROM gb_topics WHERE fid = "& RQ.ForumID &" AND displayorder = 0"& SqlAddition
+		If Page > 1 Then
+			strSQL = strSQL &" AND lastupdate < (SELECT MIN(lastupdate) FROM (SELECT TOP "& TopicsPerPage * (Page - 1) &" lastupdate FROM "& TablePre &"topics WHERE fid = "& RQ.ForumID &" AND displayorder = 0"& SqlAddition &" ORDER BY lastupdate DESC) AS tblTemp)"
 		End If
-	End With
-	Set Cmd = Nothing
-	dbQueryNum = dbQueryNum + 1
+		strSQL = strSQL &" ORDER BY lastupdate DESC"
+
+		TopicListArray = RQ.Query(strSQL)
+
+		If IsArray(TopicListArray) Then
+			blnExistsTopics = True
+		End If
+	End If
 
 	'导航路径
 	If RQ.Forum_ParentID = RQ.Forum_RootFID Then
@@ -232,7 +229,7 @@ Sub Main()
 <% End If %>
 <div id="ad_text"></div>
 <div class="pages_btns">
-<div class="pages"><em>&nbsp;21&nbsp;</em><strong>1</strong><a href="forumdisplay.php?fid=2&amp;page=2">2</a><a href="forumdisplay.php?fid=2&amp;page=2" class="next">&rsaquo;&rsaquo;</a></div>
+<% If PageCount > 1 Then Call ShowPageInfo(Page, PageCount, RecordCount, "&fid="& RQ.ForumID &"&typeid="& TypeID &"&filter="& tFilter) End If %>
 <span class="postbtn" id="newspecial" onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu(this.id)"><a href="post.php?action=newthread&amp;fid=2&amp;extra=page%3D1" title="发新话题"><img src="images/default/newtopic.gif" alt="发新话题" /></a></span>
 </div>
 <ul class="popupmenu_popup newspecialmenu" id="newspecial_menu" style="display: none">
@@ -266,9 +263,10 @@ Sub Main()
 <tbody id="stickthread_<%= StickListArray(0, i) %>" >
 <tr>
 <td class="folder"><a href="viewthread.asp?fid=<%= StickListArray(1, i) %>&tid=<%= StickListArray(0, i) %>&extra=page%3D1" title="新窗口打开" target="_blank"><img src="images/default/folder_common.gif" /></a></td>
-<td class="icon">&nbsp;</td>
+<td class="icon"><% If StickListArray(13, i) = 1 Then %><img src="images/default/pollsmall.gif" alt="投票" /><% Else %>&nbsp;<% End If %></td>
 <th class="common"  ondblclick="ajaxget('modcp.asp?action=editsubject&tid=<%= StickListArray(0, i) %>', 'thread_<%= StickListArray(0, i) %>', 'specialposts');doane(event);"><label><img src="images/default/pin_<%= StickListArray(3, i) %>.gif" alt="本版置顶" /> &nbsp;</label>
 <input class="checkbox" type="checkbox" name="topicid" value="<%= StickListArray(0, i) %>" />
+<% If IsObject(Dict) And StickListArray(1, i) = RQ.ForumID And StickListArray(2, i) > 0 Then %><em>[<a href="?fid=<%= RQ.ForumID %>&filter=type&typeid=<%= StickListArray(2, i) %>"><%= Dict(StickListArray(2, i)) %></a>]</em><% End If %>
 <span id="thread_<%= StickListArray(0, i) %>"><a href="viewthread.asp?fid=<%= StickListArray(1, i) %>&tid=<%= StickListArray(0, i) %>&extra=page%3D1"><%= StickListArray(7, i) %></a></span>
 <% If StickListArray(12, i) > PostsPerPage Then %><%= ListMorePage(StickListArray(0, i), StickListArray(12, i)) %><% End If %></th>
 <td class="author"> <cite><% If StickListArray(4, i) = 0 Or StickListArray(17, i) = 1 Then %>匿名<% Else %><a href="space.asp?action=viewpro&uid=<%= StickListArray(4, i) %>"><%= StickListArray(5, i) %></a><% End If %></cite> <em><%= FormatDateTime(StickListArray(8, i), 2) %></em></td>
@@ -277,6 +275,7 @@ Sub Main()
 </tr>
 </tbody>
 <% Next %>
+<% If IsArray(TopicListArray) Then %>
 </table>
 <table summary="forum_<%= RQ.ForumID %>" id="forum_<%= RQ.ForumID %>" cellspacing="0" cellpadding="0">
 <thead class="separation">
@@ -287,15 +286,17 @@ Sub Main()
 </tr>
 </thead>
 <% End If %>
-<!-- topics loop begin -->
+<% End If %>
 <% If IsArray(TopicListArray) Then %>
-<% For i = 0 To UBound(TopicListArray, 2) %>
+<% CountArray = UBound(TopicListArray, 2) %>
+<% For i = 0 To CountArray %>
 <tbody id="normalthread_<%= TopicListArray(0, i) %>" >
 <tr>
 <td class="folder"><a href="viewthread.asp?fid=<%= RQ.ForumID %>&tid=<%= TopicListArray(0, i) %>&extra=page%3D1" title="新窗口打开" target="_blank"><img src="images/default/folder_common.gif" /></a></td>
-<td class="icon">&nbsp;</td>
+<td class="icon"><% If TopicListArray(12, i) = 1 Then %><img src="images/default/pollsmall.gif" alt="投票" /><% Else %>&nbsp;<% End If %></td>
 <th class="common" ondblclick="ajaxget('modcp.asp?action=editsubject&tid=<%= TopicListArray(0, i) %>', 'thread_<%= TopicListArray(0, i) %>', 'specialposts');doane(event);"> <label> &nbsp;</label>
 <input class="checkbox" type="checkbox" name="topicid" value="<%= TopicListArray(0, i) %>" />
+<% If IsObject(Dict) And TopicListArray(1, i) > 0 Then %><em>[<a href="?fid=<%= RQ.ForumID %>&filter=type&typeid=<%= TopicListArray(1, i) %>"><%= Dict(TopicListArray(1, i)) %></a>]</em><% End If %>
 <span id="thread_<%= TopicListArray(0, i) %>"><a href="viewthread.asp?fid=<%= RQ.ForumID %>&tid=<%= TopicListArray(0, i) %>&extra=page%3D1"><%= TopicListArray(6, i) %></a></span>
 <% If TopicListArray(11, i) > PostsPerPage Then %><%= ListMorePage(TopicListArray(0, i), TopicListArray(11, i)) %><% End If %></th>
 <td class="author"> <cite><% If TopicListArray(3, i) = 0 Or TopicListArray(16, i) = 1 Then %>匿名<% Else %><a href="space.amsp?action=viewpro&uid=<%= TopicListArray(3, i) %>"><%= TopicListArray(4, i) %></a><% End If %></cite> <em><%= FormatDateTime(TopicListArray(7, i), 2) %></em></td>
@@ -305,8 +306,9 @@ Sub Main()
 </tbody>
 <% Next %>
 <% End If %>
-<!-- topics loop end -->
+<% If Not blnExistsTopics Then %><tbody><tr><th colspan="6">本版块或指定的范围内尚无主题。</th></tr></tbody><% End If %>
 </table>
+<% If blnExistsTopics Then %>
 <div class="footoperation">
 <input type="hidden" name="operation" />
 <label>
@@ -327,10 +329,11 @@ document.moderate.submit();
 }
 </script>
 </div>
+<% End If %>
 </form>
 </div>
 <div class="pages_btns">
-<div class="pages"><em>&nbsp;21&nbsp;</em><strong>1</strong><a href="forumdisplay.php?fid=2&amp;page=2">2</a><a href="forumdisplay.php?fid=2&amp;page=2" class="next">&rsaquo;&rsaquo;</a></div>
+<% If PageCount > 1 Then Call ShowPageInfo(Page, PageCount, RecordCount, "&fid="& RQ.ForumID &"&typeid="& TypeID &"&filter="& tFilter) End If %>
 <span class="postbtn" id="newspecialtmp" onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu(this.id)"><a href="post.php?action=newthread&amp;fid=2&amp;extra=page%3D1" title="发新话题"><img src="images/default/newtopic.gif" alt="发新话题" /></a></span> </div>
 <script src="include/javascript/post.js" type="text/javascript"></script>
 <script type="text/javascript">

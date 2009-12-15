@@ -515,7 +515,7 @@ Public Sub ShowPageInfo(Page, PageCount, RecordCount, Condition)
 		Else
 			StartPage = PageCount - 9
 		End If
-	ElseIf (Page - 2) > 0 Then
+	ElseIf (Page - 2) > 0 And PageCount > 10 Then
 		StartPage = Page - 2
 	Else
 		StartPage = 1
@@ -547,7 +547,11 @@ Public Sub ShowPageInfo(Page, PageCount, RecordCount, Condition)
 	End If
 
 	If StartPage + 9 < PageCount Then
-		Response.Write "<a href=""?page="& PageCount & Condition &""" class=""last"" title=""尾页"" target=""_self"">"& PageCount &"...</a><kbd><input type=""text"" name=""gotopage"" size=""3"" onkeydown=""if(event.keyCode==13) {window.self.location='?page='+this.value+'"& Condition &"'; return false;}"" /></kbd>"
+		Response.Write "<a href=""?page="& PageCount & Condition &""" class=""last"" title=""尾页"" target=""_self"">"& PageCount &"...</a>"
+	End If
+
+	If PageCount > 10 Then
+		Response.Write "<kbd><input type=""text"" name=""gotopage"" size=""3"" onkeydown=""if(event.keyCode==13) {window.self.location='?page='+this.value+'"& Condition &"'; return false;}"" /></kbd>"
 	End If
 
 	Response.Write "</div>"

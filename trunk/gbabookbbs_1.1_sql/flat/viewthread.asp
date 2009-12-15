@@ -1,16 +1,137 @@
 <!--#include file="../include/inc.asp"-->
 <%
-RQ.FlatHeader()
+Call Main()
+
+'========================================================
+'显示帖子内容
+'========================================================
+Sub Main()
+	Dim TopicInfo, PostListArray
+	Dim TopicTitle, ViewAuthorID, CountArray
+	Dim Page, PageCount, RecordCount, strSQL, SqlAddition
+	Dim strErrTips, strNav, FloorAddtion, theFloorNumber
+	Dim Cmd, Dic, regExpSearch
+
+	TopicInfo = RQ.Query("SELECT fid, displayorder, uid, username, usershow, title, posttime, lastupdate, posts, special, price, ifanonymity, iflocked, iftask, ifattachment FROM "& TablePre &"topics WITH(NOLOCK) WHERE tid = "& RQ.TopicID)
+
+	If Not IsArray(TopicInfo) Then
+		Call RQ.showTips("帖子不存在或者已经被删除。", "", "")
+	End If
+
+	'检查版面id是否正确
+	If TopicInfo(0, 0) <> RQ.ForumID Then
+		Call closeDatabase()
+		Response.Redirect "?fid="& TopicInfo(0, 0) &"&tid="& RQ.TopicID
+		Response.End()
+	End If
+
+	Select Case TopicInfo(1, 0)
+		Case -1
+			'未通过审核的帖子只有管理员和楼主可以浏览和回复
+			If RQ.UserID = 0 Or (Not RQ.IsModerator And RQ.UserID <> TopicInfo(2, 0)) Then 
+				Call RQ.showTips("该帖还没有通过审核，请等待管理员审核帖子。", "", "NOPERM")
+			End If
+		Case -2
+			If Not RQ.IsModerator Then
+				Call RQ.showTips("帖子已经被删除。", "", "")
+			End If
+	End Select
+
+	'如果帖子设置了金钱限制,则检查金钱是否足够
+	If TopicInfo(10, 0) > 0 Then
+		If Not RQ.IsModerator Then
+			If RQ.UserCredits < TopicInfo(10, 0) And RQ.UserID <> TopicInfo(2, 0) Then 
+				Call RQ.showTips(RQ.Other_Settings(0) &"达到"& TopicInfo(10, 0) &"才能查看该帖。", "", "NOPERM")
+			End If
+		End If
+	End If
+
+	TopicTitle = dfc(TopicInfo(5, 0))
+
+	'检查置顶是否到期
+	If TopicInfo(13, 0) = 1 Then
+		Dim TaskInfo
+		TaskInfo = RQ.Query("SELECT expirytime FROM "& TablePre &"topictask WHERE tid = "& RQ.TopicID)
+
+		If IsArray(TaskInfo) Then			
+			If TaskInfo(0, 0) < Now() Then
+				'去除置顶
+				Call RQ.UpdateStickTopic(RQ.ForumID, RQ.TopicID, 0)
+
+				RQ.Execute("UPDATE "& TablePre &"topics SET displayorder = 0, iftask = 0 WHERE tid = "& RQ.TopicID)
+				RQ.Execute("DELETE FROM "& TablePre &"topictask WHERE tid = "& RQ.TopicID)
+			End If
+		Else
+			RQ.Execute("UPDATE "& TablePre &"topics SET iftask = 0 WHERE tid = "& RQ.TopicID)
+		End If
+	End If
+
+	'只看作者
+	ViewAuthorID = SafeRequest(3, "authorid", 0, 0, 0)
+	Page = SafeRequest(3, "page", 0, 1, 0)
+	FloorAddtion = IIF(Page = 1, 0, 1)
+
+	'读取帖子内容
+	Set Cmd = Server.CreateObject("ADODB.Command")
+	With Cmd
+		.ActiveConnection = Conn
+		.CommandType = 4
+		.CommandText = TablePre &"sp_postlist"
+		.Prepared = True
+		.Parameters.Item("@tid").Value = RQ.TopicID
+		.Parameters.Item("@viewauthorid").Value = ViewAuthorID
+		.Parameters.Item("@viewstyle").Value = 1
+		.Parameters.Item("@page").Value = Page
+		.Parameters.Item("@posts").Value = TopicInfo(8, 0)
+		.Parameters.Item("@pagesize").Value = IntCode(RQ.Topic_Settings(4))
+		Set Rs = .Execute
+
+		If Not Rs.EOF And Not Rs.BOF Then
+			PostListArray = Rs.GetRows()
+		Else
+			PostListArray = 0
+		End If
+		RecordCount = .Parameters.Item(0)
+		PageCount = ABS(Int(-(RecordCount / IntCode(RQ.Topic_Settings(4)))))
+	End With
+	Set Cmd = Nothing
+	dbQueryNum = dbQueryNum + 1
+
+	If Not IsArray(PostListArray) Then
+		Call RQ.showTips("帖子出错。", "", "")
+	End If
+
+	'读取投票信息
+	If TopicInfo(9, 0) = 1 And Page = 1 Then
+		Call Include("../include/poll.inc.asp")
+		PostListArray(5, 0) = PostListArray(5, 0) & getPollContent()
+	End If
+
+	'读取附件内容
+	If TopicInfo(14, 0) = 1 Then
+		Call Include("../include/attachment.inc.asp")
+		Call ReadAttachments()
+	End If
+
+	'导航路径
+	If RQ.Forum_ParentID = RQ.Forum_RootFID Then
+		strNav = " &raquo; <a href=""forumdisplay.asp?fid="& RQ.ForumID &""">"& RQ.Forum_Name &"</a> &raquo; "& TopicTitle
+	Else
+		strNav = " &raquo; <a href=""forumdisplay.asp?fid="& RQ.Forum_ParentID &""">"& RQ.Get_Forum_Settings(RQ.Forum_ParentID, 1) &"</a> &raquo; "& RQ.Forum_Name &" &raquo; "& TopicTitle
+	End If
+
+	Call closeDatabase()
+	RQ.FlatHeader()
 %>
 <script src="include/javascript/viewthread.js" type="text/javascript"></script>
 <script type="text/javascript">zoomstatus = parseInt(1);</script>
 <div id="foruminfo">
-  <div id="nav"> <a href="index.php">Discuz! Board</a> &raquo; <a href="forumdisplay.php?fid=2&amp;page=1">默认版块</a> &raquo; 给大家推荐一款很好用的止脱发洗发水，亲身体验 </div>
+  <div id="nav"> <a href="index.asp"><%= RQ.Base_Settings(0) %></a><%= strNav %></div>
   <div id="headsearch"> </div>
 </div>
 <div id="ad_text"></div>
 <div class="pages_btns">
-  <div class="threadflow"><a href="redirect.php?fid=2&amp;tid=2&amp;goto=nextoldset"> &lsaquo;&lsaquo; 上一主题</a> | <a href="redirect.php?fid=2&amp;tid=2&amp;goto=nextnewset">下一主题 &rsaquo;&rsaquo;</a></div>
+  <div class="threadflow"><a href="redirect.asp?fid=<%= RQ.ForumID %>&tid=<%= RQ.TopicID %>&goto=nextoldset"> &lsaquo;&lsaquo; 上一主题</a> | <a href="redirect.asp?fid=<%= RQ.ForumID %>&tid=<%= RQ.TopicID %>&goto=nextnewset">下一主题 &rsaquo;&rsaquo;</a></div>
   <div class="pages"><em>&nbsp;1000&nbsp;</em><strong>1</strong><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=2">2</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=3">3</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=4">4</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=5">5</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=6">6</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=7">7</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=8">8</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=9">9</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=10">10</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=2" class="next">&rsaquo;&rsaquo;</a><a href="viewthread.php?tid=2&amp;extra=page%3D1&amp;page=100" class="last">... 100</a><kbd>
     <input type="text" name="custompage" size="3" onkeydown="if(event.keyCode==13) {window.location='viewthread.php?tid=2&amp;extra=page%3D1&amp;page='+this.value; return false;}" />
     </kbd></div>
@@ -799,5 +920,6 @@ RQ.FlatHeader()
   </form>
 </div>
 <%
-RQ.FlatFooter()
+	RQ.FlatFooter()
+End Sub
 %>
