@@ -216,7 +216,7 @@ For i = 0 To CountArray
 
 		If PostListArray(7, i) = 0 Then
 			If PostListArray(2, i) > 0 Then
-				Response.Write "<span id=""userinfo"& PostListArray(0, i) &"_a""><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""avatar"" onmouseover=""showauthor('userinfo"& PostListArray(0, i) &"')"" onclick=""return shows3(this.href);""><img src="""& IIF(Len(PostListArray(12, i)) > 0, "avatars/"& PostListArray(12, i), "images/common/noavatar.jpg") &""" class=""avatar"" align=""absmiddle"" /></a></span> <a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& PostListArray(3, i) &"</a>"& IIF(Len(PostListArray(10, i)) > 0, " <span class=""des"">("& PostListArray(10, i) &")</span>", "")
+				Response.Write "<span id=""userinfo"& PostListArray(0, i) &"_a""><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""avatar"" onmouseover=""showauthor('userinfo"& PostListArray(0, i) &"')"" onclick=""return shows3(this.href);""><img src="""& IIF(Len(PostListArray(13, i)) > 0, "avatars/"& PostListArray(13, i), "images/common/noavatar.jpg") &""" class=""avatar"" align=""absmiddle"" /></a></span> <a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& PostListArray(3, i) &"</a>"& IIF(Len(PostListArray(11, i)) > 0, " <span class=""des"">("& PostListArray(11, i) &")</span>", "")
 			Else
 				Response.Write "<img src=""images/common/noavatar.jpg"" class=""avatar"" align=""absmiddle"" /> <a class=""guest"">"& PostListArray(3, i) &"</a>"
 			End If		
