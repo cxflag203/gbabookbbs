@@ -77,7 +77,7 @@ RQ.UserViewTopicStyle = IIF(RQ.UserViewTopicStyle > 0, RQ.UserViewTopicStyle, In
 If RQ.UserViewTopicStyle = 0 Then
 	strPre = " p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM "& TablePre &"posts p"
 Else
-	strPre = " p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, m.designation, m.avatar FROM "& TablePre &"posts p LEFT JOIN "& TablePre &"memberfields m ON p.uid = m.uid"
+	strPre = " p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, mf.uid, mf.designation, mf.signature, mf.avatar FROM "& TablePre &"posts p LEFT JOIN "& TablePre &"memberfields mf ON p.uid = mf.uid"
 End If
 
 '连接sql语句
@@ -187,7 +187,7 @@ For i = 0 To CountArray
 			End If
 			Response.Write "<span title="""& PostListArray(6, i) &""" id=""pid"& PostListArray(0, i) &""">"& PostListArray(5, i) &"</span><br />"
 		Else
-			Response.Write PostListArray(5, i) &"<br />"
+			Response.Write PostListArray(5, i) &"<br /><em>(发帖时间:"& PostListArray(6, i) &")</em><br />"
 		End If
 
 		'是否游客发言
@@ -216,23 +216,23 @@ For i = 0 To CountArray
 		End If
 	Else
 		'带头像的样式
-		Response.Write "<div id=""userinfo"& PostListArray(0, i) &""" class=""userinfopanel""><div id=""userinfo"& PostListArray(0, i) &"_ma"" class=""userinfoa""></div><div class=""panelac""><a href=""pm.asp?action=send&u="& Server.URLEncode(PostListArray(3, i)) &""" class=""author"" onclick=""return shows(this.href);"">发送传呼</a><br /><a href=""?fid="& RQ.ForumID &"&tid="& RQ.TopicID &"&authorid="& PostListArray(2, i) &""" class=""author"">只看该人</a></div></div><div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
+		Response.Write "<div id=""userinfo"& PostListArray(0, i) &""" class=""userinfopanel""><div id=""userinfo"& PostListArray(0, i) &"_ma"" class=""userinfoa""></div><div class=""panelac""><a href=""pm.asp?action=send&u="& Server.URLEncode(PostListArray(3, i)) &""" class=""author"" onclick=""return shows(this.href);"">发送传呼</a><br /><a href=""?fid="& RQ.ForumID &"&tid="& RQ.TopicID &"&authorid="& PostListArray(2, i) &""" class=""author"">只看该人</a></div></div><div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &"""><div class=""floor""><em>"& PostListArray(6, i) &" - </em><a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"">"& IIF(Page = 1 And i = 0, "楼主", theFloorNumber &"楼") &"</a></div>"
 
-		If PostListArray(7, i) = 0 Then
-			If PostListArray(2, i) > 0 Then
-				Response.Write "<span id=""userinfo"& PostListArray(0, i) &"_a""><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""avatar"" onmouseover=""showauthor('userinfo"& PostListArray(0, i) &"')"" onclick=""return shows3(this.href);""><img src="""& IIF(Len(PostListArray(11, i)) > 0, "avatars/"& PostListArray(11, i), "images/common/noavatar.jpg") &""" class=""avatar"" align=""absmiddle"" /></a></span> <a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& PostListArray(3, i) &"</a>"& IIF(Len(PostListArray(10, i)) > 0, " <span class=""des"">("& PostListArray(10, i) &")</span>", "")
+		If PostListArray(2, i) > 0 Then
+			If PostListArray(7, i) = 0 Then
+				Response.Write "<span id=""userinfo"& PostListArray(0, i) &"_a""><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""avatar"" onmouseover=""showauthor('userinfo"& PostListArray(0, i) &"')"" onclick=""return shows3(this.href);""><img src="""& IIF(Len(PostListArray(13, i)) > 0, "avatars/"& PostListArray(13, i), "images/common/noavatar.jpg") &""" class=""avatar"" align=""absmiddle"" /></a></span> <a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& PostListArray(3, i) &"</a>"& IIF(Len(PostListArray(11, i)) > 0, " <span class=""des"">("& PostListArray(11, i) &")</span>", "")
 			Else
-				Response.Write "<img src=""images/common/noavatar.jpg"" class=""avatar"" align=""absmiddle"" /> <a class=""guest"">"& PostListArray(3, i) &"</a>"
-			End If		
+				Response.Write "<img src=""images/common/noavatar.jpg"" class=""avatar"" align=""absmiddle"" />&nbsp;<a href=""topicedit.asp?pid="& PostListArray(0, i) &""" onclick=""return shows3(this.href);"">"& PostListArray(4, i) &"</a>"
+			End If
 		Else
-			Response.Write "<img src=""images/common/noavatar.jpg"" class=""avatar"" align=""absmiddle"" />&nbsp;<a href=""topicedit.asp?pid="& PostListArray(0, i) &""" onclick=""return shows3(this.href);"">"& PostListArray(4, i) &"</a>"
+			Response.Write "<img src=""images/common/noavatar.jpg"" class=""avatar"" align=""absmiddle"" />&nbsp;<a class=""guest"">"& PostListArray(3, i) &"</a>"
 		End If
 
 		If PostListArray(8, i) > 0 Then
 			Response.Write " <em>+"& PostListArray(8, i) &"</em>"
 		End If
 
-		Response.Write "<div class=""postmsg"" id=""pid"& PostListArray(0, i) &""" title="""& PostListArray(6, i) &""">"& PostListArray(5, i) &"</div></div>"
+		Response.Write "<div class=""postmsg"" id=""pid"& PostListArray(0, i) &""">"& PostListArray(5, i) &"</div></div>"
 	End If
 Next
 

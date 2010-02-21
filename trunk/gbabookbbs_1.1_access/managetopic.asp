@@ -757,7 +757,7 @@ Sub ManagePosts()
 <hr color="black" />
 <% 
 	If RQ.IsModerator And RQ.AllowManageTopic = 1 And Page = 1 Then
-		Response.Write "<span id=""post_"& PostListArray(0, 0) &""">"& ShowHtml(PostListArray(4, 0), html) &"</span><br />---<span id=""editlink_"& PostListArray(0, 0) &"""></span>"
+		Response.Write "<span id=""post_"& PostListArray(0, 0) &""">"& ShowHtml(PostListArray(4, 0), html) &"<br /><em>(发帖时间:"& PostListArray(5, i) &")</em></span><br />---<span id=""editlink_"& PostListArray(0, 0) &"""></span>"
 
 		If PostListArray(1, 0) > 0 Then
 			Response.Write PostListArray(2, 0) &"&nbsp;&nbsp;"

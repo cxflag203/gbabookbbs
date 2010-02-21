@@ -84,15 +84,16 @@ Sub Show_SetSecquePanel()
 		<option value="2">最喜欢的游戏角色是？</option>
 		<option value="3">最喜欢动漫中的哪个人物？</option>
 		<option value="4">还记得初恋情人的生日吗？</option>
+		<option value="5">谁能够让你一想起来就会心一笑？</option>
 	  </select></td>
 	</tr>
 	<tr>
 	  <td width="40%">回答(20字以内)</td>
-	  <td><input type="text" name="answer" size="25" /></td>
+	  <td><input type="text" name="answer" size="25" class="inputgrey" /></td>
 	</tr>
 	<tr>
 	  <td>当前的登陆密码</td>
-	  <td><input type="password" name="password" size="25" /></td>
+	  <td><input type="password" name="password" size="25" class="inputgrey" /></td>
 	</tr>
 	<tr>
 	  <td>&nbsp;</td>
@@ -168,19 +169,20 @@ Sub Show_ChangePwdPanel()
 		<option value="2">最喜欢的游戏角色是？</option>
 		<option value="3">最喜欢动漫中的哪个人物？</option>
 		<option value="4">还记得初恋情人的生日吗？</option>
+		<option value="5">谁能够让你一想起来就会心一笑？</option>
 	  </select></td>
 	</tr>
 	<tr>
 	  <td width="40%">回答(20字以内)</td>
-	  <td><input type="text" name="answer" size="25" /></td>
+	  <td><input type="text" name="answer" size="25" class="inputgrey" /></td>
 	</tr>
 	<tr>
 	  <td>新密码</td>
-	  <td><input type="password" name="newpassword" size="25" /></td>
+	  <td><input type="password" name="newpassword" size="25" class="inputgrey" /></td>
 	</tr>
 	<tr>
 	  <td>再输入一次新密码</td>
-	  <td><input type="password" name="renewpassword" size="25" /></td>
+	  <td><input type="password" name="renewpassword" size="25" class="inputgrey" /></td>
 	</tr>
 	<tr>
 	  <td>&nbsp;</td>

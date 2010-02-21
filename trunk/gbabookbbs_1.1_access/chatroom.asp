@@ -265,6 +265,9 @@ Sub PostMsg()
 		Message = SafeRequest(2, "message", 1, "", 0)
 	End If
 
+	'词语过滤
+	Message = WordsFilter(Message)
+
 	If Len(CheckContent(Message)) > 0 Then
 		Message = IIF(Len(Message) > 255, Left(Message, 255), Message)
 		RQ.Execute("INSERT INTO "& TablePre &"chatmessages (roomid, uid, usershow, message) VALUES ("& RoomID &", "& RQ.UserID &", '"& RQ.UserName &"', '"& Message &"')")

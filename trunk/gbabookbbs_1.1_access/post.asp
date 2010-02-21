@@ -162,7 +162,7 @@ Sub NewTopic()
 		Message = Message & "<img src=""face/"& Face &".gif"" /><br />"
 	End If
 
-	Message = Message &"<br /><em>(发帖时间:"& Now() &")</em><br />"
+	'Message = Message &"<br /><em>(发帖时间:"& Now() &")</em><br />"
 
 	Temp_AboutLink = SafeRequest(2, "aboutlink", 1, "", 0)
 	Temp_ImgLink = SafeRequest(2, "imglink", 1, "", 0)
@@ -692,7 +692,7 @@ Function Get_AnonymityText()
 		'随机数字如果不在成功几率内则判断为匿名失败
 		If RndNumber > AnonySucRatio Then
 			str = Replace(RQ.Topic_Settings(16), "{username}", RQ.UserName)
-			gblAnonymityResult = 0
+			gblAnonymityResult = -1
 		End If
 	End If
 

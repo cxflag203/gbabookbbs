@@ -536,7 +536,7 @@ Public Sub ShowPageInfo(Page, PageCount, RecordCount, Condition)
 		StartPage = 1
 	End If
 
-	Response.Write "<div class=""pages"">"
+	Response.Write "<div class=""pages_btns""><div class=""pages"">"
 
 	If PageCount + 1 > Page And Page > 1 Then
 		If StartPage > 1 Then
@@ -569,7 +569,7 @@ Public Sub ShowPageInfo(Page, PageCount, RecordCount, Condition)
 		Response.Write "<kbd><input type=""text"" name=""gotopage"" size=""3"" onkeydown=""if(event.keyCode==13) {window.self.location='?page='+this.value+'"& Condition &"'; return false;}"" /></kbd>"
 	End If
 
-	Response.Write "</div>"
+	Response.Write "</div></div>"
 End Sub
 
 '========================================================

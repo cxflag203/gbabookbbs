@@ -88,7 +88,9 @@ Sub UploadAttach()
 		End If
 		Set File = Nothing
 	Next
+
 	Set Upload = Nothing
+	Call closeDatabase()
 End Sub
 
 '========================================================
