@@ -1,4 +1,4 @@
-﻿//鼠标点击链接背景变色
+﻿//鼠标点击链接背景变色，感谢idsol提供
 document.body.onclick = function(e) {
 	e = e ? e : event;
 	var target = e.target ? e.target : e.srcElement;

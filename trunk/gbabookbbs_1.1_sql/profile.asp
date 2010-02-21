@@ -813,6 +813,8 @@ Sub Main()
 <body style="background: #97baf4;">
 <style>
 html { scrollbar-base-color: #97BAF4; scrollbar-face-color: #D4D0C8; scrollbar-shadow-color: #97BAF4; scrollbar-highlight-color: #97BAF4; scrollbar-3dlight-color: #97BAF4; scrollbar-darkshadow-color: #97BAF4; scrollbar-track-color: #97BAF4; scrollbar-arrow-color: #97BAF4 }
+.copyright, .copyright a { margin-top: 100px; text-align:center; font-size: 10px; font-family: Tahoma; color: #97baf4; }
+.copyright a, .copyright a:visited { font-size: 10px; color: #97baf4; }
 </style>
 <div style="text-align: center;">
   <form id="search" method="get" action="?">

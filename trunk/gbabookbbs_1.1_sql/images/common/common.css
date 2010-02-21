@@ -17,7 +17,7 @@ a:hover { background-color: #eff9d0; text-decoration: none; }
 .bluelink:hover { color: #fff; background: #09c; text-decoration: none; }
 .chatlink:link, .chatlink:visited { color: #00f; text-decoration: none; }
 .chatlink:hover { color: #00f; background: none; text-decoration: underline; }
-.showun, .showun:hover { background: #e8e8e8; }
+.showun, .showun:hover { background: #e8e8e8; padding-bottom: 2px; }
 .radio { border: 0px; background: none; vertical-align: middle; height: 16px; }
 .inputgrey { border: #aaa 1px solid; background: #fff; }
 .textareagrey { border: #aaa 1px solid; background: #fff; width: 97%; word-break: break-all; }
@@ -54,7 +54,7 @@ a:hover { background-color: #eff9d0; text-decoration: none; }
 .more span a{ display: block; padding: .2em .2em .1em .2em; }
 .more span a:hover{ background-color: #e8e8e8; color: #000; }
 .more:hover span{ display: block; }
-.tselected { background-color: #eff9d0; }
+.tselected { background-color: #eff9d0; padding-bottom: 2px; }
 
 /* 回复列表 */
 img.avatar { background-color: #fff; border: 1px solid #ccc; padding: 0px; margin: 0 5px; float: left; }
@@ -66,6 +66,7 @@ a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1p
 .author, .author:link, .author:visited { margin-left: 4px; font-family: Verdana; text-decoration: underline; color: #0063dc; font-weight: bold; }
 .author:hover { text-decoration: none; background-color: #0063dc; color: #fff; }
 .floor { float:right; }
+.floor em { font-style: normal; font-family: Verdana; font-size: 10px; color:#999; }
 .floor a:link, .floor a:visited { font-family: Verdana; text-decoration: none; font-size: 11px; color:#999; }
 .floor a:hover { background-color: none; text-decoration: underline; }
 .postmsg { padding:8px 0px 2px 64px; font-family: simsun; }

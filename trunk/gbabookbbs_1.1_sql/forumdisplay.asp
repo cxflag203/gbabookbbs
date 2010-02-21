@@ -99,8 +99,8 @@ Sub Main()
 <script type="text/javascript" src="js/tlistevent.js"></script>
 <script type="text/javascript" src="js/beckon.js"></script>
 <!-- 召唤面板 begin -->
-<div id="floater" style="z-index: 1; position: absolute; top: 405px;">
-<div class="curmove" id="Layer1" style="background: #ffc; border: #ffd05c 1px solid; z-index: 2; left: -750px; width: 350px; height: 167px; position: absolute;">
+<div id="floater" style="position:absolute; width:350px; height:0px; z-index:1; left: 10px; top: 405px">
+<div id="Layer1" style="background: #ffc; border: #ffd05c 1px solid;position:absolute; width:350px; height:167px; z-index:2; left: -750px; top: -165px;" class="curmove">
 <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" height="100%">
 <tr>
 <td height="18" align="center"><table width="100%" border="0" cellspacing="1" cellpadding="0" height="100%">
@@ -122,7 +122,7 @@ Sub Main()
 <td valign="top" width="10"></td>
 <td valign="top"><form action="search.asp" method="get" target="<%= CacheName %>search" onsubmit="javascript:parent.<%= CacheName %>leftsearch.rows='*,355';">
 <input type="hidden" name="action" value="search" />
-<p><strong>站内搜索</strong>
+<strong>站内搜索</strong>
 <p>
 <input name="keyword" size="10" onblur="if(this.value=='')this.value='输入关键字';" onfocus="if(this.value=='输入关键字')this.value='';" value="输入关键字">
 <br />

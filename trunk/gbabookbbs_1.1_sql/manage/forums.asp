@@ -173,23 +173,23 @@ Sub Add_Forum()
 		End If
 
 		Forum_Name = ForumInfo(1, 0)
-		F_AllowPost = ForumInfo(9, 0)
-		F_AdultingPost = ForumInfo(10, 0)
-		F_ShowTopicType = ForumInfo(11, 0)
-		F_ChooseTopicType = ForumInfo(12, 0)
-		F_AllowPollTopic = ForumInfo(13, 0)
-		F_AutoClose = ForumInfo(14, 0)
-		F_RecycleBin = ForumInfo(15, 0)
-		F_VisitNdCredits = ForumInfo(16, 0)
-		F_PostNdCredits = ForumInfo(17, 0)
-		F_ReplyNdCredits = ForumInfo(18, 0)
-		F_AnonymityNdCredits = ForumInfo(19, 0)
-		F_HtmlNdCredits = ForumInfo(20, 0)
-		Forum_ViewPerm = ForumInfo(23, 0)
-		Forum_PostTopicPerm = ForumInfo(24, 0)
-		Forum_PostReplyPerm = ForumInfo(25, 0)
-		Forum_PostAttachPerm = ForumInfo(26, 0)
-		Forum_GetAttachPerm = ForumInfo(27, 0)
+		F_AllowPost = ForumInfo(10, 0)
+		F_AdultingPost = ForumInfo(11, 0)
+		F_ShowTopicType = ForumInfo(12, 0)
+		F_ChooseTopicType = ForumInfo(13, 0)
+		F_AllowPollTopic = ForumInfo(14, 0)
+		F_AutoClose = ForumInfo(15, 0)
+		F_RecycleBin = ForumInfo(16, 0)
+		F_VisitNdCredits = ForumInfo(17, 0)
+		F_PostNdCredits = ForumInfo(18, 0)
+		F_ReplyNdCredits = ForumInfo(19, 0)
+		F_AnonymityNdCredits = ForumInfo(20, 0)
+		F_HtmlNdCredits = ForumInfo(21, 0)
+		Forum_ViewPerm = ForumInfo(28, 0)
+		Forum_PostTopicPerm = ForumInfo(29, 0)
+		Forum_PostReplyPerm = ForumInfo(30, 0)
+		Forum_PostAttachPerm = ForumInfo(31, 0)
+		Forum_GetAttachPerm = ForumInfo(32, 0)
 		strMenu = "编辑版面"
 		strAction = "update_forum"
 	Else
@@ -597,8 +597,8 @@ Sub Update_Merge()
 	End If
 
 	'转移帖子和回复
-	RQ.Execute("UPDATE "& TablePre &"topics SET fid = "& d_ForumID &", typeid = 0 WHERE fid = "& s_ForumID)
 	RQ.Execute("UPDATE "& TablePre &"posts SET fid = "& d_ForumID &" WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& s_ForumID &")")
+	RQ.Execute("UPDATE "& TablePre &"topics SET fid = "& d_ForumID &", typeid = 0 WHERE fid = "& s_ForumID)
 	RQ.Execute("UPDATE "& TablePre &"sticktopics SET fid = "& d_ForumID &" WHERE fid = "& s_ForumID)
 
 	'更新目标版面帖子和回复统计

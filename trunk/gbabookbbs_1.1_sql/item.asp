@@ -98,7 +98,7 @@ End Sub
 Sub ActionOption()
 	Dim ItemInfo
 
-	ItemInfo = RQ.Query("SELECT name, identifier, available FROM "& TablePre &"items WHERE itemid = "& ItemID)
+	ItemInfo = RQ.Query("SELECT name, identifier, available FROM "& TablePre &"items WHERE itemid = "& ItemID &" AND available = 1")
 	If Not IsArray(ItemInfo) Then
 		Call RQ.showTips("没有选择道具或者道具无效。", "", "")
 	End If
@@ -222,9 +222,9 @@ Sub MemberItem()
 	Operation = Request.QueryString("op")
 	Select Case Operation
 		Case "all"
-			MyItemListArray = RQ.Query("SELECT mi.num, it.itemid, it.name, it.description FROM "& TablePre &"memberitems mi INNER JOIN "& TablePre &"items it ON mi.itemid = it.itemid WHERE mi.uid = "& RQ.UserID &" ORDER BY it.displayorder ASC")
+			MyItemListArray = RQ.Query("SELECT mi.num, it.itemid, it.name, it.description FROM "& TablePre &"memberitems mi INNER JOIN "& TablePre &"items it ON mi.itemid = it.itemid WHERE mi.uid = "& RQ.UserID &" AND it.available = 1 ORDER BY it.displayorder ASC")
 		Case "member"
-			MyItemListArray = RQ.Query("SELECT mi.num, it.itemid, it.name, it.description FROM "& TablePre &"memberitems mi INNER JOIN "& TablePre &"items it ON mi.itemid = it.itemid WHERE mi.uid = "& RQ.UserID &" AND it.types = 'member' ORDER BY it.displayorder ASC")
+			MyItemListArray = RQ.Query("SELECT mi.num, it.itemid, it.name, it.description FROM "& TablePre &"memberitems mi INNER JOIN "& TablePre &"items it ON mi.itemid = it.itemid WHERE mi.uid = "& RQ.UserID &" AND it.types = 'member' AND it.available = 1 ORDER BY it.displayorder ASC")
 	End Select
 
 	Call closeDatabase()

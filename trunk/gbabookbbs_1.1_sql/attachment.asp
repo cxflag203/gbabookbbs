@@ -88,7 +88,9 @@ Sub UploadAttach()
 		End If
 		Set File = Nothing
 	Next
+
 	Set Upload = Nothing
+	Call closeDatabase()
 End Sub
 
 '========================================================
@@ -114,13 +116,13 @@ Sub GetAttach()
 	End If
 
 	'当前用户是否有浏览版面的权限
-	RQ.Forum_ViewPerm = RQ.Get_Forum_Settings(AttachInfo(4, 0), 23)
+	RQ.Forum_ViewPerm = RQ.Get_Forum_Settings(AttachInfo(4, 0), 28)
 	If Len(RQ.Forum_ViewPerm) > 0 And Not InStr(","& RQ.Forum_ViewPerm &",", ","& RQ.UserGroupID &",") > 0 Then
 		Call RQ.showTips("抱歉，您当前的用户身份("& RQ.UserGroupName &")还不能浏览该版面。", "", "NOPERM")
 	End If
 
 	'获取版面允许下载附件的用户组列表
-	RQ.Forum_GetAttachPerm = RQ.Get_Forum_Settings(AttachInfo(4, 0), 27)
+	RQ.Forum_GetAttachPerm = RQ.Get_Forum_Settings(AttachInfo(4, 0), 32)
 
 	'根据版面设置判断允许当前用户是否允许下载附件
 	If Len(RQ.Forum_GetAttachPerm) > 0 And Not InStr(","& RQ.Forum_GetAttachPerm &",", ","& RQ.UserGroupID &",") > 0 Then

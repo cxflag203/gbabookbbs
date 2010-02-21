@@ -44,7 +44,7 @@ Sub Transfer()
 	Dim UserName, Num, Password
 	Dim PmMsg
 
-	ItemInfo = RQ.Query("SELECT name FROM "& TablePre &"items WHERE itemid = "& ItemID)
+	ItemInfo = RQ.Query("SELECT name FROM "& TablePre &"items WHERE itemid = "& ItemID &" AND available = 1")
 	If Not IsArray(ItemInfo) Then
 		Call RQ.showTips("道具无效。", "", "")
 	End If
@@ -108,7 +108,7 @@ Sub ForSale()
 	Dim ItemInfo, MemberItemInfo, MarketInfo
 	Dim Num, Price, rePrice, Password
 
-	ItemInfo = RQ.Query("SELECT name FROM "& TablePre &"items WHERE itemid = "& ItemID)
+	ItemInfo = RQ.Query("SELECT name FROM "& TablePre &"items WHERE itemid = "& ItemID &" AND available = 1")
 	If Not IsArray(ItemInfo) Then
 		Call RQ.showTips("道具无效。", "", "")
 	End If
@@ -172,9 +172,9 @@ Sub BuyItem()
 		Call RQ.showTips("请输入正确的购买数量。", "", "")
 	End If
 
-	MarketInfo = RQ.Query("SELECT it.itemid, it.uid, it.price, it.num FROM "& TablePre &"itemmarket it INNER JOIN "& TablePre &"items i ON it.itemid = i.itemid WHERE it.marketid = "& MarketID)
+	MarketInfo = RQ.Query("SELECT it.itemid, it.uid, it.price, it.num FROM "& TablePre &"itemmarket it INNER JOIN "& TablePre &"items i ON it.itemid = i.itemid WHERE it.marketid = "& MarketID &" AND i.available = 1")
 	If Not IsArray(MarketInfo) Then
-		Call RQ.showTips("道具购买无效，可能已经被别人买走了。", "", "")
+		Call RQ.showTips("道具无效或者可能已经被别人买走了。", "", "")
 	End If
 
 	'验证道具数量
@@ -232,37 +232,34 @@ Sub UpdateMyMarket()
 	Dim MarketInfo, MarketListArray, MemberItemInfo
 
 	'取回道具
-	If Len(Request.Form("btngetback")) > 0 Then
-		g_MarketID = NumberGroupFilter(Replace(SafeRequest(2, "g_marketid", 1, "", 0), " ", ""))
-		If Len(g_MarketID) > 0 Then
-			MarketListArray = RQ.Query("SELECT marketid, itemid, num FROM "& TablePre &"itemmarket WHERE marketid IN("& g_MarketID &") AND uid = "& RQ.UserID)
+	g_MarketID = NumberGroupFilter(Replace(SafeRequest(2, "g_marketid", 1, "", 0), " ", ""))
+	If Len(g_MarketID) > 0 Then
+		MarketListArray = RQ.Query("SELECT marketid, itemid, num FROM "& TablePre &"itemmarket WHERE marketid IN("& g_MarketID &") AND uid = "& RQ.UserID)
 
-			If IsArray(MarketListArray) Then
-				For i = 0 To UBound(MarketListArray, 2)
-					MemberItemInfo = RQ.Query("SELECT id FROM "& TablePre &"memberitems WHERE uid = "& RQ.UserID &" AND itemid = "& MarketListArray(1, i))
+		If IsArray(MarketListArray) Then
+			For i = 0 To UBound(MarketListArray, 2)
+				MemberItemInfo = RQ.Query("SELECT id FROM "& TablePre &"memberitems WHERE uid = "& RQ.UserID &" AND itemid = "& MarketListArray(1, i))
 
-					If IsArray(MemberItemInfo) Then
-						RQ.Execute("UPDATE "& TablePre &"memberitems SET num = num + "& MarketListArray(2, i) &" WHERE id = "& MemberItemInfo(0, 0))
-					Else
-						RQ.Execute("INSERT INTO "& TablePre &"memberitems (uid, itemid, num) VALUES ("& RQ.UserID &", "& MarketListArray(1, i) &", "& MarketListArray(2, i) &")")
-					End If
-				Next
-				'取回后删除道具市场的记录
-				RQ.Execute("DELETE FROM "& TablePre &"itemmarket WHERE marketid IN("& g_MarketID &")")
-			End If
-		End If
-
-	'更新价格
-	ElseIf Len(Request.Form("btnupdate")) > 0 Then
-		If Request.Form("marketid").Count > 0 Then
-			For i = 1 To Request.Form("marketid").Count
-				MarketID = IntCode(Request.Form("marketid")(i))
-				Price = IntCode(Request.Form("price")(i))
-				If MarketID > 0 And Price > 0 Then
-					RQ.Execute("UPDATE "& TablePre &"itemmarket SET price = "& Price &" WHERE marketid = "& MarketID &" AND uid = "& RQ.UserID)
+				If IsArray(MemberItemInfo) Then
+					RQ.Execute("UPDATE "& TablePre &"memberitems SET num = num + "& MarketListArray(2, i) &" WHERE id = "& MemberItemInfo(0, 0))
+				Else
+					RQ.Execute("INSERT INTO "& TablePre &"memberitems (uid, itemid, num) VALUES ("& RQ.UserID &", "& MarketListArray(1, i) &", "& MarketListArray(2, i) &")")
 				End If
 			Next
+			'取回后删除道具市场的记录
+			RQ.Execute("DELETE FROM "& TablePre &"itemmarket WHERE marketid IN("& g_MarketID &")")
 		End If
+	End If
+
+	'更新价格
+	If Request.Form("marketid").Count > 0 Then
+		For i = 1 To Request.Form("marketid").Count
+			MarketID = IntCode(Request.Form("marketid")(i))
+			Price = IntCode(Request.Form("price")(i))
+			If MarketID > 0 And Price > 0 Then
+				RQ.Execute("UPDATE "& TablePre &"itemmarket SET price = "& Price &" WHERE marketid = "& MarketID &" AND uid = "& RQ.UserID)
+			End If
+		Next
 	End If
 
 	Call closeDatabase()
@@ -274,7 +271,7 @@ End Sub
 '========================================================
 Sub MyItem()
 	Dim MarketListArray
-	MarketListArray = RQ.Query("SELECT it.marketid, it.price, it.num, i.name FROM "& TablePre &"itemmarket it INNER JOIN "& TablePre &"items i ON it.itemid = i.itemid WHERE it.uid = "& RQ.UserID &" ORDER BY i.displayorder ASC")
+	MarketListArray = RQ.Query("SELECT it.marketid, it.price, it.num, i.name FROM "& TablePre &"itemmarket it INNER JOIN "& TablePre &"items i ON it.itemid = i.itemid WHERE it.uid = "& RQ.UserID &" AND i.available = 1 ORDER BY i.displayorder ASC")
 
 	Call closeDatabase()
 	RQ.Header()
@@ -282,7 +279,7 @@ Sub MyItem()
 <body class="blankbg">
 <h1>我寄卖的道具</h1>
 <p>
-<form name="market" method="post" action="?action=updatemymarket">
+<form name="market" method="post" action="?action=updatemymarket" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
   <table width="98%" border="0" cellpadding="0" cellspacing="0" class="tblborder">
     <tr class="header">
       <td width="10%">取回?</td>
@@ -308,8 +305,7 @@ Sub MyItem()
   </table>
   <% If IsArray(MarketListArray) Then %>
   <p>
-    <input type="submit" name="btnupdate" value="更新价格" class="button" />
-    <input type="submit" name="btngetback" value="取回选中的道具" class="button" />
+    <input type="submit" id="btnsubmit" value="更新道具市场设置" class="button" />
   </p>
   <% End If %>
 </form>
@@ -331,7 +327,7 @@ Sub Main()
 		Call RQ.showTips("道具无效。", "", "")
 	End If
 
-	ItemListArray = RQ.Query("SELECT itemid, name FROM "& TablePre &"items ORDER BY displayorder ASC")
+	ItemListArray = RQ.Query("SELECT itemid, name FROM "& TablePre &"items WHERE available = 1 ORDER BY displayorder ASC")
 	MarketListArray = RQ.Query("SELECT marketid, username, price, num FROM "& TablePre &"itemmarket WHERE itemid = "& ItemID &" ORDER BY price ASC")
 
 	Call closeDatabase()
