@@ -211,7 +211,7 @@ Sub NewTopic()
 
 				'是否使用签名
 				If Len(UserInfo(1, 0)) > 0 Then	
-					Message = Message & "<br />"& UserInfo(1, 0) &"<br />"
+					Message = Message & "<div class=""signature"">"& UserInfo(1, 0) &"</div>"
 				End If
 
 				Erase UserInfo
@@ -484,7 +484,7 @@ Sub NewReply()
 				
 				'是否使用签名
 				If Len(UserInfo(1, 0)) > 0 Then	
-					Message = Message & "<br />"& UserInfo(1, 0) &"<br />"
+					Message = Message & "<div class=""signature"">"& UserInfo(1, 0) &"</div>"
 				End If
 
 				Erase UserInfo

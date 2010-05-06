@@ -171,10 +171,10 @@ Function ParseURL(str)
 	str = regEx.Replace(str, "$1<br /><a href=""$2"" target=""_blank""><img src=""$2"" border=""0"" /></a><br />")
 
 	regEx.Pattern = "([^>=""'\/@]|^)((((https?|ftp):\/\/))([\w\-]+\.)*[:\.@\-\w\u4e00-\u9fa5]+\.([\.a-zA-Z0-9]+|\u4E2D\u56FD|\u7F51\u7EDC|\u516C\u53F8)((\?|\/|:)+[\w\.\/=\?%\-&~`@':+!#]*)*)"
-	str = regEx.Replace(str, "$1<a href=""$2"" target=""_blank"" class=""underline"">$2</a>")
+	str = regEx.Replace(str, "$1<a href=""$2"" target=""_blank"">$2</a>")
 
 	regEx.Pattern = "([^\w>=""'\/@]|^)((www\.)([\w\-]+\.)*[:\.@\-\w\u4e00-\u9fa5]+\.([\.a-zA-Z0-9]+|\u4E2D\u56FD|\u7F51\u7EDC|\u516C\u53F8)((\?|\/|:)+[\w\.\/=\?%\-&~`@':+!#]*)*)"
-	str = regEx.Replace(str, "$1<a href=""http://$2"" target=""_blank"" class=""underline"">$2</a>")
+	str = regEx.Replace(str, "$1<a href=""http://$2"" target=""_blank"">$2</a>")
 
 	Set regEx = Nothing
 	ParseURL = str
