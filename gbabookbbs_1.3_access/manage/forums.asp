@@ -599,8 +599,8 @@ Sub Update_Merge()
 	End If
 
 	'转移帖子和回复
-	RQ.Execute("UPDATE "& TablePre &"topics SET fid = "& d_ForumID &", typeid = 0 WHERE fid = "& s_ForumID)
 	RQ.Execute("UPDATE "& TablePre &"posts SET fid = "& d_ForumID &" WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& s_ForumID &")")
+	RQ.Execute("UPDATE "& TablePre &"topics SET fid = "& d_ForumID &", typeid = 0 WHERE fid = "& s_ForumID)
 	RQ.Execute("UPDATE "& TablePre &"sticktopics SET fid = "& d_ForumID &" WHERE fid = "& s_ForumID)
 
 	'统计目标版面的帖子

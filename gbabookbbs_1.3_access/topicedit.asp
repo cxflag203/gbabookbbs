@@ -29,7 +29,7 @@ End Sub
 '========================================================
 Sub SavePost()
 	Dim PostID, PostInfo
-	Dim Title, Message, IfLocked, Disable_Autowap, DisplayOrder
+	Dim Title, Message, IfLocked, Disable_Autowap, IfParseURL, DisplayOrder
 	Dim d_AttachID, AttachID, Description, NewAttachID, NewDescription, AttachListArray, Attachments, IfAttachment
 
 	PostID = SafeRequest(2, "pid", 0, 0, 0)
@@ -66,6 +66,12 @@ Sub SavePost()
 
 	'词语过滤
 	Message = WordsFilter(Message)
+
+	'识别网址和图片
+	IfParseURL = SafeRequest(2, "ifparseurl", 0, 0, 0)
+	If IfParseURL = 1 And RQ.UserID > 0 Then
+		Message = ParseURL(Message)
+	End If
 
 	'是否换行
 	Disable_Autowap = SafeRequest(2, "disable_autowap", 0, 0, 0)
@@ -379,6 +385,7 @@ Sub Main()
                   <option value="1"<% If PostInfo(9, 0) = 1 Then Response.Write " selected" End If %>>不允许回复</option>
                 </select><% End If %>
 				<input name="disable_autowap" id="disable_autowap" type="checkbox" value="1" onclick="f_autowap();" /><label for="disable_autowap">不自动换行</label>
+				<input type="checkbox" name="ifparseurl" id="ifparseurl" value="1" checked /><label for="ifparseurl">识别网址和图片</label>
 				<% If PostInfo(4, 0) > 0 Then %><span style="padding-left: 10px;"><a href="###" onclick="postvalue('item.asp?action=useitem&pid=<%= PostID %>', 'itemid', '22');" class="underline">用个面子</a></span><% End If %>
 				<span id="spanButtonPlaceholder"></span></td>
             </tr>
