@@ -1621,4 +1621,4 @@ INSERT [dbo].[{tablepre}admingroups] ([gid], [allowmanagetopic], [alloweditpoll]
 {next}
 INSERT [dbo].[{tablepre}admingroups] ([gid], [allowmanagetopic], [alloweditpoll], [allowsticktopic], [allowauditingtopic], [allowviewip], [allowbanip], [allowedituser], [allowpunishuser], [disablepostctrl], [allowdelitemmsg], [disablepmctrl], [allowviewlog]) VALUES (2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 {next}
-INSERT [dbo].[{tablepre}admingroups] ([gid], [allowmanagetopic], [alloweditpoll], [allowsticktopic], [allowauditingtopic], [allowviewip], [allowbanip], [allowedituser], [allowpunishuser], [disablepostctrl], [allowdelitemmsg], [disablepmctrl], [allowviewlog]) VALUES (3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0)
+INSERT [dbo].[{tablepre}admingroups] ([gid], [allowmanagetopic], [alloweditpoll], [allowsticktopic], [allowauditingtopic], [allowviewip], [allowbanip], [allowedituser], [allowpunishuser], [disablepostctrl], [allowdelitemmsg], [disablepmctrl], [allowviewlog]) VALUES (3, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0)

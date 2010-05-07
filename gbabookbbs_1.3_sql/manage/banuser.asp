@@ -3,7 +3,7 @@
 AdminHeader()
 
 '验证是否有编辑用户的权限
-If RQ.AllowPunishUser = 0 Then
+If RQ.AllowPunishUser = 0 Or Not InArray(Array(1, 2), RQ.AdminGroupID) Then
 	Call AdminshowTips("您无权访问该页。", "")
 End If
 
