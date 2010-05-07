@@ -127,7 +127,8 @@ Sub Show_Menu()
 			strMenu = strMenu &"members.asp,编辑用户;"
 		End If
 
-		If RQ.AllowPunishUser = 1 Then
+		'站长和高级管理员才能禁止用户
+		If RQ.AllowPunishUser = 1 And RQ.AdminGroupID = 2 Then
 			strMenu = strMenu &"banuser.asp,禁止用户;"
 		End If
 

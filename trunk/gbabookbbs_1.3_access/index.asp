@@ -138,7 +138,7 @@ Sub Top()
       <span><a href="leaguelist.asp" class="mcplink" target="<%= CacheName %>right">联盟</a></span>
 	  <% If RQ.Wap_Settings(0) = "1" Then %><span><a href="wap/" class="mcplink" target="_blank">WAP</a></span><% End If %>
       <span><a href="htmls/help.html" class="mcplink" target="<%= CacheName %>right">帮助</a></span>
-      <% If RQ.AdminGroupID = 1 Or RQ.AdminGroupID = 2 Or RQ.AllowPunishUser = 1 Or RQ.AllowBanIP = 1 Or RQ.AllowViewLog = 1 Then %><span><a href="manage/" class="mcplink" target="_top">系统设置</a></span><% End If %>
+      <% If RQ.AdminGroupID = 1 Or RQ.AdminGroupID = 2 Or (RQ.AllowPunishUser = 1 And InArray(Array(1, 2), RQ.AdminGroupID)) Or RQ.AllowBanIP = 1 Or RQ.AllowViewLog = 1 Then %><span><a href="manage/" class="mcplink" target="_top">系统设置</a></span><% End If %>
     </div>
   </div>
   <div class="tabbg">
