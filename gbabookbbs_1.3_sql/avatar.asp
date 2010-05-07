@@ -1,9 +1,15 @@
 <!--#include file="include/inc.asp"-->
 <!--#include file="include/upload.class.asp"-->
 <%
+If RQ.UserID = 0 Then
+	Call RQ.showTips("游客无法使用头像功能。", "", "")
+End If
+
 Dim Action
 Action = Request.QueryString("action")
 Select Case Action
+	Case "deleteavatar"
+		Call DeleteAvatar()
 	Case "saveorgavatar"
 		Call SaveOrgAvatar()
 	Case "saveavatar"
@@ -13,14 +19,20 @@ Select Case Action
 End Select
 
 '========================================================
+'删除头像
+'========================================================
+Sub DeleteAvatar()
+	RQ.Execute("UPDATE "& TablePre &"memberfields SET avatar = '' WHERE uid = "& RQ.UserID)
+	Call DeleteFile("./avatars/"& Left(RQ.UserID, 1) &"/"& RQ.UserID &".jpg")
+
+	Call closeDatabase()
+	Call RQ.showTips("头像已经成功删除。", "?", "")
+End Sub
+
+'========================================================
 '上传头像	，保存到临时目录
 '========================================================
 Sub SaveOrgAvatar()
-	'验证是否能够上传
-	If RQ.UserID = 0 Then
-		Exit Sub
-	End If
-
 	Dim Upload, Files, File, SavePath
 	Set Upload = new AnUpLoad
 
@@ -77,10 +89,6 @@ End Sub
 '保存头像
 '========================================================
 Sub SaveAvatar()
-	If RQ.UserID = 0 Then
-		Exit Sub
-	End If
-
 	Dim TempFile
 	TempFile = SafeRequest(3, "tempfile", 1, "", 0)
 	Call DeleteFile(TempFile)
@@ -125,8 +133,11 @@ Sub Main()
 <br />
 <br />
 <div id="myavatar" style="border: 1px #ccc solid; width: 48px; height: 48px;"><img src="<%= IIF(Len(UserInfo(0, 0)) > 0, "avatars/"& UserInfo(0, 0), "images/common/noavatar.jpg") %>" /></div>
+<% If Len(UserInfo(0, 0)) > 0 Then %>
 <br />
-<br />
+[<a href="?action=deleteavatar" class="underline">删除头像</a>]
+<% End If %>
+<p>
 上传新头像(图片大小请控制在500KB以内)：
 <br />
 <br />
