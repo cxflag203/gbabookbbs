@@ -66,7 +66,7 @@ a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1p
 .author, .author:link, .author:visited { margin-left:4px; font-family:Verdana; text-decoration:underline; color:#0063dc; font-weight:bold; }
 .author:hover { text-decoration:none; background-color:#0063dc; color:#fff; }
 .floor { float:right; }
-.floor a:link, .floor a:visited { font-family:Verdana; text-decoration:none; font-size:11px; color:#999; }
+.floor a, .floor a:link, .floor a:visited { font-family:Verdana; text-decoration:none; font-size:11px; color:#999; }
 .floor a:hover { background-color:none; text-decoration:underline; }
 .postmsg { padding:8px 0px 2px 64px; font-family:simsun; }
 .msglink a:link, .msglink a:hover, .msglink a:visited { text-decoration:underline; }

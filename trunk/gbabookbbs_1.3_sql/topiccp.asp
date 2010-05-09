@@ -42,6 +42,9 @@ Sub AjaxQuot()
 				strQuotMessage = Preg_Replace(strQuotMessage, "\[hide\](.+?)\[\/hide\]", "***隐藏内容***")
 				strQuotMessage = Preg_Replace(strQuotMessage, "\[hide=(\d+)\](.+?)\[\/hide\]", "***隐藏内容***")
 			End If
+
+			'过滤签名
+			strQuotMessage = Preg_Replace(strQuotMessage, "<div class=""signature"">([\s\S]*)</div>", "")
 			
 			'过滤图片
 			strQuotMessage = Replace(Preg_Replace(strQuotMessage, "<img(.*?)src=(.*?)(\s)(.*?)>", "$2"), """", "")
@@ -49,12 +52,12 @@ Sub AjaxQuot()
 			'过滤Flash和播放器
 			strQuotMessage = Preg_Replace(strQuotMessage, "<embed(.*?)></embed>", "")
 
-			'引用内容太长的处理
-			If Len(strQuotMessage) > 500 Then
-				strQuotMessage = Preg_Replace(strQuotMessage, "<br(.*?)>", vbCrLf)
-				strQuotMessage = dfc(strQuotMessage)
-				strQuotMessage = Replace(CutString(strQuotMessage, 600), vbCrLf, "<br />") &"..."
-			End If
+			'引用内容太长的处理（暂时不处理）
+			'If Len(strQuotMessage) > 500 Then
+			'	strQuotMessage = Preg_Replace(strQuotMessage, "<br(.*?)>", vbCrLf)
+			'	strQuotMessage = dfc(strQuotMessage)
+			'	strQuotMessage = Replace(CutString(strQuotMessage, 600), vbCrLf, "<br />") &"..."
+			'End If
 
 			'构建引用html
 			strQuotMessage = "<div class=""quotetop"">引用"& IIF(theFloorNumber > 0, theFloorNumber &"楼", "") & IIF(PostInfo(3, 0) = 0, PostInfo(0, 0), PostInfo(1, 0)) &"的回复：</div><div class=""quotemain"">"& strQuotMessage &"</div>"
