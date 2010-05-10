@@ -30,27 +30,46 @@ End Select
 '========================================================
 Sub AjaxQuot()
 	Dim PostID, PostInfo, strQuotMessage, theFloorNumber
+	Dim regEx
+
 	PostID = SafeRequest(3, "pid", 0, 0, 0)
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
+
 	If PostID > 0 And RQ.UserID > 0 Then
 		PostInfo = RQ.Query("SELECT username, usershow, message, ifanonymity FROM "& TablePre &"posts WHERE pid = "& PostID)
 		If IsArray(PostInfo) Then
 			strQuotMessage = PostInfo(2, 0)
 
+			Set regEx = New RegExp
+			regEx.IgnoreCase = True
+			regEx.Global = True
+
 			'处理回复可见和金币打到某一数值可见
 			If InStr(strQuotMessage, "[/hide]") > 0 Then
-				strQuotMessage = Preg_Replace(strQuotMessage, "\[hide\](.+?)\[\/hide\]", "***隐藏内容***")
-				strQuotMessage = Preg_Replace(strQuotMessage, "\[hide=(\d+)\](.+?)\[\/hide\]", "***隐藏内容***")
+				regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
+				strQuotMessage = regEx.Replace(strQuotMessage, "***隐藏内容***")
+
+				regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
+				strQuotMessage = regEx.Replace(strQuotMessage, "***隐藏内容***")
 			End If
 
 			'过滤签名
-			strQuotMessage = Preg_Replace(strQuotMessage, "<div class=""signature"">([\s\S]*)</div>", "")
+			regEx.Pattern = "<div class=""signature"">([\s\S]*)</div>"
+			strQuotMessage = regEx.Replace(strQuotMessage, "")
 			
 			'过滤图片
-			strQuotMessage = Replace(Preg_Replace(strQuotMessage, "<img(.*?)src=(.*?)(\s)(.*?)>", "$2"), """", "")
+			regEx.Pattern = "<img(.*?)src=(.*?)(\s)(.*?)>"
+			strQuotMessage = Replace(regEx.Replace(strQuotMessage, "$2"), """", "")
+
+			'保留表情(有谁知道过滤图片但保留表情的正则表达式吗)
+			regEx.Pattern = "face/(\d+)\.(gif|jpg)"
+			strQuotMessage = regEx.Replace(strQuotMessage, "<img src=""face/$1.$2"">")
 
 			'过滤Flash和播放器
-			strQuotMessage = Preg_Replace(strQuotMessage, "<embed(.*?)></embed>", "")
+			regEx.Pattern = "<embed(.*?)></embed>"
+			strQuotMessage = regEx.Replace(strQuotMessage, "")
+
+			Set regEx = Nothing
 
 			'引用内容太长的处理（暂时不处理）
 			'If Len(strQuotMessage) > 500 Then

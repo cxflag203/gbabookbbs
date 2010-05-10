@@ -246,7 +246,7 @@ Sub LoginSettings()
       <td colspan="2" height="25"><strong>注册和登录设置</strong></td>
     </tr>
     <tr height="25">
-      <td class="altbg1"><strong>是否停止注册</strong><br />如果停止注册则自动转入推荐码模式</td>
+      <td class="altbg1"><strong>是否停止注册</strong></td>
       <td><select name="loginsettings_0" id="loginsettings_0">
         <option value="0"<% If Login_Settings(0) = "0" Then Response.Write " selected" End If %>>开放注册</option>
         <option value="1"<% If Login_Settings(0) = "1" Then Response.Write " selected" End If %>>关闭注册</option>
@@ -268,9 +268,9 @@ Sub LoginSettings()
         <input type="text" name="loginsettings_4" value="<%= Login_Settings(4) %>" size="5" /></td>
     </tr>
     <tr height="25">
-      <td class="altbg1"><strong>新用户的初始金币</strong></td>
+      <td class="altbg1"><strong>新用户的初始<%= RQ.Other_Settings(0) %></strong></td>
       <td><input type="text" name="loginsettings_5" value="<%= Login_Settings(5) %>" size="5" />
-        金币</td>
+        <%= RQ.Other_Settings(0) %></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>登陆失败</strong><br />次数为0则不限制</td>
@@ -356,12 +356,12 @@ Sub UserSettings()
       <td colspan="2" height="25"><strong>用户功能相关</strong></td>
     </tr>
     <tr height="25">
-      <td class="altbg1"><strong>刷新获得金币</strong></td>
+      <td class="altbg1"><strong>刷新获得<%= RQ.Other_Settings(0) %></strong></td>
       <td>注册用户每隔
         <input type="text" name="usersettings_0" value="<%= User_Settings(0) %>" size="5" />
         分钟刷新浏览器可获得
         <input type="text" name="usersettings_1" value="<%= User_Settings(1) %>" size="5" />
-        金币</td>
+        <%= RQ.Other_Settings(0) %></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>传呼/在线</strong></td>
@@ -390,12 +390,12 @@ Sub UserSettings()
     <tr height="25">
       <td class="altbg1"><strong>传呼限制</strong></td>
       <td><input type="text" name="usersettings_6" size="5" value="<%= User_Settings(6) %>" />
-        金币以上才能发送传呼,但可以接收.管理员不受限制</td>
+        <%= RQ.Other_Settings(0) %>以上才能发送传呼,但可以接收.管理员不受限制</td>
     </tr>
     <tr height="25">
-      <td class="altbg1"><strong>接收金币限制</strong></td>
+      <td class="altbg1"><strong>接收<%= RQ.Other_Settings(0) %>限制</strong></td>
       <td><input type="text" name="usersettings_7" size="5" value="<%= User_Settings(7) %>" />
-        金币以上才能接收别人的转让金币</td>
+        <%= RQ.Other_Settings(0) %>以上才能接收别人转让的<%= RQ.Other_Settings(0) %></td>
     </tr>
     <tr height="25">
 	  <td class="altbg1">&nbsp;</td>
@@ -498,8 +498,8 @@ Sub TopicSettings()
 	    <input type="text" name="topicsettings_10" size="5" value="<%= Topic_Settings(10) %>" /> 分钟</td>
     </tr>
     <tr height="25">
-      <td class="altbg1"><strong>匿名成功扣除金币:</strong><br />匿名失败或者设置为0则不扣除</td>
-      <td>匿名扣除 <input type="text" name="topicsettings_11" value="<%= Topic_Settings(11) %>" size="5" /> 金币</td>
+      <td class="altbg1"><strong>匿名成功扣除<%= RQ.Other_Settings(0) %>:</strong><br />匿名失败或者设置为0则不扣除</td>
+      <td>匿名扣除 <input type="text" name="topicsettings_11" value="<%= Topic_Settings(11) %>" size="5" /> <%= RQ.Other_Settings(0) %></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>匿名前缀:</strong></td>
@@ -742,19 +742,19 @@ Sub ChatSettings()
     </tr>
     <tr id="p_chatsettings_4">
       <td class="altbg1"><strong>发言使用HTML</strong></td>
-      <td><input type="text" name="chatsettings_4" size="5" value="<%= Chat_Settings(4) %>" /> 金币以上才能使用HTML,默认500</td>
+      <td><input type="text" name="chatsettings_4" size="5" value="<%= Chat_Settings(4) %>" /> <%= RQ.Other_Settings(0) %>以上才能使用HTML,默认500</td>
     </tr>
 	<tr id="p_chatsettings_5">
       <td class="altbg1"><strong>删除发言</strong></td>
-      <td><input type="text" name="chatsettings_5" size="5" value="<%= Chat_Settings(5) %>" /> 金币以上才能删除发言,默认300</td>
+      <td><input type="text" name="chatsettings_5" size="5" value="<%= Chat_Settings(5) %>" /> <%= RQ.Other_Settings(0) %>以上才能删除发言,默认300</td>
     </tr>
 	<tr id="p_chatsettings_6">
       <td class="altbg1"><strong>删除发言</strong></td>
-      <td>扣除 <input type="text" name="chatsettings_6" size="5" value="<%= Chat_Settings(6) %>" /> 金币</td>
+      <td>扣除 <input type="text" name="chatsettings_6" size="5" value="<%= Chat_Settings(6) %>" /> <%= RQ.Other_Settings(0) %></td>
     </tr>
 	<tr id="p_chatsettings_7">
       <td class="altbg1"><strong>发布聊天室公告</strong></td>
-      <td>扣除 <input type="text" name="chatsettings_7" size="5" value="<%= Chat_Settings(7) %>" /> 金币</td>
+      <td>扣除 <input type="text" name="chatsettings_7" size="5" value="<%= Chat_Settings(7) %>" /> <%= RQ.Other_Settings(0) %></td>
     </tr>
 	<tr id="p_chatsettings_8">
       <td class="altbg1"><strong>清空聊天室发言后的提示</strong><br />可设置多个,用回车隔开,注意用户名的格式.</td>

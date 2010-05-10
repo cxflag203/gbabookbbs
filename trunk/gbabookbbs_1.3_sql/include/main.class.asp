@@ -752,7 +752,7 @@ Class Cls_Forum
 
 			Case Else
 				If Len(URL) > 0 Then
-					Response.Write "<a href="""& URL &""" target=""_self"">如果您的浏览器没有跳转，请点击这里。</a><script type=""text/javascript"">setTimeout(""self.location.replace('"& URL &"');"", 1000);</script>"
+					Response.Redirect URL
 				Else
 					Call closeDatabase()
 					Response.Write "<a href=""javascript:history.go(-1);"" target=""_self"">点击这里返回上一页</a>"
