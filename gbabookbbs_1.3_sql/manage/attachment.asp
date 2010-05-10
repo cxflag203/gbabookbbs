@@ -228,7 +228,7 @@ Sub Main()
 	<tr height="25">
       <td class="altbg1" width="30%">&nbsp;</td>
       <td><input type="submit" id="btnsearch" name="btnsearch" value="提交搜索" class="button" />
-	    <input type="submit" id="btnclear" name="deleteinvalid" value="清理无效附件" class="button" /> (无效附件是指：附件已上传，但是没有和任何帖子关联)</td>
+	    <input type="submit" id="btnclear" name="deleteinvalid" value="清理一天前的无效附件" class="button" /> (无效附件是指：附件已上传，但是没有和任何帖子关联)</td>
     </tr>
   </table>
 </form>
