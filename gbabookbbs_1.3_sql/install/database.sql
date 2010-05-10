@@ -898,33 +898,26 @@ CREATE NONCLUSTERED INDEX [IX_{tablepre}attachments_2] ON [dbo].[{tablepre}attac
 CREATE PROCEDURE [dbo].[{tablepre}sp_postlist]
 @tid int,
 @viewauthorid int,
-@viewstyle tinyint,
 @page int, 
 @posts int,
-@pagesize smallint
+@pagesize smallint,
+@pagecount int output
 
 AS
 SET NOCOUNT ON
 
 DECLARE @recordcount int
-DECLARE @pagecount int
 DECLARE @sql nvarchar(2000)
-DECLARE @sqlpre nvarchar(500)
 DECLARE @sqladdon nvarchar(200)
 
 SET @sqladdon = ''
-
-IF @viewstyle = 0
-	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment FROM {tablepre}posts p'
-ELSE
-	SET @sqlpre = N' p.pid, p.iffirst, p.uid, p.username, p.usershow, p.message, p.posttime, p.ifanonymity, p.ratemark, p.ifattachment, m.designation, m.avatar FROM {tablepre}posts p LEFT JOIN {tablepre}memberfields m ON p.uid = m.uid'
 
 IF @viewauthorid = 0
 	SET @recordcount = @posts
 ELSE
 	BEGIN
 		SELECT @recordcount = COUNT(pid) FROM {tablepre}posts WHERE tid = @tid AND uid = @viewauthorid AND ifanonymity = 0
-		SET @sqladdon = N'AND p.uid = '+ CAST(@viewauthorid AS varchar(10)) +' AND p.ifanonymity = 0'
+		SET @sqladdon = N'AND uid = '+ CAST(@viewauthorid AS varchar(10)) +' AND ifanonymity = 0'
 	END
 
 IF @recordcount = 0
@@ -935,9 +928,9 @@ IF @page > @pagecount
 	SET @page = @pagecount
 
 IF @page = 1
-	SET @sql = N'SELECT TOP '+ CAST((@pagesize + 1) AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' ORDER BY p.posttime ASC'
+	SET @sql = N'SELECT TOP '+ CAST((@pagesize + 1) AS varchar(10)) +' pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark, ifattachment FROM {tablepre}posts WHERE tid = @tid '+ @sqladdon +' ORDER BY posttime ASC'
 ELSE
-	SET @sql = N'SELECT TOP '+ CAST(@pagesize AS varchar(10)) + @sqlpre +' WHERE p.tid = @tid '+ @sqladdon +' AND p.posttime > (
+	SET @sql = N'SELECT TOP '+ CAST(@pagesize AS varchar(10)) + ' pid, iffirst, uid, username, usershow, message, posttime, ifanonymity, ratemark, ifattachment FROM {tablepre}posts WHERE tid = @tid '+ @sqladdon +' AND posttime > (
 			SELECT MAX(posttime) 
 			FROM (
 					SELECT TOP '+ CAST((@pagesize * (@page - 1) + 1) AS varchar(10))+' posttime
@@ -947,7 +940,7 @@ ELSE
 				) 
 			AS tblTemp
 		)
-		ORDER BY p.posttime ASC'
+		ORDER BY posttime ASC'
 
 EXEC sp_executesql @sql, N'@tid int', @tid = @tid
 
