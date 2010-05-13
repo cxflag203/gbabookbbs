@@ -141,7 +141,7 @@ Function ShowFileType(FileExt)
 			ShowFileType = "pdf.gif"
 		Case "txt"
 			ShowFileType = "txt.gif"
-		Case "doc", "xls", "ppt"
+		Case "doc", "xls", "ppt", "docx", "xlsx", "pptx"
 			ShowFileType = "msoffice.gif"
 		Case "rar"
 			ShowFileType = "rar.gif"
