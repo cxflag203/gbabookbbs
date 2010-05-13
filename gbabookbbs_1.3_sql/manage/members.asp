@@ -186,7 +186,6 @@ Sub UserGroup()
 	Dim GroupExpiryInfo, ExpiryGroupID, ExpiryTime
 
 	UserID = SafeRequest(3, "uid", 0, 0, 0)
-
 	UserInfo = RQ.Query("SELECT username, admingroupid, usergroupid, groupexpiry FROM "& TablePre &"members WHERE uid = "& UserID)
 
 	If Not IsArray(UserInfo) Then
