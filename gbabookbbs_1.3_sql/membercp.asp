@@ -55,7 +55,7 @@ Sub ViewTopicStyle()
 	End If
 
 	Call closeDatabase()
-	Call RQ.showTips("回帖样式设置完毕。", "?", "")
+	Call RQ.showTips("回帖样式设置完毕。", "", "HALTED")
 End Sub
 
 '========================================================
