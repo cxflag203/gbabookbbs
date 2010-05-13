@@ -58,16 +58,21 @@ Sub AjaxQuot()
 			strQuotMessage = regEx.Replace(strQuotMessage, "")
 			
 			'过滤图片
-			regEx.Pattern = "<img(.*?)src=(.*?)(\s)(.*?)>"
-			strQuotMessage = Replace(regEx.Replace(strQuotMessage, "$2"), """", "")
+			regEx.Pattern = "<img[^>]+?src=(""|')(.*?)(""|')(.*?)>"
+			strQuotMessage = regEx.Replace(strQuotMessage, "$2")
+
+			'regEx.Pattern = "<img[^>]+?src=(.*?)\s(.*?)(/|)>"
+			regEx.Pattern = "<img[^>]+?src=(.*?)>"
+			strQuotMessage = regEx.Replace(strQuotMessage, "$1")
 
 			'保留表情(有谁知道过滤图片但保留表情的正则表达式吗)
-			regEx.Pattern = "face/(\d+)\.(gif|jpg)"
+			regEx.Pattern = "[^/]face/(\d+)\.(gif|jpg)"
 			strQuotMessage = regEx.Replace(strQuotMessage, "<img src=""face/$1.$2"">")
 
 			'过滤Flash和播放器
-			regEx.Pattern = "<embed(.*?)></embed>"
+			regEx.Pattern = "<embed(.*?)>"
 			strQuotMessage = regEx.Replace(strQuotMessage, "")
+			strQuotMessage = Replace(strQuotMessage, "</embed>", "")
 
 			Set regEx = Nothing
 
