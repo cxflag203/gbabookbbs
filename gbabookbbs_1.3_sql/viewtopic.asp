@@ -217,13 +217,13 @@ For i = 0 To CountArray
 		'带头像的样式
 		Response.Write "<div class=""thepost"& IIF(i <> CountArray, " btborder", "") &" bg"& i Mod 2 &""" id=""pid"& PostListArray(0, i) &""""
 		
-		If RQ.UserID > 0 Then
+		If RQ.UserID > 0 And PostListArray(7, i) = 0 Then
 			Response.Write " onmouseover=""$('misc"& PostListArray(0, i) &"').style.visibility='visible';"" onmouseout=""$('misc"& PostListArray(0, i) &"').style.visibility='hidden';""><div class=""topicmisc"" id=""misc"& PostListArray(0, i) &"""><a href=""pm.asp?action=send&u="& Server.URLEncode(PostListArray(3, i)) &""" class=""sendpm"" onclick=""return shows(this.href);"" title=""发送传呼""></a><a href=""?fid="& RQ.ForumID &"&tid="& RQ.TopicID &"&authorid="& PostListArray(2, i) &""" class="""& IIF(ViewAuthorID = 0, "viewposter", "cviewposter") &""" title=""只看该人""></a></div><div class=""floor"">"
 
 			'只看某人回复的处理
 			If ViewAuthorID = 0 Then
 				Response.Write "<a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"""
-				If PostListArray(1, i) = 0 And PostListArray(7, i) = 0 And TopicInfo(11, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
+				If PostListArray(1, i) = 0 And TopicInfo(11, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
 					Response.Write " style=""color:#009;"" title=""楼主"""
 				End If
 				Response.Write ">"& IIF(PostListArray(1, i) = 1, "楼主", theFloorNumber &"楼") &"</a>"
