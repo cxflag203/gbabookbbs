@@ -80,6 +80,7 @@ a.sendpm:hover { background-color:none; background-position:45 0; margin-right:5
 a.viewposter:link, a.viewposter:visited { background-position:30 0; }
 a.viewposter:hover { background-color:none; background-position:15 0; }
 a.cviewposter { background-position:15 0; }
+.signature { margin-top:5px; }
 
 /* 附件 */
 .showattachlist h4 { font-size:12px; padding:7px 0px 5px 10px; border-bottom:1px #ccc solid; }
