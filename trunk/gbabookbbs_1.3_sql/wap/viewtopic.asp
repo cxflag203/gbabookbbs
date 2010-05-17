@@ -106,6 +106,8 @@ If PostID = 0 Then
 				Call Append(PostListArray(4, i))
 			End If
 
+			Call Append(" ("& PostListArray(6, i) &")")
+
 			If blnBreakString Then
 				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &""">下页</a>")
 			End If
@@ -182,10 +184,10 @@ Else
 		blnBreakString = True
 	End If
 
-	Call Append(ReverseCode(FirstMessage))
+	Call Append(ReverseCode(FirstMessage) &"<br />---"& IIF(PostInfo(0, 0) > 0 And PostInfo(5, 0) = 0, "<a href=""pm.asp?action=sendpm&amp;u="& Server.URLEncode(PostInfo(1, 0)) &""">"& PostInfo(1, 0) &"</a>", PostInfo(2, 0)) &"("& PostInfo(4, 0) &")")
 
 	If blnBreakString Then
-		Call Append("<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &"&amp;page="& Page &""">下页</a>")
+		Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &"&amp;page="& Page &""">下页</a>")
 	End If
 
 	If Offset > 0 Then
