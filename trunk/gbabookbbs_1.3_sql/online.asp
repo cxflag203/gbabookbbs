@@ -46,7 +46,7 @@ Sub showDetail()
 			n = n + 1
 			n = IIF(n = 5, 1, n)
 
-			Response.Write IIF(n = 1, "<tr>", "") &"<td width=""25%"" bgcolor=""#CCFF99""><a href=""profile.asp?u="& OnlineListArray(1, i) &""" onclick=""return shows3(this.href);""><span style=""font-family:Wingdings; font-size:18px;"">J</span></a> <a href=""pm.asp?action=send&u="& OnlineListArray(1, i) &""" onclick=""return shows(this.href);"">"& OnlineListArray(1, i) &"</a></td>"& IIF(n = 4, "</tr>", "")
+			Response.Write IIF(n = 1, "<tr>", "") &"<td width=""25%"" bgcolor=""#CCFF99""><a href=""profile.asp?u="& Server.URLEncode(OnlineListArray(1, i)) &""" onclick=""return shows3(this.href);""><span style=""font-family:Wingdings; font-size:18px;"">J</span></a> <a href=""pm.asp?action=send&u="& Server.URLEncode(OnlineListArray(1, i)) &""" onclick=""return shows(this.href);"">"& OnlineListArray(1, i) &"</a></td>"& IIF(n = 4, "</tr>", "")
 		Next
 
 		Select Case n
