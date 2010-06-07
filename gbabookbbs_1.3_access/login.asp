@@ -76,7 +76,7 @@ Sub Login()
 			Call RQ.showTips("用户名长度应该在"& RQ.Login_Settings(3) &"-"& RQ.Login_Settings(4) &"个字符之间。", "", "")
 		End If
 
-		If RegExpTest("(^\{all\}$)|[%,#;:&\*\""\s\n\t\\\|\/\^]", UserName) Then
+		If RegExpTest("(^\{all\}$)|[%,#;:&【】\*\""\s\n\t\\\|\/\^]", UserName) Then
 			Call RQ.showTips("注册用户名中包含非法字符，请重新输入。", "", "")
 		End If
 
