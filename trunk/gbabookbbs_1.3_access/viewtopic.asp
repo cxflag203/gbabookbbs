@@ -239,7 +239,7 @@ For i = 0 To CountArray
 
 				'用变通的方式来实现不联合查询数据库得到显示发帖人。原来的方式如果用户匿名失败以及匿名被红之后都显示不出来
 				If InStr(PostListArray(4, i), "【") > 0 Then
-					Response.Write "<a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& Replace(Replace(PostListArray(4, i), "【", "</a> <span class=""des"">("), "】", ")</span>")
+					Response.Write "<a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& Replace(Left(PostListArray(4, i), Len(PostListArray(4, i)) - 1), "【", "</a> <span class=""des"">(", 1, 1) & Replace(Right(PostListArray(4, i), 1), "】", ")</span>")
 				Else
 					Response.Write "<a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""author"" onclick=""return shows3(this.href);"">"& PostListArray(4, i) &"</a>"
 				End If
