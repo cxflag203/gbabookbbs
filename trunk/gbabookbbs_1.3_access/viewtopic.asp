@@ -230,7 +230,7 @@ For i = 0 To CountArray
 			
 			Response.Write "</div>"
 		Else
-			Response.Write "><div class=""floor""><a>"& IIF(PostListArray(1, i) = 1, "楼主", theFloorNumber &"楼") &"</a></div>"
+			Response.Write "><div class=""floor""><a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"">"& IIF(PostListArray(1, i) = 1, "楼主", theFloorNumber &"楼") &"</a></div>"
 		End If
 
 		If PostListArray(7, i) = 0 Then
