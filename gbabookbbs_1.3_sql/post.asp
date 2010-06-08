@@ -339,9 +339,9 @@ Sub NewReply()
 		Call CheckGuestAccount()
 	End If
 
-	Dim TopicInfo
+	Dim TopicInfo, UserInfo, AuthorInfo
 	Dim Message, Quot_Message, AboutLink, ImgLink, IfAnonymity, Face, Disable_Autowap, Disable_Update, IfParseURL, SendCredits
-	Dim Temp_AboutLink, Temp_ImgLink, UserShow, UserInfo, PostFloodCtrl, PageCount, NewAttachID, NewDescription, IfAttachment
+	Dim Temp_AboutLink, Temp_ImgLink, UserShow, PostFloodCtrl, PageCount, NewAttachID, NewDescription, IfAttachment
 	Dim Cmd, NewPostID
 
 	TopicInfo = RQ.Query("SELECT displayorder, uid, posttime, lastupdate, posts, iflocked, ifattachment FROM "& TablePre &"topics WHERE tid = "& RQ.TopicID &" AND fid = "& RQ.ForumID)
@@ -353,7 +353,7 @@ Sub NewReply()
 	'未通过审核的帖子只有管理员和楼主可以回复
 	Select Case TopicInfo(0, 0)
 		Case -1
-			If RQ.UserID = 0 Or (Not RQ.IsModerator And RQ.UserID <> TopicInfo(1, 0)) Then 
+			If RQ.UserID = 0 Or (Not RQ.IsModerator And RQ.UserID <> TopicInfo(1, 0)) Then
 				Call RQ.showTips("该帖未待审核，请等待管理员审核帖子。", "", "NOPERM")
 			End If
 		Case -2
@@ -488,8 +488,20 @@ Sub NewReply()
 
 	'回帖赠送金钱
 	SendCredits = SafeRequest(2, "sendcredits", 0, 0, 0)
-	If SendCredits > 0 Then
-		Call Transfer_Credit(TopicInfo(1, 0), SendCredits)
+	If SendCredits > 0 And TopicInfo(1, 0) > 0 And RQ.UserID > 0 Then
+		'查询楼主信息
+		AuthorInfo = RQ.Query("SELECT username, credits FROM "& TablePre &"members WHERE uid = "& TopicInfo(1, 0))
+		If IsArray(AuthorInfo) Then
+			'扣除赠送者金钱
+			RQ.Execute("UPDATE "& TablePre &"members SET credits = credits - "& SendCredits &" WHERE uid = "& RQ.UserID)
+
+			If RQ.UserCredits < SendCredits Or UserInfo(1, 0) < IntCode(RQ.User_Settings(7)) Then
+				Call RQ.SetLog(TopicInfo(1, 0), UserInfo(0, 0), "丢失"& RQ.Other_Settings(0) & SendCredits &"点", "回复转让"& RQ.Other_Settings(0) &"失败")
+			Else
+				RQ.Execute("UPDATE "& TablePre &"members SET credits = credits + "& SendCredits &" WHERE uid = "& TopicInfo(1, 0))
+				Call RQ.SetLog(TopicInfo(1, 0), UserInfo(0, 0), "转让"& RQ.Other_Settings(0) & SendCredits &"点", "好帖赠送"& RQ.Other_Settings(0))
+			End If
+		End If
 	End If
 
 	'是否有附件上传
@@ -642,30 +654,6 @@ Sub Check_Status_Post()
 	'回帖防灌水控制
 	If IntCode(RQ.Topic_Settings(10)) > 0 And DateDiff("s", NumtoDate(RQ.UserPostFloodCtrl), Now()) < 0 And RQ.DisablePostCtrl = 0 Then
 		Call RQ.showTips("现在的时间是："& Now() &"，允许回帖的时间是："& NumtoDate(RQ.UserPostFloodCtrl) &"，请先看看别的帖子……", "", "")
-	End If
-End Sub
-
-'========================================================
-'回帖转让金钱
-'========================================================
-Sub Transfer_Credit(TargetUserID, Credits)
-	If TargetUserID = 0 Or RQ.UserID = 0 Then
-		Exit Sub
-	End If
-
-	Dim UserInfo
-	UserInfo = RQ.Query("SELECT username, credits FROM "& TablePre &"members WHERE uid = "& TargetUserID)
-	If Not IsArray(UserInfo) Then
-		Exit Sub
-	End If
-
-	RQ.Execute("UPDATE "& TablePre &"members SET credits = credits - "& Credits &" WHERE uid = "& RQ.UserID)
-
-	If RQ.UserCredits < Credits Or UserInfo(1, 0) < IntCode(RQ.User_Settings(7)) Then
-		Call RQ.SetLog(TargetUserID, UserInfo(0, 0), "丢失"& RQ.Other_Settings(0) & Credits &"点", "回复转让"& RQ.Other_Settings(0) &"失败")
-	Else
-		RQ.Execute("UPDATE "& TablePre &"members SET credits = credits + "& Credits &" WHERE uid = "& TargetUserID)
-		Call RQ.SetLog(TargetUserID, UserInfo(0, 0), "转让"& RQ.Other_Settings(0) & Credits &"点", "好帖赠送"& RQ.Other_Settings(0))
 	End If
 End Sub
 
