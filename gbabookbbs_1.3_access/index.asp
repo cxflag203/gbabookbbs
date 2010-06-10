@@ -110,7 +110,7 @@ End Sub
 '========================================================
 Sub Top()
 	Dim ForumListArray
-	ForumListArray = RQ.Query("SELECT f.fid, f.name, ff.viewperm FROM "& TablePre &"forums f INNER JOIN "& TablePre &"forumfields ff ON f.fid = ff.fid ORDER BY f.displayorder ASC")
+	ForumListArray = RQ.Query("SELECT f.fid, f.name, f.visitndcredits, ff.viewperm FROM "& TablePre &"forums f INNER JOIN "& TablePre &"forumfields ff ON f.fid = ff.fid ORDER BY f.displayorder ASC")
 	Call closeDatabase()
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -146,7 +146,7 @@ Sub Top()
       <div class="forums" id="forums">
 	    <% If IsArray(ForumListArray) Then %>
 		<% For i = 0 To UBound(ForumListArray, 2) %>
-		<% If Len(ForumListArray(2, i)) = 0 Or InStr(","& ForumListArray(2, i) &",", ","& RQ.UserGroupID &",") > 0 Then %>
+		<% If (ForumListArray(2, i) = 0 Or RQ.UserCredits >= ForumListArray(2, i)) And (Len(ForumListArray(3, i)) = 0 Or InStr(","& ForumListArray(3, i) &",", ","& RQ.UserGroupID &",") > 0) Then %>
         <a href="forumdisplay.asp?fid=<%= ForumListArray(0, i) %>" target="<%= CacheName %>left" id="f_<%= ForumListArray(0, i) %>" class="tabunselected" onclick="switchtab(this.id);"><%= ForumListArray(1, i) %></a>
 		<% End If %>
 		<% Next %>
