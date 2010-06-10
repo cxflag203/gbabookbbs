@@ -257,7 +257,7 @@ Sub Main()
     <td bgcolor="#F2EACE">通过联盟集中同类型的帖子，欢迎志同道合者加盟或创建自己的联盟。</td>
   </tr>
   <tr>
-    <td bgcolor="#CCFFCC"><a href="membermisc.asp?action=favorites" target="<%= CacheName %>search" onClick="javascript:parent.<%= CacheName %>leftsearch.rows='*,355';">收藏区</a></td>
+    <td bgcolor="#CCFFCC"><a href="membermisc.asp?action=favorites" target="<%= CacheName %>search" onclick="javascript:parent.<%= CacheName %>leftsearch.rows='*,355';">收藏区</a></td>
     <td bgcolor="#F2EACE">查看收藏的帖子。也可以从左侧底部拉出新的页面查看。</td>
   </tr>
   <tr>
@@ -332,7 +332,7 @@ Sub Main()
 <br />
 <% If InArray(Array(1,2), RQ.AdminGroupID) Then %>
 <form name="setbanner" method="post" action="?action=setbanner">
-  <div style="border: 1px #75ea00 solid; background: #dfffbf; padding: 10px; color:#0080ff; width: 400px;">
+  <div style="border: 1px #62c400 solid; background: #e9ffd2; padding: 10px; color:#0080ff; width: 400px;">
     <h1>标语设置</h1>
     <input type="text" name="banner" size="45" value="<%= RQ.Gbl_Banner %>" />
     <input type="submit" value="提交设置" class="button" />
@@ -341,7 +341,7 @@ Sub Main()
 <p>
 <% End If %>
 <form method="post" id="sendpm" action="pm.asp?action=sendpost&r=mcp" onkeydown="fastpost('btnsend', event);" onsubmit="$('btnsend').value='正在提交,请稍后...';$('btnsend').disabled=true;">
-  <div style="border: 1px #d6bc65 solid; background: #f2eace; padding: 10px; color:#0080ff; width: 400px;">
+  <div style="border: 1px #b79931 solid; background: #f5efda; padding: 10px; color:#0080ff; width: 400px;">
     <h1>玩友传呼</h1>
     接收人：<% If RQ.DisablePmCtrl = 1 Then %>(如果要进行群发，将多个接收人用逗号隔开即可。)<% End If %>
 	<br />

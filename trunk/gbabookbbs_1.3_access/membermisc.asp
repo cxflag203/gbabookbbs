@@ -81,7 +81,7 @@ Sub EliteNewFavorLeague()
 
 		'最新帖
 		Case "newtopics"
-			strSQL = "SELECT TOP 50 tid, fid, usershow, title, clicks, posts, lastupdate FROM "& TablePre &"topics WHERE displayorder >= 0 ORDER BY tid DESC"
+			strSQL = "SELECT TOP 50 tid, fid, usershow, title, clicks, posts, lastupdate FROM "& TablePre &"topics WHERE displayorder >= 0 AND fid IN("& RQ.Get_Accessable_ForumID() &") ORDER BY tid DESC"
 		
 		'收藏帖
 		Case "favorites"
@@ -254,7 +254,7 @@ End Sub
 Sub Main()
 %>
 <body class="forumdisplay">
-<form action="search.asp" method="get" target="_self">
+<form action="search.asp" method="get" target="_self" onsubmit="chgthisfrm();">
   <input type="hidden" name="action" value="search" />
   <input name="keyword" size="10" onBlur="if(this.value=='')this.value='输入关键字';" onFocus="if(this.value=='输入关键字')this.value='';" value="输入关键字" /><select name="searchtype">
     <option value="title">帖子标题</option>
@@ -265,7 +265,11 @@ Sub Main()
 </form>
 <script type="text/javascript">
 function chgthisfrm(){
-	parent.<%= CacheName %>leftsearch.rows = '*,355';
+	if (parent.$('<%= CacheName %>leftsearch').rows){
+		if (parent.$('<%= CacheName %>leftsearch').rows == '*,50'){
+			parent.$('<%= CacheName %>leftsearch').rows = '*,355';
+		}
+	}
 }
 </script>
 <p>
