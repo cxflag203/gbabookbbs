@@ -20,11 +20,11 @@ WapFooter()
 '========================================================
 Sub NewTopic()
 	Dim TopicListArray
-	TopicListArray = RQ.Query("SELECT TOP 10 tid, fid, title, clicks, posts, ifelite FROM "& TablePre &"topics WHERE displayorder >= 0 ORDER BY tid DESC")
+	TopicListArray = RQ.Query("SELECT TOP 30 tid, fid, title, clicks, posts, ifelite FROM "& TablePre &"topics WHERE displayorder >= 0 ORDER BY tid DESC")
 
 	Call closeDatabase()
 
-	Call Append("最新的10个帖子<br /><br />")
+	Call Append("最新的30个帖子<br /><br />")
 
 	If IsArray(TopicListArray) Then
 		For i = 0 To UBound(TopicListArray, 2)
