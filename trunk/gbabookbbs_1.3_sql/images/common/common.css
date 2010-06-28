@@ -59,7 +59,7 @@ a:hover { background-color:#eff9d0; text-decoration:none; }
 /* 回复列表 */
 img.avatar { background-color:#fff; border:1px solid #ccc; padding:0px; margin:0 5px; float:left; }
 a.avatar:hover img.avatar { background-color:#fff; border:1px solid #0063dc; padding:0px; }
-a.avatar:hover img { background-color:#fff; border:1px solid #0063dc; padding:1px; }
+a.avatar:hover img { padding:1px; }
 .thepost { font-size:12px; padding:10px 5px 13px 5px; white-space:normal; line-height:150%; }
 .thepost .des { font-style:normal; color:#999; }
 .btborder { border-bottom:1px solid #e0e0e0; }
