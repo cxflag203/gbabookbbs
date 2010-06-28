@@ -332,7 +332,7 @@ Sub Main()
 <br />
 <% If InArray(Array(1,2), RQ.AdminGroupID) Then %>
 <form name="setbanner" method="post" action="?action=setbanner">
-  <div style="border: 1px #62c400 solid; background: #e9ffd2; padding: 10px; color:#0080ff; width: 400px;">
+  <div style="border:2px #6f96de solid; background:#eef4ff; padding:10px; width:400px;">
     <h1>标语设置</h1>
     <input type="text" name="banner" size="45" value="<%= RQ.Gbl_Banner %>" />
     <input type="submit" value="提交设置" class="button" />
@@ -341,21 +341,21 @@ Sub Main()
 <p>
 <% End If %>
 <form method="post" id="sendpm" action="pm.asp?action=sendpost&r=mcp" onkeydown="fastpost('btnsend', event);" onsubmit="$('btnsend').value='正在提交,请稍后...';$('btnsend').disabled=true;">
-  <div style="border: 1px #b79931 solid; background: #f5efda; padding: 10px; color:#0080ff; width: 400px;">
+  <div style="border:2px #b79931 solid; background:#f5efda; padding:10px; width:400px;">
     <h1>玩友传呼</h1>
     接收人：<% If RQ.DisablePmCtrl = 1 Then %>(如果要进行群发，将多个接收人用逗号隔开即可。)<% End If %>
 	<br />
-    <input type="text" name="username" size="35" />
+    <input type="text" name="username" style="width:300px;" />
 	<br />
 	发送信息：
 	<br />
-	<textarea rows="5" name="message" cols="40"></textarea>
+	<textarea rows="5" name="message" style="width:300px;"></textarea>
 	<br />
 	发送时间(定时发给自己可作备忘提醒用)：
 	<br />
 	<input type="text" name="posttime" size="23" value="<%= Now() %>" />
 	<p>
-	<input type="submit" name="btnsend" id="btnsend" value="发送" class="button" />
+	<input type="submit" name="btnsend" id="btnsend" value="发送传呼" class="button" />
   </div>
 </form>
 <%
