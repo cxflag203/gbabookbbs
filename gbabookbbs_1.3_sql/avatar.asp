@@ -1,4 +1,4 @@
-<!--#include file="include/inc.asp"-->
+﻿<!--#include file="include/inc.asp"-->
 <!--#include file="include/upload.class.asp"-->
 <%
 If RQ.UserID = 0 Then

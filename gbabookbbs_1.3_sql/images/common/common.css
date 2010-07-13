@@ -91,9 +91,9 @@ a.cviewposter { background-position:15 0; }
 .viewdenied { margin-top:15px; padding:5px; background:#fff; border:1px #99cc99 dashed; color:#499249; }
 
 /* 投票界面 */
-.votepanel td{ width:300px; padding-bottom:10px; }
-.voteratio { width:40px; }
-.optionbg { height:16px; background:#fafafa; }
+.votepanel td{ padding-bottom:10px; }
+.voteratio { padding-left: 10px; }
+.optionbg { height:16px; background:#fafafa; width:300px; }
 .optionrbg { height:16px; }
 .optionr0 { background:#DB3191; }
 .optionr1 { background:#E92725; }
