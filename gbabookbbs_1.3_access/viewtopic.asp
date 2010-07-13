@@ -142,6 +142,11 @@ RQ.Header()
 CountArray = UBound(PostListArray, 2)
 
 For i = 0 To CountArray
+	'读取附件
+	If PostListArray(9, i) = 1 Then
+		PostListArray(5, i) = ShowAttachments(PostListArray(0, i), PostListArray(5, i))	
+	End If
+
 	If InStr(PostListArray(5, i), "[/hide]") > 0 Then
 		'回复可见内容
 		If InStr(PostListArray(5, i), "[hide]") > 0 Then
@@ -157,11 +162,6 @@ For i = 0 To CountArray
 		If InStr(PostListArray(5, i), "[hide=") > 0 Then
 			PostListArray(5, i) = ShowCreditsHidden(PostListArray(5, i))
 		End If
-	End If
-
-	'读取附件
-	If PostListArray(9, i) = 1 Then
-		PostListArray(5, i) = ShowAttachments(PostListArray(0, i), PostListArray(5, i))	
 	End If
 
 	'楼层
