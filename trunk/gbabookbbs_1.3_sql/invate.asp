@@ -141,14 +141,29 @@ Sub Main()
 <p>
 <%
 	If Len(UserName) > 0 Then
-		Response.Write "<hr color=""black"" />"
 		If IsArray(SearchInfo) Then
-			Response.Write "推荐人："& SearchInfo(0, 0) &"<br />"
+			Response.Write "推荐人："& SearchInfo(0, 0)
 		Else
 			Response.Write "未找到该用户推荐人信息。"
 		End If
-		Response.Write "<hr color=""black"" />"
+		Response.Write "<p>"
 	End If
+
+	If RQ.AllowInvate = 1 And RQ.Login_Settings(0) = "2" Then
+		Response.Write "目前可售推荐码<span class=""red"">"& ValiableNum &"</span>个。"
+
+		If ValiableNum > 0 Then
+			If UserInvationNum >= RQ.InvateMaxNum Then
+				Response.Write "您最多只能购买"& RQ.InvateMaxNum &"个推荐码。"
+			Else
+				Response.Write "如需购买请<a href=""?action=buy"" class=""bluelink"">点击这里</a>，系统会自动扣除相应的"& RQ.Other_Settings(0) &"。"
+			End If
+		Else
+			Response.Write "目前已全部售完！"
+		End If
+	End If
+
+	Response.Write "<p>"
 
 	If IsArray(InvationListArray) Then
 		UserInvationNum = UBound(InvationListArray, 2) + 1
@@ -166,20 +181,6 @@ Sub Main()
 		For i = 0 To UBound(InvatedListArray, 2)
 			Response.Write "购买时间："& InvatedListArray(0, i) &" 使用时间："& NumtoDate(InvatedListArray(1, i)) &" 注册用户："& InvatedListArray(2, i) &"<br />"
 		Next
-	End If
-
-	If RQ.AllowInvate = 1 And RQ.Login_Settings(0) = "2" Then
-		Response.Write "<p>目前可售推荐码<span class=""red"">"& ValiableNum &"</span>个。"
-
-		If ValiableNum > 0 Then
-			If UserInvationNum >= RQ.InvateMaxNum Then
-				Response.Write "您最多只能购买"& RQ.InvateMaxNum &"个推荐码。"
-			Else
-				Response.Write "如需购买请<a href=""?action=buy"" class=""bluelink"">点击这里</a>，系统会自动扣除相应的"& RQ.Other_Settings(0) &"。"
-			End If
-		Else
-			Response.Write "目前已全部售完！"
-		End If
 	End If
 
 	RQ.Footer()
