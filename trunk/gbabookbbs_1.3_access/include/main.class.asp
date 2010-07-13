@@ -130,7 +130,7 @@ Class Cls_Forum
 		Call IpBanned()
 
 		'论坛是否关闭
-		If Base_Settings(3) = "1" And Not (ScriptName = "login" Or ScriptName = "wap" Or AdminGroupID = 1) Then
+		If Base_Settings(3) = "1" And Not (ScriptName = "login" Or AdminGroupID = 1) Then
 			Call ClearCookies()
 			Call showTips(Base_Settings(4), "", "NOPERM")
 		End If
@@ -764,28 +764,33 @@ Class Cls_Forum
 	'页面提示信息内容
 	'========================================================
 	Public Sub showTips(Message, URL, Action)
-		Header()
-		Response.Write "<body><table class=""tipsborder"" cellSpacing=""0"" cellPadding=""0"" align=""center""><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""transborder"">&nbsp;</td><td class=""transborder"" width=""8"">&nbsp;</td></tr><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""tipstd""><div class=""mainarea""><div class=""tipstd_bottom""></div><div class=""tips_header""><h1>提示信息</h1></div><div class=""tips_content"">"& IIF(Len(URL) > 0 Or Action = "HALTED", Message, "<span class=""pink"">"& Message &"</span>") &"<p>"
+		If ScriptName <> "wap" Then
+			Header()
+			Response.Write "<body><table class=""tipsborder"" cellSpacing=""0"" cellPadding=""0"" align=""center""><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""transborder"">&nbsp;</td><td class=""transborder"" width=""8"">&nbsp;</td></tr><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""tipstd""><div class=""mainarea""><div class=""tipstd_bottom""></div><div class=""tips_header""><h1>提示信息</h1></div><div class=""tips_content"">"& IIF(Len(URL) > 0 Or Action = "HALTED", Message, "<span class=""pink"">"& Message &"</span>") &"<p>"
 
-		Select Case Action
-			Case "NOPERM"
-				If UserID = 0 Then
-					Response.Write "<form name=""login"" method=""post"" action="""& Login_Settings(1) &"?action=login""><table border=""0""><tr><td>用户名：</td><td><input type=""text"" name=""username"" size=""20"" tabindex=""1"" /> "& IIF(Login_Settings(0) = "2", "<a href=""login.asp"">注册新用户</a>", "") &"</td></tr><tr><td>密　码：</td><td><input type=""password"" name=""password"" size=""20"" tabindex=""2"" /> <a href=""pwdsafe.asp"">忘记密码</a></td></tr><tr><td></td><td><input type=""submit"" value="""& IIF(Login_Settings(0) = "0", "注册/登陆", "登陆") &""" class=""button"" /></td></tr></table></form>"
-				End If
+			Select Case Action
+				Case "NOPERM"
+					If UserID = 0 Then
+						Response.Write "<form name=""login"" method=""post"" action="""& Login_Settings(1) &"?action=login""><table border=""0""><tr><td>用户名：</td><td><input type=""text"" name=""username"" size=""20"" tabindex=""1"" /> "& IIF(Login_Settings(0) = "2", "<a href=""login.asp"">注册新用户</a>", "") &"</td></tr><tr><td>密　码：</td><td><input type=""password"" name=""password"" size=""20"" tabindex=""2"" /> <a href=""pwdsafe.asp"">忘记密码</a></td></tr><tr><td></td><td><input type=""submit"" value="""& IIF(Login_Settings(0) = "0", "注册/登陆", "登陆") &""" class=""button"" /></td></tr></table></form>"
+					End If
 
-			Case "HALTED"
+				Case "HALTED"
 
-			Case Else
-				If Len(URL) > 0 Then
-					Response.Redirect URL
-				Else
-					Call closeDatabase()
-					Response.Write "<a href=""javascript:history.go(-1);"" target=""_self"">点击这里返回上一页</a>"
-				End If
-		End Select
+				Case Else
+					If Len(URL) > 0 Then
+						Response.Redirect URL
+					Else
+						Call closeDatabase()
+						Response.Write "<a href=""javascript:history.go(-1);"" target=""_self"">点击这里返回上一页</a>"
+					End If
+			End Select
 
-		Response.Write "</p></div></div></td><td class=""transborder"" width=""8"">&nbsp;</td></tr><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""transborder"">&nbsp;</td><td class=""transborder"" width=""8"">&nbsp;</td></tr></table>"
-		Footer()
+			Response.Write "</p></div></div></td><td class=""transborder"" width=""8"">&nbsp;</td></tr><tr><td class=""transborder"" width=""8"">&nbsp;</td><td class=""transborder"">&nbsp;</td><td class=""transborder"" width=""8"">&nbsp;</td></tr></table>"
+			Footer()
+		Else
+			WapHeader()
+			Call WapMessage(Message, "")
+		End If
 		Response.End()
 	End Sub
 End Class
