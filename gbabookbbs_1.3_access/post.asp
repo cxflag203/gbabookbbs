@@ -511,9 +511,10 @@ Sub NewReply()
 			'判断发帖人是否匿名
 			TargetUserName = IIF(TopicInfo(8, 0) > 0, TopicInfo(3, 0), TopicInfo(2, 0))
 
+			CurrentUserName = RQ.UserName
+
 			'判断当前回复人是否匿名
 			If gblAnonymityResult = 1 Then
-				CurrentUserName = RQ.UserName
 				RQ.UserName = UserShow
 			End If
 

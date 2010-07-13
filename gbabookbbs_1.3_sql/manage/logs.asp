@@ -132,7 +132,7 @@ Sub RegInvate()
     <% End If %>
   </table>
   <% If PageCount > 1 Then %>
-  <div align="center"><% Call ShowPageInfo(Page, PageCount, RecordCount, "&action=itemuse&keyword="& Keyword &"&itemid="& ItemID) %></div>
+  <div align="center"><% Call ShowPageInfo(Page, PageCount, RecordCount, "&action=reginvate&keyword="& Keyword &"&status="& Status) %></div>
   <% End If %>
 </form>
 <%
