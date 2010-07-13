@@ -53,7 +53,7 @@ Function getPollContent()
 
 			Randomize
 			For i = 0 To UBound(OptionListArray, 2)
-				s = s &"<tr><td>"& IIF(Not blnDisablePoll, "<input type="""& IIF(PollInfo(0, 0) = 1, "checkbox", "radio") &""" id=""option_"& OptionListArray(0, i) &""" name=""optionid"" value="""& OptionListArray(0, i) &""" />", "") &"&nbsp;<label for=""option_"& OptionListArray(0, i) &""">"& i + 1 &"."& OptionListArray(3, i) &"</label></td><td class=""voteratio""></td></tr>"
+				s = s &"<tr><td colspan=""2"">"& IIF(Not blnDisablePoll, "<input type="""& IIF(PollInfo(0, 0) = 1, "checkbox", "radio") &""" id=""option_"& OptionListArray(0, i) &""" name=""optionid"" value="""& OptionListArray(0, i) &""" />", "") &"&nbsp;<label for=""option_"& OptionListArray(0, i) &""">"& i + 1 &"."& OptionListArray(3, i) &"</label></td></tr>"
 				
 				'是否允许查看投票的状态
 				If PollInfo(1, 0) = 1 Or blnPolled Then
@@ -67,7 +67,7 @@ Function getPollContent()
 					'随机生成0-9之间的数字，对应背景css
 					rndNumber = Int(10 * Rnd)
 
-					s = s &"<tr><td style=""padding-left: 20px;""><div class=""optionbg""><div class=""optionrbg optionr"& rndNumber &""" style=""width: "& (lngPercenter * 300) + 2 &"px""></div></div></td><td style=""padding-left: 10px;"">"& FormatNumber(lngPercenter, 4, -1) * 100 &"% ("& OptionListArray(2, i) &")</td></tr>"
+					s = s &"<tr><td style=""padding-left: 20px;""><div class=""optionbg""><div class=""optionrbg optionr"& rndNumber &""" style=""width: "& (lngPercenter * 300) + 2 &"px""></div></div></td><td class=""voteratio"">"& FormatNumber(lngPercenter, 4, -1) * 100 &"% ("& OptionListArray(2, i) &")</td></tr>"
 				Else
 					s = s &"<tr><td colspan=""2""><hr size=""1""></td></tr>"
 				End If
