@@ -1,4 +1,6 @@
-<!--#include file="wap.inc.asp"-->
+<!--#include file="../include/common.inc.asp"-->
+<% ScriptName = "login" %>
+<!--#include file="wap.sinc.asp"-->
 <!--#include file="../include/md5.inc.asp"-->
 <%
 WapHeader()

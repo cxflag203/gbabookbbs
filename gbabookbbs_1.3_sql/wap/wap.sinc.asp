@@ -1,12 +1,8 @@
-<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
 <!--#include file="wap.fun.asp"-->
 <!--#include file="../include/gbl.fun.asp"-->
 <!--#include file="../include/main.class.asp"-->
 <%
 Response.ContentType = "text/vnd.wap.wml"
-
-dbSource = "../"& dbSource
 
 Dim RQ, ItemCount, s
 ReDim Arr(50)

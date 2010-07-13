@@ -1,5 +1,3 @@
-<!--#include file="../include/common.inc.asp"-->
-<% ScriptName = "wap" %>
 <!--#include file="wap.fun.asp"-->
 <!--#include file="../include/gbl.fun.asp"-->
 <!--#include file="../include/main.class.asp"-->
