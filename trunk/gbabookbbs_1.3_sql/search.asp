@@ -22,9 +22,9 @@ RQ.Footer()
 '按照条件进行搜索，并缓存搜索结果
 '========================================================
 Sub Search()
-	Dim Keyword, SearchType, lngSearchType, SqlWhere
-	Dim SearchInfo, strUserID
-	Dim TopicListArray, TopicID, RecordCount
+	Dim Keyword, SearchType, SearchString, SqlWhere
+	Dim TopicID, RecordCount, strUserID, AccessableForumID
+	Dim SearchInfo, TopicListArray
 
 	Keyword = Replace(Replace(Replace(SafeRequest(3, "keyword", 1, "", 0), "%", "[%]"), "[", "[[]"), "_", "[_]")
 	Keyword = IIF(Keyword = "输入关键字", "", Keyword)
@@ -34,14 +34,14 @@ Sub Search()
 	End If
 
 	Keyword = IIF(Len(Keyword) > 50, Left(Keyword, 50), Keyword)
+	SearchType = SafeRequest(3, "searchtype", 1, "", 0)
 
-	If SafeRequest(3, "searchtype", 1, "", 0) = "author" Then
-		lngSearchType = 1
-	Else
-		lngSearchType = 0
-	End If
+	'读取有访问权限的版面编号
+	AccessableForumID = RQ.Get_Accessable_ForumID()
 
-	SearchInfo = RQ.Query("SELECT searchid, expirytime FROM "& TablePre &"searchindex WHERE keyword = N'"& Keyword &"' AND searchtype = "& lngSearchType)
+	SearchString = SearchType &"|"& Keyword &"|"& AccessableForumID &"|"
+
+	SearchInfo = RQ.Query("SELECT searchid, expirytime FROM "& TablePre &"searchindex WHERE searchstring = N'"& SearchString &"'")
 
 	If IsArray(SearchInfo) Then
 		SearchID = SearchInfo(0, 0)
@@ -56,18 +56,18 @@ Sub Search()
 		SearchID = 0
 	End If
 
-	If lngSearchType = 1 And blnUpdateCache Then
-		strUserID = Get_UserID(Keyword)
+	If SearchType = "author" And blnUpdateCache Then
+		strUserID = Get_UserID(Keyword, SearchString)
 	End If
 
 	If blnUpdateCache Then
-		If lngSearchType = 1 Then
+		If SearchType = "author" Then
 			SqlWhere = "uid IN("& strUserID &")"
 		Else
 			SqlWhere = "title LIKE N'%"& Keyword &"%'"
 		End If
 
-		TopicListArray = RQ.Query("SELECT TOP "& RQ.Other_Settings(2) &" tid FROM "& TablePre &"topics WHERE "& SqlWhere &" AND displayorder >= 0 ORDER BY lastupdate DESC")
+		TopicListArray = RQ.Query("SELECT TOP "& RQ.Other_Settings(2) &" tid FROM "& TablePre &"topics WHERE fid IN("& AccessableForumID &") AND "& SqlWhere &" AND displayorder >= 0 ORDER BY tid DESC")
 
 		If IsArray(TopicListArray) Then
 			For i = 0 To UBound(TopicListArray, 2)
@@ -84,13 +84,13 @@ Sub Search()
 		End If
 
 		If SearchID > 0 Then
-			RQ.Execute("UPDATE "& TablePre &"searchindex SET searchcount = searchcount + 1, recordcount = "& RecordCount &", tid = '"& TopicID &"', expirytime = DATEADD(n, 5, GETDATE()) WHERE searchid = "& SearchID)
+			RQ.Execute("UPDATE "& TablePre &"searchindex SET searchcount = searchcount + 1, recordcount = "& RecordCount &", tid = '"& TopicID &"', expirytime = DATEADD(s, 3600, GETDATE()) WHERE searchid = "& SearchID)
 		Else
-			RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchtype, recordcount, tid, expirytime) VALUES (N'"& Keyword &"', "& lngSearchType &", "& RecordCount &", '"& TopicID &"', DATEADD(n, 5, GETDATE()))")
+			RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchstring, recordcount, tid, expirytime) VALUES (N'"& Keyword &"', N'"& SearchString &"', "& RecordCount &", '"& TopicID &"', DATEADD(s, 3600, GETDATE()))")
 
 			SearchID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
 			dbQueryNum = dbQueryNum + 1
-		End If		
+		End If
 	End If
 
 	Call closeDataBase()
@@ -100,7 +100,7 @@ End Sub
 '========================================================
 '根据用户名模糊查询，获取用户编号
 '========================================================
-Function Get_UserID(Keyword)
+Function Get_UserID(Keyword, SearchString)
 	Dim MemberListArray, str
 
 	MemberListArray = RQ.Query("SELECT uid FROM "& TablePre &"members WHERE username = N'"& Keyword &"'")
@@ -114,7 +114,7 @@ Function Get_UserID(Keyword)
 		Next
 		Erase MemberListArray
 	Else
-		RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchtype, recordcount, tid, expirytime) VALUES (N'"& Keyword &"', 1, 0, '0', DATEADD(n, 5, GETDATE()))")
+		RQ.Execute("INSERT INTO "& TablePre &"searchindex (keyword, searchstring, recordcount, tid, expirytime) VALUES (N'"& Keyword &"', N'"& SearchString &"', 0, '0', DATEADD(s, 3600, GETDATE()))")
 		str = "0"
 
 		SearchID = Conn.Execute("SELECT SCOPE_IDENTITY()")(0)
@@ -168,7 +168,7 @@ Sub Main()
 	Dim TopicListArray
 
 	SearchID = SafeRequest(3, "searchid", 0, 0, 0)
-	SearchInfo = RQ.Query("SELECT keyword, searchtype, recordcount, tid FROM "& TablePre &"searchindex WHERE searchid = "& SearchID)
+	SearchInfo = RQ.Query("SELECT keyword, searchstring, recordcount, tid FROM "& TablePre &"searchindex WHERE searchid = "& SearchID)
 
 	If IsArray(SearchInfo) Then
 		RecordCount = SearchInfo(2, 0)
@@ -187,7 +187,7 @@ Sub Main()
 		End If
 
 		Keyword = SearchInfo(0, 0)
-		SearchType = SearchInfo(1, 0)
+		SearchType = Split(SearchInfo(1, 0), "|")(0)
 	End If
 
 	Call closeDataBase()
@@ -202,12 +202,12 @@ Sub Main()
   <input name="keyword" size="10" value="<%= Keyword %>" />
   <select name="searchtype">
     <option value="title">帖子标题</option>
-    <option value="author"<%= IIF(SearchType = 1, " selected", "") %>>发帖人</option>
+    <option value="author"<%= IIF(SearchType = "author", " selected", "") %>>发帖人</option>
   </select>
   <input type="submit" value="查找" class="button" />
   [<a href="membermisc.asp" target="_self">返回</a>]
 </form>
-<p><strong>查找内容:</strong><%= Keyword %>&nbsp;&nbsp;&nbsp;<strong>查找范围:</strong><%= IIF(SearchType = 0, "帖子标题", "发帖人") %>
+<p><strong>查找内容:</strong><%= Keyword %>&nbsp;&nbsp;&nbsp;<strong>查找范围:</strong><%= IIF(SearchType = "title", "帖子标题", "发帖人") %>
 <hr color="black" />
 <p>
   <%

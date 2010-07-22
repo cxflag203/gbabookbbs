@@ -15,7 +15,7 @@ Const CacheName = "{cachename}"
 Const TablePre = "{tablepre}"
 Const PrivateKey = "{privatekey}"
 Const INGBABOOK = True
-Const SHOWVERSION = "1.2"
+Const SHOWVERSION = "1.3"
 
 '数据库信息
 Const dbSource = "{dbsource}"

@@ -164,7 +164,7 @@ CREATE TABLE [dbo].[{tablepre}settings](
 CREATE TABLE [dbo].[{tablepre}searchindex](
 	[searchid] [int] IDENTITY(1,1) NOT NULL,
 	[keyword] [nvarchar](50) NOT NULL,
-	[searchtype] [tinyint] NOT NULL,
+	[searchstring] [nvarchar](512) NOT NULL,
 	[searchcount] [int] NOT NULL,
 	[recordcount] [int] NOT NULL,
 	[tid] [text] NOT NULL,
@@ -174,11 +174,6 @@ CREATE TABLE [dbo].[{tablepre}searchindex](
 	[searchid] ASC
 ) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-{next}
-CREATE NONCLUSTERED INDEX [IX_{tablepre}searchindex_1] ON [dbo].[{tablepre}searchindex] 
-(
-	[keyword] ASC
-) ON [PRIMARY]
 {next}
 CREATE TABLE [dbo].[{tablepre}posts](
 	[pid] [int] IDENTITY(1,1) NOT NULL,
