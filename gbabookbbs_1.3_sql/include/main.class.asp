@@ -702,7 +702,7 @@ Class Cls_Forum
 		Dim ForumListArray, strForumID
 		strForumID = "0,"
 
-		ForumListArray = Query("SELECT f.fid, f.visitndcredits, ff.viewperm FROM "& TablePre &"forums f INNER JOIN "& TablePre &"forumfields ff ON f.fid = ff.fid ORDER BY f.displayorder ASC")
+		ForumListArray = Query("SELECT f.fid, f.visitndcredits, ff.viewperm FROM "& TablePre &"forums f INNER JOIN "& TablePre &"forumfields ff ON f.fid = ff.fid ORDER BY f.fid ASC")
 		If IsArray(ForumListArray) Then
 			For i = 0 To UBound(ForumListArray, 2)
 				If (ForumListArray(1, i) = 0 Or UserCredits >= ForumListArray(1, i)) And (Len(ForumListArray(2, i)) = 0 Or InStr(","& ForumListArray(2, i) &",", ","& UserGroupID &",") > 0) Then

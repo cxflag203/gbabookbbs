@@ -169,7 +169,7 @@ Sub Detail()
 
 	MarketListArray = RQ.Query("SELECT im.price, im.num, i.name FROM "& TablePre &"itemmarket im INNER JOIN "& TablePre &"items i ON im.itemid = i.itemid WHERE im.uid = "& UserID)
 
-	GroupListArray = RQ.Query("SELECT gid, name FROM "& TablePre &"usergroups WHERE types = 'restricted' AND gid IN(6,7,8,9) ORDER BY gid ASC")
+	GroupListArray = RQ.Query("SELECT gid, name FROM "& TablePre &"usergroups WHERE types = 'restricted' AND gid IN(6,7,8,9,12) ORDER BY gid ASC")
 
 	If UserInfo(14, 0) > 0 Then
 		eGroupInfo = RQ.Query("SELECT 1 FROM "& TablePre &"groupexpiry WHERE uid = "& UserID)
