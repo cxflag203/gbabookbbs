@@ -63,7 +63,7 @@ Sub UpdateCache()
 		For i = 0 To UBound(ForumListArray, 2)
 			'更新帖子统计
 			Topics = Conn.Execute("SELECT COUNT(tid) FROM "& TablePre &"topics WHERE fid = "& ForumListArray(0, i) &" AND displayorder >= 0")(0)
-			Posts = Conn.Execute("SELECT COUNT(pid) FROM "& TablePre &"posts WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& ForumListArray(0, i) &")")(0)
+			Posts = Conn.Execute("SELECT COUNT(pid) FROM "& TablePre &"posts WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& ForumListArray(0, i) &") AND iffirst = 0")(0)
 			RQ.Execute("UPDATE "& TablePre &"forums SET topics = "& Topics &", posts = "& Posts &" WHERE fid = "& ForumListArray(0, i))
 
 			Call RQ.Reload_Forum_Settings(ForumListArray(0, i))

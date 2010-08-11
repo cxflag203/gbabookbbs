@@ -1,12 +1,12 @@
 ﻿<!--#include file="include/inc.asp"-->
 <%
-Dim TopicInfo, ViewAuthorID
-Dim strSQL, strAddon, PostListArray, CountArray
+Dim TopicInfo, PostListArray, LeagueTopicListArray, CountArray
+Dim strSQL, strAddon, ViewAuthorID
 Dim Page, PageCount, RecordCount
 Dim strErrTips, FloorAddtion, theFloorNumber
 Dim Cmd, Dic, regExpSearch
 
-TopicInfo = RQ.Query("SELECT fid, displayorder, uid, username, usershow, title, posttime, lastupdate, posts, special, price, ifanonymity, iflocked, iftask, ifattachment FROM "& TablePre &"topics WITH(NOLOCK) WHERE tid = "& RQ.TopicID)
+TopicInfo = RQ.Query("SELECT fid, displayorder, uid, username, usershow, title, posttime, lastupdate, posts, special, price, leagueid, ifanonymity, iflocked, iftask, ifattachment FROM "& TablePre &"topics WITH(NOLOCK) WHERE tid = "& RQ.TopicID)
 
 If Not IsArray(TopicInfo) Then
 	Call RQ.showTips("帖子不存在或者已经被删除。", "", "")
@@ -41,7 +41,7 @@ If TopicInfo(10, 0) > 0 Then
 End If
 
 '检查置顶是否到期
-If TopicInfo(13, 0) = 1 Then
+If TopicInfo(14, 0) = 1 Then
 	Dim TaskInfo
 	TaskInfo = RQ.Query("SELECT expirytime FROM "& TablePre &"topictask WHERE tid = "& RQ.TopicID)
 
@@ -56,6 +56,11 @@ If TopicInfo(13, 0) = 1 Then
 	Else
 		RQ.Execute("UPDATE "& TablePre &"topics SET iftask = 0 WHERE tid = "& RQ.TopicID)
 	End If
+End If
+
+'读取其他联盟贴
+If TopicInfo(11, 0) > 0 Then
+	LeagueTopicListArray = RQ.Query("SELECT tid, fid, title FROM "& TablePre &"topics WHERE tid IN(SELECT TOP 10 tid FROM "& TablePre &"leaguetopics WHERE leagueid = "& TopicInfo(11, 0) &" AND tid <> "& RQ.TopicID &" ORDER BY NEWID())")
 End If
 
 '只看作者
@@ -104,7 +109,7 @@ If TopicInfo(9, 0) = 1 And (ViewAuthorID = 0 Or ViewAuthorID = TopicInfo(2, 0)) 
 End If
 
 '读取附件内容
-If TopicInfo(14, 0) = 1 Then
+If TopicInfo(15, 0) = 1 Then
 	Call Include("./include/attachment.inc.asp")
 	Call ReadAttachments()
 End If
@@ -176,7 +181,7 @@ For i = 0 To CountArray
 		If PostListArray(1, i) = 0 Then
 			If ViewAuthorID = 0 Then
 				'是否是楼主回复
-				If PostListArray(7, i) = 0 And TopicInfo(11, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
+				If PostListArray(7, i) = 0 And TopicInfo(12, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
 					Response.Write "<span class=""red""><strong>【楼主】</strong></span>"
 				End If
 
@@ -223,7 +228,7 @@ For i = 0 To CountArray
 			'只看某人回复的处理
 			If ViewAuthorID = 0 Then
 				Response.Write "<a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"""
-				If PostListArray(1, i) = 0 And TopicInfo(11, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
+				If PostListArray(1, i) = 0 And TopicInfo(12, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
 					Response.Write " style=""color:#009;"" title=""楼主"""
 				End If
 				Response.Write ">"& IIF(PostListArray(1, i) = 1, "楼主", theFloorNumber &"楼") &"</a>"
@@ -282,6 +287,15 @@ If ViewAuthorID > 0 Then
 End If
 %>
 <p>
+<% If IsArray(LeagueTopicListArray) Then %>
+<hr color="black" />
+【<a href="leaguenews.asp?action=topics&lid=<%= TopicInfo(11, 0) %>" class="underline">同联盟其他贴</a>】
+<p>
+<% For i = 0 To UBound(LeagueTopicListArray, 2) %>
+- <a href="viewtopic.asp?fid=<%= LeagueTopicListArray(1, i) %>&tid=<%= LeagueTopicListArray(0, i) %>"><%= LeagueTopicListArray(2, i) %></a><br />
+<% Next %>
+<p>
+<% End If %>
 <hr color="black" />
 <% If RQ.UserID > 0 Then %>
 【<a href="topiccp.asp?action=favorites&tid=<%= RQ.TopicID %>" onClick="return shows2(this.href)">收藏</a>&nbsp;<% If RQ.Item_Settings(0) = "1" And RQ.AllowUseItem = 1 Then %><a href="item.asp?action=topicitem&tid=<%= RQ.TopicID %>" onClick="return shows(this.href)">道具</a>&nbsp;<% End If %><a href="topiccp.asp?tid=<%= RQ.TopicID %>" onClick="return shows(this.href);" class="bluelink">举报</a>&nbsp;<a href="#" target="_blank">新窗打开</a>】【<a href="managetopic.asp?action=manageposts&fid=<%= RQ.ForumID %>&tid=<%= RQ.TopicID %>&page=<%= Page %>">管理回复</a><% If RQ.IsModerator And RQ.AllowManageTopic = 1 Then %>&nbsp;<a href="managetopic.asp?fid=<%= RQ.ForumID %>&tid=<%= RQ.TopicID %>">管理帖子</a><% End If %>】
@@ -317,7 +331,7 @@ If RQ.F_AllowPost = 0 And RQ.DisablePostCtrl = 0 Then
 End If
 
 '帖子是否允许回复
-If TopicInfo(12, 0) > 0 Then 
+If TopicInfo(13, 0) > 0 Then 
 	Call showErr("该帖被设为不允许回复。")
 End If
 
@@ -402,12 +416,12 @@ End If
     <input type="checkbox" name="ifanonymity" id="ifanonymity" value="1" /><label for="ifanonymity">匿名</label>
     <% End If %>
     <input type="checkbox" name="disable_update" id="disable_update" value="1" /><label for="disable_update">不UP!</label>
-    <input name="disable_autowap" id="disable_autowap" type="checkbox" value="1" onclick="f_autowap();" /><label for="disable_autowap">不自动换行</label>
+    <% If RQ.blnAllowHTML(0) Then %><input name="disable_autowap" id="disable_autowap" type="checkbox" value="1" onclick="f_autowap();" /><label for="disable_autowap">不自动换行</label><% End If %>
     <input type="checkbox" name="ifparseurl" id="ifparseurl" value="1" checked /><label for="ifparseurl">识别网址和图片</label><br />
     <% If TopicInfo(2, 0) > 0 Then %>
     回帖时送
     <input name="sendcredits" type="text" size="5" />
-    <%= RQ.Other_Settings(0) %>给<span class="underline"><%= IIF(TopicInfo(11, 0) > 0, TopicInfo(4, 0), TopicInfo(3, 0)) %></span>
+    <%= RQ.Other_Settings(0) %>给<span class="underline"><%= IIF(TopicInfo(12, 0) > 0, TopicInfo(4, 0), TopicInfo(3, 0)) %></span>
     <% End If %>
     <% End If %>
     <br />
