@@ -58,7 +58,7 @@ Sub UpdateCache()
 	End If
 
 	'更新帖子统计
-	RQ.Execute("UPDATE f SET f.topics = (SELECT COUNT(tid) FROM "& TablePre &"topics WHERE fid = f.fid AND displayorder >= 0), posts = (SELECT COUNT(pid) FROM "& TablePre &"posts WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = f.fid)) FROM "& TablePre &"forums f")
+	RQ.Execute("UPDATE f SET f.topics = (SELECT COUNT(tid) FROM "& TablePre &"topics WHERE fid = f.fid AND displayorder >= 0), posts = (SELECT COUNT(pid) FROM "& TablePre &"posts WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = f.fid AND iffirst = 0)) FROM "& TablePre &"forums f")
 
 	ForumListArray = RQ.Query("SELECT fid FROM "& TablePre &"forums")
 

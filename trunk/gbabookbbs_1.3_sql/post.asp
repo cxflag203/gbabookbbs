@@ -865,7 +865,7 @@ Sub Main()
   <input name="ifanonymity" id="ifanonymity" type="checkbox" value="1"><label for="ifanonymity">匿名</label>
   <% End If %>
   <input type="checkbox" name="iflocked" id="iflocked" value="1" /><label for="iflocked">不接受回复</label>
-  <input type="checkbox" name="disable_autowap" id="disable_autowap" value="1" onclick="javascript:if($('message').type=='hidden')this.checked=true;" /><label for="disable_autowap">不自动换行</label>
+  <% If RQ.blnAllowHTML(0) Then %><input type="checkbox" name="disable_autowap" id="disable_autowap" value="1" onclick="javascript:if($('message').type=='hidden')this.checked=true;" /><label for="disable_autowap">不自动换行</label><% End If %>
   <input type="checkbox" name="ifparseurl" id="ifparseurl" value="1" checked /><label for="ifparseurl">识别网址和图片</label><br />
   <% If IsArray(LeagueListArray) Then %>
   联盟

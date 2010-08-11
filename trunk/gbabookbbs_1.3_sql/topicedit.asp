@@ -369,7 +369,7 @@ Sub Main()
                   <option value="0"<% If PostInfo(9, 0) = 0 Then Response.Write " selected" End If %>>允许回复</option>
                   <option value="1"<% If PostInfo(9, 0) = 1 Then Response.Write " selected" End If %>>不允许回复</option>
                 </select><% End If %>
-				<input type="checkbox" name="disable_autowap" id="disable_autowap" value="1" onclick="f_autowap();" /><label for="disable_autowap">不自动换行</label>
+				<% If RQ.blnAllowHTML(PostInfo(7, 0)) Then %><input type="checkbox" name="disable_autowap" id="disable_autowap" value="1" onclick="f_autowap();" /><label for="disable_autowap">不自动换行</label><% End If %>
 				<input type="checkbox" name="ifparseurl" id="ifparseurl" value="1" checked /><label for="ifparseurl">识别网址和图片</label>
 				<% If PostInfo(4, 0) > 0 Then %><span style="padding-left: 10px;"><a href="###" onclick="postvalue('item.asp?action=useitem&pid=<%= PostID %>', 'itemid', '22');" class="underline">用个面子</a></span><% End If %>
 				<span id="spanButtonPlaceholder"></span></td>
