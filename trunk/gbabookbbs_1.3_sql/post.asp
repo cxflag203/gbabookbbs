@@ -786,7 +786,7 @@ Sub Main()
   <% End If %>
   所在版面:<select name="fid" onchange="gettopictype(this.options[this.options.selectedIndex].value);">
     <% For i = 0 To UBound(ForumListArray, 2) %>
-    <% If RQ.DisablePostCtrl = 1 Or ((ForumListArray(2, i) = 1 And (ForumListArray(3, i) = 0 Or RQ.UserCredits >= ForumListArray(3, i))) And (Len(ForumListArray(4, i)) = 0 Or InStr(","& ForumListArray(4, i) &",", ","& RQ.UserGroupID &",") > 0) And (Len(ForumListArray(5, i)) = 0 Or InStr(","& ForumListArray(5, i) &",", ","& RQ.UserGroupID &",") > 0)) Then %>
+    <% If ((ForumListArray(2, i) = 1 And (ForumListArray(3, i) = 0 Or RQ.UserCredits >= ForumListArray(3, i))) And (Len(ForumListArray(4, i)) = 0 Or InStr(","& ForumListArray(4, i) &",", ","& RQ.UserGroupID &",") > 0) And (Len(ForumListArray(5, i)) = 0 Or InStr(","& ForumListArray(5, i) &",", ","& RQ.UserGroupID &",") > 0)) Then %>
     <option value="<%= ForumListArray(0, i) %>"<% If RQ.ForumID = ForumListArray(0, i) Then Response.Write " selected" End If %>><%= ForumListArray(1, i) %></option>
     <% End If %>
     <% Next %>
