@@ -983,7 +983,7 @@ Sub Main()
 		End If
 	End If
 
-	ForumListArray = RQ.Query("SELECT fid, name FROM "& TablePre &"forums ORDER BY displayorder ASC")
+	ForumListArray = RQ.Query("SELECT fid, name FROM "& TablePre &"forums WHERE fid IN("& RQ.Get_Accessable_ForumID() &") ORDER BY displayorder ASC")
 
 	AryCredits = Array(1, 5, 10, 15, 30, 50, 80, 100, 150, 200, 250, 300, 500, 800, 1000, 1200, 1500, 1800, 2000, 2500, 5000, 9999, 100000, 1000000)
 

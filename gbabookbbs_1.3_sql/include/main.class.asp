@@ -38,6 +38,7 @@ Class Cls_Forum
 	'类加载，初始化变量
 	'========================================================
 	Private Sub Class_Initialize()
+		UserID = 0
 		UserCode = strFilter(Request.Cookies(CacheName &"uc"))
 		Username = strFilter(Request.Cookies(CacheName &"un"))
 		UserSessionID = strFilter(Request.Cookies(CacheName &"sid"))
@@ -378,26 +379,19 @@ Class Cls_Forum
 	'检测用户是否登陆
 	'========================================================
 	Public Sub CheckUserLogin()
-
 		If Len(UserCode) > 0 Then
-
-			UserCode = CookieCode(UserCode, "DECODE")
-			UserCode = Split(UserCode, Chr(9))
-
+			UserCode = Split(CookieCode(UserCode, "DECODE"), Chr(9))
 			If UBound(UserCode) = 1 Then
 				UserID = IntCode(UserCode(0))
 				UserPassword = strFilter(UserCode(1))
 			End If
-
-			If UserID = 0 Or Len(UserPassword) = 0 Then
-				Call ClearCookies()
-			End If
-		Else
-			UserID = 0
 		End If
 
 		If UserID > 0 Then
-			Call Get_UserInfo()
+			UserInfo = Query("SELECT username, admingroupid, usergroupid, credits, regtime, lastloginip, logintime, loginip, newtopictime, postfloodctrl, accessmasks, groupexpiry, newpm, leaguegid, viewtopicstyle FROM "& TablePre &"members WHERE uid = "& UserID &" AND thepassword = '"& UserPassword &"'")
+			If Not IsArray(UserInfo) Then
+				Call ClearCookies()
+			End If
 		End If
 
 		'读取用户各项属性
@@ -413,17 +407,6 @@ Class Cls_Forum
 			UserSessionID = Rand(10)'生成随机的10位字符串
 			Response.Cookies(CacheName &"sid") = UserSessionID
 			Response.Cookies(CacheName &"sid").Expires = Date() + 5
-		End If
-	End Sub
-
-	'========================================================
-	'读取用户信息
-	'========================================================
-	Sub Get_UserInfo()
-		UserInfo = Query("SELECT username, admingroupid, usergroupid, credits, regtime, lastloginip, logintime, loginip, newtopictime, postfloodctrl, accessmasks, groupexpiry, newpm, leaguegid, viewtopicstyle FROM "& TablePre &"members WHERE uid = "& UserID &" AND thepassword = '"& UserPassword &"'")
-
-		If Not IsArray(UserInfo) Then
-			Call ClearCookies()
 		End If
 	End Sub
 	
@@ -455,7 +438,6 @@ Class Cls_Forum
 			
 			Erase UserInfo
 		Else
-			UserID = 0
 			AdminGroupID = 0
 			UserGroupID = 5
 			UserCredits = 0

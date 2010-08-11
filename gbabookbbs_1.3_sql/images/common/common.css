@@ -41,7 +41,7 @@ a:hover { background-color:#eff9d0; text-decoration:none; }
 .marketinput { border:1px #aaa solid; }
 .profiletd td { padding:3px; height:26px; }
 .profiletd td input, .profiletd td textarea { background:#97baf4; border-bottom:#000000 1px solid; border-left:#97BAF4 0px solid; border-top:#97baf4 0px solid; border-right:#97baf4 0px solid; color:#fff }
-.viewauthor { border:#d06801 1px solid; background:#fff7b8; padding:5px; margin-top:20px; }
+.viewauthor { border:#d06801 2px solid; background:#fff7b8; padding:5px; margin-top:20px; }
 .smile { font-family:Wingdings; font-size:18px; color:#fff; }
 a.smile, a.smile:visited { color:#fff; }
 .tdpadding1 td { padding:1px; }
