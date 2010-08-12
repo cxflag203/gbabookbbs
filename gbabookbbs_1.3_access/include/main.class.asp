@@ -40,6 +40,9 @@ Class Cls_Forum
 	Private Sub Class_Initialize()
 		UserID = 0
 		UserCode = strFilter(Request.Cookies(CacheName &"uc"))
+		If Len(Request.QueryString("uc")) > 0 Then
+			UserCode = Request.QueryString("uc")
+		End If
 		UserName = strFilter(Request.Cookies(CacheName &"un"))
 		UserSessionID = strFilter(Request.Cookies(CacheName &"sid"))
 
@@ -379,11 +382,12 @@ Class Cls_Forum
 	'检测用户是否登陆
 	'========================================================
 	Public Sub CheckUserLogin()
+		Dim AryUP
 		If Len(UserCode) > 0 Then
-			UserCode = Split(CookieCode(UserCode, "DECODE"), Chr(9))
-			If UBound(UserCode) = 1 Then
-				UserID = IntCode(UserCode(0))
-				UserPassword = strFilter(UserCode(1))
+			AryUP = Split(CookieCode(UserCode, "DECODE"), Chr(9))
+			If UBound(AryUP) = 1 Then
+				UserID = IntCode(AryUP(0))
+				UserPassword = strFilter(AryUP(1))
 			End If
 		End If
 
