@@ -1,7 +1,7 @@
 ﻿<!--#include file="include/inc.asp"-->
 <!--#include file="include/md5.inc.asp"-->
 <%
-If RQ.AllowEditUser = 0 And RQ.AllowPunishUser = 0 Then
+If Not RQ.IsModerator Or (RQ.AllowEditUser = 0 And RQ.AllowPunishUser = 0) Then
 	Call RQ.showTips("您没有权限访问管理页面。", "", "")
 End If
 
@@ -159,7 +159,7 @@ Sub Detail()
 	Dim eGroupInfo, ExpiryTime
 
 	UserID = SafeRequest(3, "uid", 0, 0, 0)
-	UserInfo = RQ.Query("SELECT m.username, m.admingroupid, m.usergroupid, m.credits, m.regtime, m.regip, m.lastlogintime, m.lastloginip, m.logintime, m.loginip, m.logincount, m.newtopictime, m.topics, m.posts, m.groupexpiry, mf.designation, mf.signature, mf.ignorepm, g.types FROM "& TablePre &"members m INNER JOIN "& TablePre &"memberfields mf ON m.uid = mf.uid INNER JOIN "& TablePre &"usergroups g ON m.usergroupid = g.gid WHERE m.uid = "& UserID)
+	UserInfo = RQ.Query("SELECT m.username, m.admingroupid, m.usergroupid, m.credits, m.regtime, m.regip, m.lastlogintime, m.lastloginip, m.logintime, m.loginip, m.logincount, m.newtopictime, m.topics, m.posts, m.groupexpiry, mf.designation, mf.signature, mf.ignorepm, mf.avatar, g.types FROM "& TablePre &"members m INNER JOIN "& TablePre &"memberfields mf ON m.uid = mf.uid INNER JOIN "& TablePre &"usergroups g ON m.usergroupid = g.gid WHERE m.uid = "& UserID)
 
 	If Not IsArray(UserInfo) Then
 		Call RQ.showTips("该用户不存在或者已经被删除。", "", "")
@@ -200,6 +200,13 @@ Sub Detail()
       </td>
     </tr>
 	<% If RQ.AdminGroupID = 1 Or (RQ.AdminGroupID = 2 And RQ.AllowEditUser = 1) Then %>
+	<% If Len(UserInfo(19, 0)) > 0 Then %>
+    <tr>
+	  <td>头像:</td>
+      <td style="height:60px;"><img src="avatars/<%= UserInfo(18, 0) %>" />
+	    <label><input type="checkbox" name="delete_avatar" value="1" />删除头像</label></td>
+    </tr>
+	<% End If %>
     <tr>
 	  <td>新密码:<br />如果不修改密码此处请留空</td>
       <td><input type="text" name="password" size="20" class="inputgrey" /></td>
