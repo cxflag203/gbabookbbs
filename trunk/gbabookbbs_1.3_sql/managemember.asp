@@ -165,11 +165,14 @@ Sub Detail()
 		Call RQ.showTips("该用户不存在或者已经被删除。", "", "")
 	End If
 
+	'读取用户道具
 	ItemListArray = RQ.Query("SELECT mi.num, i.name FROM "& TablePre &"memberitems mi INNER JOIN "& TablePre &"items i ON mi.itemid = i.itemid WHERE mi.uid = "& UserID)
 
+	'读取用户道具市场
 	MarketListArray = RQ.Query("SELECT im.price, im.num, i.name FROM "& TablePre &"itemmarket im INNER JOIN "& TablePre &"items i ON im.itemid = i.itemid WHERE im.uid = "& UserID)
 
-	GroupListArray = RQ.Query("SELECT gid, name FROM "& TablePre &"usergroups WHERE types = 'restricted' AND gid IN(6,7,8,9,12) ORDER BY gid ASC")
+	'读取受限用户组
+	GroupListArray = RQ.Query("SELECT gid, name FROM "& TablePre &"usergroups WHERE gid IN(6,7,8,9,12) ORDER BY gid ASC")
 
 	If UserInfo(14, 0) > 0 Then
 		eGroupInfo = RQ.Query("SELECT 1 FROM "& TablePre &"groupexpiry WHERE uid = "& UserID)
@@ -200,7 +203,7 @@ Sub Detail()
       </td>
     </tr>
 	<% If RQ.AdminGroupID = 1 Or (RQ.AdminGroupID = 2 And RQ.AllowEditUser = 1) Then %>
-	<% If Len(UserInfo(19, 0)) > 0 Then %>
+	<% If Len(UserInfo(18, 0)) > 0 Then %>
     <tr>
 	  <td>头像:</td>
       <td style="height:60px;"><img src="avatars/<%= UserInfo(18, 0) %>" />
@@ -413,7 +416,7 @@ Sub Detail()
   <% End If %>
 </table>
 <% If RQ.AllowPunishUser = 1 Then %>
-<% If UserInfo(18, 0) = "restricted" Then %>
+<% If UserInfo(19, 0) = "restricted" Then %>
 <br />
 <form method="post" name="remove_restricted" action="?action=remove_restricted" onsubmit="$('btnrestore').value='正在提交,请稍后...';$('btnrestore').disabled=true;">
   <input type="hidden" name="uid" value="<%= UserID %>" />
@@ -479,12 +482,12 @@ End Sub
 '更新用户资料
 '========================================================
 Sub Update_Detail()
-	If RQ.AllowPunishUser = 0 And RQ.AdminGroupID <> 1 Then
+	If RQ.AllowEditUser = 0 Then
 		Call RQ.showTips("您没有编辑用户的权限。", "", "")
 	End If
 
 	Dim UserID, UserInfo, strSQL
-	Dim Password, Credits, RegTime, RegIP, LastLoginTime, LastLoginIP, LoginTime, LoginIP, LoginCount, NewTopicTime, Topics, Posts, Designation, Signature, Ignorepm
+	Dim Password, Credits, RegTime, RegIP, LastLoginTime, LastLoginIP, LoginTime, LoginIP, LoginCount, NewTopicTime, Topics, Posts, Designation, Signature, Ignorepm, Delete_Avatar
 
 	UserID = SafeRequest(2, "uid", 0, 0, 0)
 	UserInfo = RQ.Query("SELECT 1 FROM "& TablePre &"members WHERE uid = "& UserID)
@@ -508,6 +511,7 @@ Sub Update_Detail()
 	Designation = SafeRequest(2, "designation", 1, "", 1)
 	Signature = SafeRequest(2, "signature", 1, "", 1)
 	Ignorepm = Replace(SafeRequest(2, "ignorepm", 1, "", 0), vbCrLf, "")
+	Delete_Avatar = SafeRequest(2, "delete_avatar", 0, 0, 0)
 
 	Credits = IIF(Not IsNumeric(Credits), 0, CLng(Credits))
 	RegIP = IIF(Len(RegIP) > 15, Left(RegIP, 15), RegIP)
@@ -524,7 +528,11 @@ Sub Update_Detail()
 	If RQ.AdminGroupID = 1 Or RQ.AdminGroupID = 2 Then
 		RQ.Execute("UPDATE "& TablePre &"members SET credits = "& Credits &", regtime = '"& RegTime &"', regip = '"& RegIP &"', lastlogintime = '"& LastLoginTime &"', lastloginip = '"& LastLoginIP &"', logintime = '"& LoginTime &"', loginip = '"& LoginIP &"', logincount = "& LoginCount &", newtopictime = "& NewTopicTime &", topics = "& Topics &", posts = "& Posts & strSQL &" WHERE uid = "& UserID)
 
-		RQ.Execute("UPDATE "& TablePre &"memberfields SET designation = N'"& Designation &"', signature = N'"& Signature &"', ignorepm = N'"& Ignorepm &"' WHERE uid = "& UserID)
+		RQ.Execute("UPDATE "& TablePre &"memberfields SET designation = N'"& Designation &"', signature = N'"& Signature &"', ignorepm = N'"& Ignorepm &"'"& IIF(Delete_Avatar = 1, ", avatar = ''", "") &" WHERE uid = "& UserID)
+
+		If Delete_Avatar = 1 Then
+			Call DeleteFile("./avatars/"& Left(UserID, 1) &"/"& UserID &".jpg")
+		End If
 	Else
 		RQ.Execute("UPDATE "& TablePre &"memberfields SET designation = N'"& Designation &"', signature = N'"& Signature &"' WHERE uid = "& UserID)
 	End If

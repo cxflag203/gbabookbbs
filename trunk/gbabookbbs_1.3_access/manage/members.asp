@@ -186,7 +186,6 @@ Sub UserGroup()
 	Dim GroupExpiryInfo, ExpiryGroupID, ExpiryTime
 
 	UserID = SafeRequest(3, "uid", 0, 0, 0)
-
 	UserInfo = RQ.Query("SELECT username, admingroupid, usergroupid, groupexpiry FROM "& TablePre &"members WHERE uid = "& UserID)
 
 	If Not IsArray(UserInfo) Then
@@ -286,7 +285,7 @@ Sub Detail()
 
 	UserID = SafeRequest(3, "uid", 0, 0, 0)
 
-	UserInfo = RQ.Query("SELECT m.username, m.credits, m.regtime, m.regip, m.lastlogintime, m.lastloginip, m.logintime, m.loginip, m.logincount, m.newtopictime, m.topics, m.posts, mf.designation, mf.signature, mf.ignorepm FROM "& TablePre &"members m INNER JOIN "& TablePre &"memberfields mf ON m.uid = mf.uid WHERE m.uid = "& UserID)
+	UserInfo = RQ.Query("SELECT m.username, m.credits, m.regtime, m.regip, m.lastlogintime, m.lastloginip, m.logintime, m.loginip, m.logincount, m.newtopictime, m.topics, m.posts, mf.designation, mf.signature, mf.ignorepm, mf.avatar FROM "& TablePre &"members m INNER JOIN "& TablePre &"memberfields mf ON m.uid = mf.uid WHERE m.uid = "& UserID)
 
 	If Not IsArray(UserInfo) Then
 		Call AdminshowTips("该用户不存在或者已经被删除。", "")
@@ -314,6 +313,13 @@ Sub Detail()
         <% If UserInfo(11, 0) > 0 Then %>&nbsp;<a href="?action=view_posts&uid=<%= UserID %>">[回帖]</a><% End If %></span>
       </td>
     </tr>
+	<% If Len(UserInfo(15, 0)) > 0 Then %>
+    <tr>
+	  <td class="altbg1" width="30%"><strong>头像:</strong></td>
+      <td class="altbg2"><img src="../avatars/<%= UserInfo(15, 0) %>" />
+	    <label><input type="checkbox" name="delete_avatar" value="1" class="radio" />删除头像</label></td>
+    </tr>
+	<% End If %>
     <tr>
 	  <td class="altbg1" width="30%"><strong>新密码:</strong><br />如果不修改密码此处请留空</td>
       <td class="altbg2"><input type="text" name="password" size="20" /></td>
@@ -406,7 +412,7 @@ End Sub
 '========================================================
 Sub Update_Detail()
 	Dim UserID, UserInfo, strSQL
-	Dim Password, Credits, RegTime, RegIP, LastLoginTime, LastLoginIP, LoginTime, LoginIP, LoginCount, NewTopicTime, Topics, Posts, Designation, Signature, Ignorepm
+	Dim Password, Credits, RegTime, RegIP, LastLoginTime, LastLoginIP, LoginTime, LoginIP, LoginCount, NewTopicTime, Topics, Posts, Designation, Signature, Ignorepm, Delete_Avatar
 
 	UserID = SafeRequest(2, "uid", 0, 0, 0)
 	UserInfo = RQ.Query("SELECT 1 FROM "& TablePre &"members WHERE uid = "& UserID)
@@ -429,6 +435,7 @@ Sub Update_Detail()
 	Designation = SafeRequest(2, "designation", 1, "", 1)
 	Signature = SafeRequest(2, "signature", 1, "", 1)
 	Ignorepm = Replace(SafeRequest(2, "ignorepm", 1, "", 0), vbCrLf, "")
+	Delete_Avatar = SafeRequest(2, "delete_avatar", 0, 0, 0)
 
 	If IsNumeric(Credits) Then
 		If Credits > 2147483647 Then
@@ -437,6 +444,7 @@ Sub Update_Detail()
 	Else
 		Credits = 0
 	End If
+
 	RegIP = IIF(Len(RegIP) > 15, Left(RegIP, 15), RegIP)
 	LastLoginIP = IIF(Len(LastLoginIP) > 15, Left(LastLoginIP, 15), LastLoginIP)
 	LoginIP = IIF(Len(LoginIP) > 15, Left(LoginIP, 15), LoginIP)
@@ -450,7 +458,11 @@ Sub Update_Detail()
 
 	RQ.Execute("UPDATE "& TablePre &"members SET credits = "& Credits &", regtime = '"& RegTime &"', regip = '"& RegIP &"', lastlogintime = '"& LastLoginTime &"', lastloginip = '"& LastLoginIP &"', logintime = '"& LoginTime &"', loginip = '"& LoginIP &"', logincount = "& LoginCount &", newtopictime = "& NewTopicTime &", topics = "& Topics &", posts = "& Posts & strSQL &" WHERE uid = "& UserID)
 
-	RQ.Execute("UPDATE "& TablePre &"memberfields SET designation = '"& Designation &"', signature = '"& Signature &"', ignorepm = '"& Ignorepm &"' WHERE uid = "& UserID)
+	RQ.Execute("UPDATE "& TablePre &"memberfields SET designation = '"& Designation &"', signature = '"& Signature &"', ignorepm = '"& Ignorepm &"'"& IIF(Delete_Avatar = 1, ", avatar = ''", "") &" WHERE uid = "& UserID)
+
+	If Delete_Avatar = 1 Then
+		Call DeleteFile("../avatars/"& Left(UserID, 1) &"/"& UserID &".jpg")
+	End If
 
 	Call closeDatabase()
 	Call AdminshowTips("用户资料更新成功。", "?action=detail&uid="& UserID)
