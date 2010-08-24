@@ -11,8 +11,10 @@ Action = Request.QueryString("action")
 Select Case Action
 	Case "deletechoosed"
 		Call DeleteChoosed()
-	Case "dosearchordel"
-		Call DoSearchOrDelete()
+	Case "deleteinvalid"
+		Call DeleteInvalid()
+	Case "search"
+		Call Search()
 	Case Else
 		Call Main()
 End Select
@@ -67,17 +69,6 @@ Sub DeleteChoosed()
 End Sub
 
 '========================================================
-'默认页面的提交操作
-'========================================================
-Sub DoSearchOrDelete()
-	If Len(Request.Form("btnsearch")) > 0 Then
-		Call Search()
-	ElseIf Len(Request.Form("deleteinvalid")) > 0 Then
-		Call DeleteInvalid()
-	End If
-End Sub
-
-'========================================================
 '清理无效附件
 '========================================================
 Sub DeleteInvalid()
@@ -102,13 +93,13 @@ Sub Search()
 	Dim strSQL, SqlWhere, SqlPage, Page, PageCount, RecordCount
 	Dim AttachListArray, Fso
 
-	MinSize = SafeRequest(2, "minsize", 0, 0, 0)
-	MaxSize = SafeRequest(2, "maxsize", 0, 0, 0)
-	MinDownloads = SafeRequest(2, "mindownloads", 0, 0, 0)
-	MaxDownloads = SafeRequest(2, "maxdownloads", 0, 0, 0)
-	DaysBefore = SafeRequest(2, "daysbefore", 0, 0, 0)
-	FileName = SafeRequest(2, "filename", 1, "", 0)
-	UserName = SafeRequest(2, "username", 1, "", 0)
+	MinSize = SafeRequest(3, "minsize", 0, 0, 0)
+	MaxSize = SafeRequest(3, "maxsize", 0, 0, 0)
+	MinDownloads = SafeRequest(3, "mindownloads", 0, 0, 0)
+	MaxDownloads = SafeRequest(3, "maxdownloads", 0, 0, 0)
+	DaysBefore = SafeRequest(3, "daysbefore", 0, 0, 0)
+	FileName = SafeRequest(3, "filename", 1, "", 0)
+	UserName = SafeRequest(3, "username", 1, "", 0)
 
 	If MinSize < MaxSize Then
 		SqlWhere = SqlWhere &" AND a.filesize >= "& MinSize * 1024 &" AND a.filesize <= "& MaxSize * 1024
@@ -143,7 +134,7 @@ Sub Search()
 
 		strSQL = "SELECT TOP 50 a.aid, a.pid, a.filename, a.filesize, a.savepath, a.downloads, a.ifimage, a.posttime, IIF(t.tid IS NULL, 0, t.tid), IIF(t.title IS NULL, '', t.title), IIF(m.username IS NULL, '', m.username) FROM ("& TablePre &"attachments a LEFT JOIN "& TablePre &"topics t ON a.tid = t.tid) LEFT JOIN "& TablePre &"members m ON a.uid = m.uid WHERE 1 = 1"& SqlWhere
 		If Page > 1 Then
-			strSQL = strSQL &" AND aid < (SELECT MIN(aid) FROM (SELECT TOP "& 50 * (Page - 1) &" aid FROM "& TablePre &"attachments WHERE 1 = 1"& SqlWhere &") AS tblTemp)"
+			strSQL = strSQL &" AND aid < (SELECT MIN(aid) FROM (SELECT TOP "& 50 * (Page - 1) &" aid FROM "& TablePre &"attachments WHERE 1 = 1"& SqlWhere &" ORDER BY aid DESC) AS tblTemp)"
 		End If
 		strSQL = strSQL &" ORDER BY a.aid DESC"
 
@@ -199,6 +190,9 @@ Sub Search()
 	</tr>
 	<% End If %>
   </table>
+  <% If PageCount > 1 Then %>
+  <div align="center"><% Call ShowPageInfo(Page, PageCount, RecordCount, "&action=search&minsize="& MinSize &"&maxsize="& MaxSize &"&mindownloads="& MinDownloads &"&maxdownloads="& MaxDownloads &"&daysbefore="& DaysBefore &"&filename="& FileName &"&username="& UserName) %></div>
+  <% End If %>
   <% If IsArray(AttachListArray) Then %><p align="center"><input type="submit" id="btndelete" value="删除选中的附件" class="button" /></p><% End If %>
 </form>
 <%
@@ -216,7 +210,8 @@ Sub Main()
   </tr>
 </table>
 <br />
-<form method="post" name="search" action="?action=dosearchordel">
+<form method="get" name="search" action="?">
+  <input type="hidden" name="action" value="search" />
   <table width="98%" class="tableborder" cellSpacing="0" cellPadding="0" align="center" border="0">
     <tr class="header">
       <td height="25" colspan="2"><strong>搜索附件</strong></td>
@@ -244,7 +239,7 @@ Sub Main()
 	<tr height="25">
       <td class="altbg1" width="30%">&nbsp;</td>
       <td><input type="submit" id="btnsearch" name="btnsearch" value="提交搜索" class="button" />
-	    <input type="submit" id="btnclear" name="deleteinvalid" value="清理一天前的无效附件" class="button" /> (无效附件是指：附件已上传，但是没有和任何帖子关联)</td>
+	    <input type="button" id="btnclear" name="deleteinvalid" value="清理一天前的无效附件" class="button" onclick="window.location.href='?action=deleteinvalid'" /> (无效附件是指：附件已上传，但是没有和任何帖子关联)</td>
     </tr>
   </table>
 </form>
