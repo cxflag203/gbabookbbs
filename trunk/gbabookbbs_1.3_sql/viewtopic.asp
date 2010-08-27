@@ -369,7 +369,7 @@ End If
     游客名字:<input type="text" name="username" size="19" maxlength="10">
     限制在10个字符以内<br />
     <% End If %>
-    回复内容:<% If InStr(RQ.Topic_Settings(17), "reply") > 0 And RQ.blnAllowHTML(0) Then %><input type="hidden" id="message" name="message" /><input type="hidden" id="content___Config" value="" style="display:none" /><iframe id="content___Frame" src="include/editor/editor/fckeditor.html?InstanceName=message" width="400" height="200" frameborder="0" scrolling="no"></iframe><% Else %><span id="editorzone"><textarea name="message" id="message" style="width: 275px; height: 65px;"></textarea><% If RQ.blnAllowHTML(0) Then %><a href="javascript:displayeditor();" class="bluelink">编辑器</a></span><% End If %><% End If %>
+    回复内容:<% If InStr(RQ.Topic_Settings(17), "reply") > 0 And RQ.blnAllowHTML(0) Then %><input type="hidden" id="message" name="message" /><input type="hidden" id="content___Config" value="" style="display:none" /><iframe id="content___Frame" src="include/editor/editor/fckeditor.html?InstanceName=message" width="400" height="200" frameborder="0" scrolling="no"></iframe><% Else %><span id="editorzone"><textarea name="message" id="message" style="width:275px; height:65px;"></textarea><% If RQ.blnAllowHTML(0) Then %><a href="javascript:displayeditor();" class="bluelink">编辑器</a></span><% End If %><% End If %>
     <% If RQ.UserID > 0 Then %>
     <span id="face_preview"></span>
 	<br />
