@@ -106,6 +106,8 @@ If PostID = 0 Then
 				Call Append(PostListArray(4, i))
 			End If
 
+			Call Append(" ("& PostListArray(6, i) &")")
+
 			If blnBreakString Then
 				Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &""">下页</a>")
 			End If

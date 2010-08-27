@@ -35,59 +35,62 @@ Sub AjaxQuot()
 	PostID = SafeRequest(3, "pid", 0, 0, 0)
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
 
-	If PostID > 0 And RQ.UserID > 0 Then
-		PostInfo = RQ.Query("SELECT username, usershow, message, ifanonymity FROM "& TablePre &"posts WHERE pid = "& PostID)
-		If IsArray(PostInfo) Then
-			strQuotMessage = PostInfo(2, 0)
-
-			Set regEx = New RegExp
-			regEx.IgnoreCase = True
-			regEx.Global = True
-
-			'处理回复可见和金币打到某一数值可见
-			If InStr(strQuotMessage, "[/hide]") > 0 Then
-				regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
-				strQuotMessage = regEx.Replace(strQuotMessage, "***隐藏内容***")
-
-				regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
-				strQuotMessage = regEx.Replace(strQuotMessage, "***隐藏内容***")
-			End If
-
-			'过滤签名
-			regEx.Pattern = "<div class=""signature"">([\s\S]*)</div>"
-			strQuotMessage = regEx.Replace(strQuotMessage, "")
-			
-			'过滤图片
-			regEx.Pattern = "<img[^>]+?src=(""|')(.*?)(""|')(.*?)>"
-			strQuotMessage = regEx.Replace(strQuotMessage, "$2")
-
-			'regEx.Pattern = "<img[^>]+?src=(.*?)\s(.*?)(/|)>"
-			regEx.Pattern = "<img[^>]+?src=(.*?)>"
-			strQuotMessage = regEx.Replace(strQuotMessage, "$1")
-
-			'保留表情(有谁知道过滤图片但保留表情的正则表达式吗)
-			regEx.Pattern = "[^/]face/(\d+)\.(gif|jpg)"
-			strQuotMessage = regEx.Replace(strQuotMessage, "<img src=""face/$1.$2"">")
-
-			'过滤Flash和播放器
-			regEx.Pattern = "<embed(.*?)>"
-			strQuotMessage = regEx.Replace(strQuotMessage, "")
-			strQuotMessage = Replace(strQuotMessage, "</embed>", "")
-
-			Set regEx = Nothing
-
-			'引用内容太长的处理（暂时不处理）
-			'If Len(strQuotMessage) > 500 Then
-			'	strQuotMessage = Preg_Replace(strQuotMessage, "<br(.*?)>", vbCrLf)
-			'	strQuotMessage = dfc(strQuotMessage)
-			'	strQuotMessage = Replace(CutString(strQuotMessage, 600), vbCrLf, "<br />") &"..."
-			'End If
-
-			'构建引用html
-			strQuotMessage = "<div class=""quotetop"">引用"& IIF(theFloorNumber > 0, theFloorNumber &"楼", "") & IIF(PostInfo(3, 0) = 0, PostInfo(0, 0), PostInfo(1, 0)) &"的回复：</div><div class=""quotemain"">"& strQuotMessage &"</div>"
-			Response.Write "<br />"& strQuotMessage &"<span style=""float: right;""><a href=""###"" onclick=""javascript:$('quot').innerHTML = $('quot_message').value = '';"" class=""bluelink"">取消引用</a></span><script type=""text/javascript"">$('quot_message').value='"& strQuotMessage &"'</script>"
-		End If
+	If PostID = 0 Or RQ.UserID = 0 Then
+		Exit Sub
 	End If
+
+	PostInfo = RQ.Query("SELECT username, usershow, message, ifanonymity FROM "& TablePre &"posts WHERE pid = "& PostID)
+	If IsArray(PostInfo) Then
+		strQuotMessage = PostInfo(2, 0)
+
+		Set regEx = New RegExp
+		regEx.IgnoreCase = True
+		regEx.Global = True
+
+		'处理回复可见和金币打到某一数值可见
+		If InStr(strQuotMessage, "[/hide]") > 0 Then
+			regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
+			strQuotMessage = regEx.Replace(strQuotMessage, "***隐藏内容***")
+
+			regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
+			strQuotMessage = regEx.Replace(strQuotMessage, "***隐藏内容***")
+		End If
+
+		'过滤签名
+		regEx.Pattern = "<div class=""signature"">([\s\S]*)</div>"
+		strQuotMessage = regEx.Replace(strQuotMessage, "")
+		
+		'过滤图片
+		regEx.Pattern = "<img[^>]+?src=(""|')(.*?)(""|')(.*?)>"
+		strQuotMessage = regEx.Replace(strQuotMessage, "$2")
+
+		'regEx.Pattern = "<img[^>]+?src=(.*?)\s(.*?)(/|)>"
+		regEx.Pattern = "<img[^>]+?src=(.*?)>"
+		strQuotMessage = regEx.Replace(strQuotMessage, "$1")
+
+		'保留表情(有谁知道过滤图片但保留表情的正则表达式吗)
+		regEx.Pattern = "[^/]face/(\d+)\.(gif|jpg)"
+		strQuotMessage = regEx.Replace(strQuotMessage, "<img src=""face/$1.$2"">")
+
+		'过滤Flash和播放器
+		regEx.Pattern = "<embed(.*?)>"
+		strQuotMessage = regEx.Replace(strQuotMessage, "")
+		strQuotMessage = Replace(strQuotMessage, "</embed>", "")
+
+		Set regEx = Nothing
+
+		'引用内容太长的处理（暂时不处理）
+		'If Len(strQuotMessage) > 500 Then
+		'	strQuotMessage = Preg_Replace(strQuotMessage, "<br(.*?)>", vbCrLf)
+		'	strQuotMessage = dfc(strQuotMessage)
+		'	strQuotMessage = Replace(CutString(strQuotMessage, 600), vbCrLf, "<br />") &"..."
+		'End If
+
+		'构建引用html
+		strQuotMessage = "<div class=""quotetop"">引用"& IIF(theFloorNumber > 0, theFloorNumber &"楼", "") & IIF(PostInfo(3, 0) = 0, PostInfo(0, 0), PostInfo(1, 0)) &"的回复：</div><div class=""quotemain"">"& strQuotMessage &"</div>"
+		Response.Write "<br />"& strQuotMessage &"<span style=""float: right;""><a href=""###"" onclick=""javascript:$('quot').innerHTML = $('quot_message').value = '';"" class=""bluelink"">取消引用</a></span><script type=""text/javascript"">$('quot_message').value='"& strQuotMessage &"'</script>"
+	End If
+
 	Call closeDatabase()
 End Sub
 

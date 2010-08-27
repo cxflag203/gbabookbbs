@@ -13,8 +13,6 @@ Select Case Action
 		Call DeleteChoosed()
 	Case "deleteinvalid"
 		Call DeleteInvalid()
-	Case "search"
-		Call Search()
 	Case Else
 		Call Main()
 End Select
@@ -88,68 +86,109 @@ End Sub
 '========================================================
 '列出附件
 '========================================================
-Sub Search()
+Sub Main()
 	Dim MinSize, MaxSize, MinDownloads, MaxDownloads, DaysBefore, FileName, FileExt, UserName
 	Dim strSQL, SqlWhere, SqlPage, Page, PageCount, RecordCount
 	Dim AttachListArray, Fso
 
-	MinSize = SafeRequest(3, "minsize", 0, 0, 0)
-	MaxSize = SafeRequest(3, "maxsize", 0, 0, 0)
-	MinDownloads = SafeRequest(3, "mindownloads", 0, 0, 0)
-	MaxDownloads = SafeRequest(3, "maxdownloads", 0, 0, 0)
-	DaysBefore = SafeRequest(3, "daysbefore", 0, 0, 0)
-	FileName = SafeRequest(3, "filename", 1, "", 0)
-	UserName = SafeRequest(3, "username", 1, "", 0)
+	If Action = "search" Then
+		MinSize = SafeRequest(3, "minsize", 0, 0, 0)
+		MaxSize = SafeRequest(3, "maxsize", 0, 0, 0)
+		MinDownloads = SafeRequest(3, "mindownloads", 0, 0, 0)
+		MaxDownloads = SafeRequest(3, "maxdownloads", 0, 0, 0)
+		DaysBefore = SafeRequest(3, "daysbefore", 0, 0, 0)
+		FileName = SafeRequest(3, "filename", 1, "", 0)
+		UserName = SafeRequest(3, "username", 1, "", 0)
 
-	If MinSize < MaxSize Then
-		SqlWhere = SqlWhere &" AND a.filesize >= "& MinSize * 1024 &" AND a.filesize <= "& MaxSize * 1024
-		SqlPage = SqlPage &" AND filesize >= "& MinSize * 1024 &" AND filesize <= "& MaxSize * 1024
-	End If
-
-	If MinDownloads < MaxDownloads Then
-		SqlWhere = SqlWhere &" AND a.downloads >= "& MinDownloads &" AND a.downloads <= "& MaxDownloads
-		SqlPage = SqlPage &" AND downloads >= "& MinDownloads &" AND downloads <= "& MaxDownloads
-	End If
-
-	If DaysBefore > 0 Then
-		SqlWhere = SqlWhere &" AND a.posttime <= #"& DATEADD("d", -DaysBefore, Now()) &"#"
-		SqlPage = SqlPage &" AND posttime <= #"& DATEADD("d", -DaysBefore, Now()) &"#"
-	End If
-
-	If Len(FileName) > 0 Then
-		SqlWhere = SqlWhere &" AND a.filename LIKE '%"& FileName &"%'"
-		SqlPage = SqlPage &" AND filename LIKE '%"& FileName &"%'"
-	End If
-
-	If Len(UserName) > 0 Then
-		SqlWhere = SqlWhere &" AND a.uid = (SELECT uid FROM "& TablePre &"members WHERE username = '"& UserName &"')"
-		SqlPage = SqlPage &" AND uid = (SELECT uid FROM "& TablePre &"members WHERE username = '"& UserName &"')"
-	End If
-
-	RecordCount = Conn.Execute("SELECT COUNT(aid) FROM "& TablePre &"attachments WHERE 1 = 1"& SqlPage)(0)
-	If RecordCount > 0 Then
-		PageCount = ABS(Int(-(RecordCount / 50)))
-		Page = SafeRequest(3, "page", 0, 1, 0)
-		Page = IIF(Page > PageCount, PageCount, Page)
-
-		strSQL = "SELECT TOP 50 a.aid, a.pid, a.filename, a.filesize, a.savepath, a.downloads, a.ifimage, a.posttime, IIF(t.tid IS NULL, 0, t.tid), IIF(t.title IS NULL, '', t.title), IIF(m.username IS NULL, '', m.username) FROM ("& TablePre &"attachments a LEFT JOIN "& TablePre &"topics t ON a.tid = t.tid) LEFT JOIN "& TablePre &"members m ON a.uid = m.uid WHERE 1 = 1"& SqlWhere
-		If Page > 1 Then
-			strSQL = strSQL &" AND aid < (SELECT MIN(aid) FROM (SELECT TOP "& 50 * (Page - 1) &" aid FROM "& TablePre &"attachments WHERE 1 = 1"& SqlWhere &" ORDER BY aid DESC) AS tblTemp)"
+		If MinSize < MaxSize Then
+			SqlWhere = SqlWhere &" AND a.filesize >= "& MinSize * 1024 &" AND a.filesize <= "& MaxSize * 1024
+			SqlPage = SqlPage &" AND filesize >= "& MinSize * 1024 &" AND filesize <= "& MaxSize * 1024
 		End If
-		strSQL = strSQL &" ORDER BY a.aid DESC"
 
-		AttachListArray = RQ.Query(strSQL)
+		If MinDownloads < MaxDownloads Then
+			SqlWhere = SqlWhere &" AND a.downloads >= "& MinDownloads &" AND a.downloads <= "& MaxDownloads
+			SqlPage = SqlPage &" AND downloads >= "& MinDownloads &" AND downloads <= "& MaxDownloads
+		End If
+
+		If DaysBefore > 0 Then
+			SqlWhere = SqlWhere &" AND a.posttime <= #"& DATEADD("d", -DaysBefore, Now()) &"#"
+			SqlPage = SqlPage &" AND posttime <= #"& DATEADD("d", -DaysBefore, Now()) &"#"
+		End If
+
+		If Len(FileName) > 0 Then
+			SqlWhere = SqlWhere &" AND a.filename LIKE '%"& FileName &"%'"
+			SqlPage = SqlPage &" AND filename LIKE '%"& FileName &"%'"
+		End If
+
+		If Len(UserName) > 0 Then
+			SqlWhere = SqlWhere &" AND a.uid = (SELECT uid FROM "& TablePre &"members WHERE username = '"& UserName &"')"
+			SqlPage = SqlPage &" AND uid = (SELECT uid FROM "& TablePre &"members WHERE username = '"& UserName &"')"
+		End If
+
+		RecordCount = Conn.Execute("SELECT COUNT(aid) FROM "& TablePre &"attachments WHERE 1 = 1"& SqlPage)(0)
+		If RecordCount > 0 Then
+			PageCount = ABS(Int(-(RecordCount / 50)))
+			Page = SafeRequest(3, "page", 0, 1, 0)
+			Page = IIF(Page > PageCount, PageCount, Page)
+
+			strSQL = "SELECT TOP 50 a.aid, a.pid, a.filename, a.filesize, a.savepath, a.downloads, a.ifimage, a.posttime, IIF(t.tid IS NULL, 0, t.tid), IIF(t.title IS NULL, '', t.title), IIF(m.username IS NULL, '', m.username) FROM ("& TablePre &"attachments a LEFT JOIN "& TablePre &"topics t ON a.tid = t.tid) LEFT JOIN "& TablePre &"members m ON a.uid = m.uid WHERE 1 = 1"& SqlWhere
+			If Page > 1 Then
+				strSQL = strSQL &" AND aid < (SELECT MIN(aid) FROM (SELECT TOP "& 50 * (Page - 1) &" aid FROM "& TablePre &"attachments WHERE 1 = 1"& SqlWhere &" ORDER BY aid DESC) AS tblTemp)"
+			End If
+			strSQL = strSQL &" ORDER BY a.aid DESC"
+
+			AttachListArray = RQ.Query(strSQL)
+		End If
+
+		If IsArray(AttachListArray) Then
+			Set Fso = Server.CreateObject("Scripting.FileSystemObject")
+			Call Include("../include/attachment.inc.asp")
+		End If
 	End If
 
 	Call closeDatabase()
-
-	If IsArray(AttachListArray) Then
-		Set Fso = Server.CreateObject("Scripting.FileSystemObject")
-		Call Include("../include/attachment.inc.asp")
-	End If
-
-	Call Main()
 %>
+<br />
+<table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
+  <tr>
+    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;附件管理</td>
+  </tr>
+</table>
+<br />
+<form method="get" name="search" action="?">
+  <input type="hidden" name="action" value="search" />
+  <table width="98%" class="tableborder" cellSpacing="0" cellPadding="0" align="center" border="0">
+    <tr class="header">
+      <td height="25" colspan="2"><strong>搜索附件</strong></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>附件大小范围：</strong><br />单位：KB</td>
+      <td><input type="text" name="minsize" size="15" value="<%= IIF(MinSize > 0, MinSize, "") %>" /> - <input type="text" name="maxsize" size="15" value="<%= IIF(MaxSize > 0, MaxSize, "") %>" /></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1" width="30%"><strong>下载次数范围：</strong></td>
+      <td><input type="text" name="mindownloads" size="15" value="<%= IIF(MinDownloads > 0, MinDownloads, "") %>" /> - <input type="text" name="maxdownloads" size="15" value="<%= IIF(MaxDownloads > 0, MaxDownloads, "") %>" /></td>
+    </tr>
+	<tr height="25">
+      <td class="altbg1"><strong>上传于多少天以前：</strong></td>
+      <td><input type="text" name="daysbefore" size="34" value="<%= IIF(DaysBefore > 0, DaysBefore, "") %>" /></td>
+    </tr>
+	<tr height="25">
+      <td class="altbg1"><strong>文件名：</strong></td>
+      <td><input type="text" name="filename" size="34" value="<%= FileName %>" /></td>
+    </tr>
+	<tr height="25">
+      <td class="altbg1"><strong>上传者：</strong></td>
+      <td><input type="text" name="username" size="34" value="<%= UserName %>" /></td>
+    </tr>
+	<tr height="25">
+      <td class="altbg1" width="30%">&nbsp;</td>
+      <td><input type="submit" id="btnsearch" name="btnsearch" value="提交搜索" class="button" />
+	    <input type="button" id="btnclear" name="deleteinvalid" value="清理一天前的无效附件" class="button" onclick="window.location.href='?action=deleteinvalid'" /> (无效附件是指：附件已上传，但是没有和任何帖子关联)</td>
+    </tr>
+  </table>
+</form>
+<% If Action = "search" Then %>
 <br />
 <form name="attlist" method="post" action="?action=deletechoosed">
   <table width="98%" border="0" cellpadding="0" cellspacing="0" align="center" class="tableborder">
@@ -196,53 +235,6 @@ Sub Search()
   <% If IsArray(AttachListArray) Then %><p align="center"><input type="submit" id="btndelete" value="删除选中的附件" class="button" /></p><% End If %>
 </form>
 <%
-End Sub
-
-'========================================================
-'显示搜索界面
-'========================================================
-Sub Main()
-%>
-<br />
-<table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
-  <tr>
-    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;附件管理</td>
-  </tr>
-</table>
-<br />
-<form method="get" name="search" action="?">
-  <input type="hidden" name="action" value="search" />
-  <table width="98%" class="tableborder" cellSpacing="0" cellPadding="0" align="center" border="0">
-    <tr class="header">
-      <td height="25" colspan="2"><strong>搜索附件</strong></td>
-    </tr>
-    <tr height="25">
-      <td class="altbg1"><strong>附件大小范围：</strong><br />单位：KB</td>
-      <td><input type="text" name="minsize" size="15" value="<%= SafeRequest(2, "minsize", 0, "", 0) %>" /> - <input type="text" name="maxsize" size="15" value="<%= SafeRequest(2, "maxsize", 0, "", 0) %>" /></td>
-    </tr>
-    <tr height="25">
-      <td class="altbg1" width="30%"><strong>下载次数范围：</strong></td>
-      <td><input type="text" name="mindownloads" size="15" value="<%= SafeRequest(2, "mindownloads", 0, "", 0) %>" /> - <input type="text" name="maxdownloads" size="15" value="<%= SafeRequest(2, "maxdownloads", 0, "", 0) %>" /></td>
-    </tr>
-	<tr height="25">
-      <td class="altbg1"><strong>上传于多少天以前：</strong></td>
-      <td><input type="text" name="daysbefore" size="34" value="<%= SafeRequest(2, "daysbefore", 0, "", 0) %>" /></td>
-    </tr>
-	<tr height="25">
-      <td class="altbg1"><strong>文件名：</strong></td>
-      <td><input type="text" name="filename" size="34" value="<%= SafeRequest(2, "filename", 1, "", 0) %>" /></td>
-    </tr>
-	<tr height="25">
-      <td class="altbg1"><strong>上传者：</strong></td>
-      <td><input type="text" name="username" size="34" value="<%= SafeRequest(2, "username", 1, "", 0) %>" /></td>
-    </tr>
-	<tr height="25">
-      <td class="altbg1" width="30%">&nbsp;</td>
-      <td><input type="submit" id="btnsearch" name="btnsearch" value="提交搜索" class="button" />
-	    <input type="button" id="btnclear" name="deleteinvalid" value="清理一天前的无效附件" class="button" onclick="window.location.href='?action=deleteinvalid'" /> (无效附件是指：附件已上传，但是没有和任何帖子关联)</td>
-    </tr>
-  </table>
-</form>
-<%
+	End If
 End Sub
 %>
