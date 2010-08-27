@@ -320,7 +320,7 @@ Sub TopicItem()
 		SqlTypes = "anonymity"
 	Else
 		'验证帖子
-		TopicInfo = RQ.Query("SELECT 1 FROM "& TablePre &"topics WHERE tid = "& RQ.TopicID &" AND displayorder >= 0")
+		TopicInfo = RQ.Query("SELECT 1 FROM "& TablePre &"topics WHERE tid = "& RQ.TopicID &" AND fid = "& RQ.ForumID &" AND displayorder >= 0")
 		If Not IsArray(TopicInfo) Then
 			Call RQ.showTips("帖子不存在或者已经被删除或者还没有通过审核。", "", "")
 		End If
