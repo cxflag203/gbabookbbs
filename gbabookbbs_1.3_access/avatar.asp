@@ -119,12 +119,9 @@ End Sub
 '上传头像界面
 '========================================================
 Sub Main()
-	Dim UserInfo, PathInfo
+	Dim UserInfo
 	UserInfo = RQ.Query("SELECT avatar FROM "& TablePre &"memberfields WHERE uid = "& RQ.UserID)
 	Call closeDatabase()
-
-	PathInfo = LCase(Request.ServerVariables("PATH_INFO"))
-	PathInfo = Left(PathInfo, InstrRev(PathInfo, "/"))
 
 	RQ.Header()
 %>
@@ -141,7 +138,7 @@ Sub Main()
 上传新头像(图片大小请控制在500KB以内)：
 <br />
 <br />
-<embed src="js/uploadavatar.swf?path=<%= PathInfo %>&uc=<%= RQ.UserCode %>" quality="high" width="453" height="403" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed>
+<embed src="js/uploadavatar.swf?uc=<%= RQ.UserCode %>" quality="high" width="453" height="403" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed>
 <script language="javascript">
 function show(_txt){
 	var uid = '<%= RQ.UserID %>';
