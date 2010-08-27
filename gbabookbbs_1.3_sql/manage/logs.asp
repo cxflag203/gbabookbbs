@@ -36,8 +36,8 @@ Sub RegInvate()
 	Status = SafeRequest(3, "status", 1, "", 0)
 
 	If Len(Keyword) > 0 Then
-		sqlwhere = " AND uid IN (SELECT uid FROM "& TablePre &"members WHERE username LIKE N'%"& Keyword &"%')"
-		sqlpage = " AND inv.uid IN (SELECT uid FROM "& TablePre &"members WHERE username LIKE N'%"& Keyword &"%')"
+		sqlwhere = " AND reguid IN (SELECT uid FROM "& TablePre &"members WHERE username LIKE N'%"& Keyword &"%')"
+		sqlpage = " AND inv.reguid IN (SELECT uid FROM "& TablePre &"members WHERE username LIKE N'%"& Keyword &"%')"
 	End If
 
 	Select Case Status
@@ -87,7 +87,7 @@ Sub RegInvate()
       <td>搜索</td>
     </tr>
     <tr class="altbg2">
-      <td>按用户名搜索:
+      <td>搜索被邀请人:
         <input type="text" name="keyword" size="30" value="<%= Keyword %>" />
 		<select name="status" onchange="$('fmsearch').submit();">
           <option value="">是否使用</option>
