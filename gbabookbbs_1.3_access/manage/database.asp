@@ -178,7 +178,7 @@ Sub BackupDatabase()
 
 	If Not blnBackupError Then
 		'备份文件名字
-		BakFileName = "backup_"& Year(Now()) & Month(Now()) & Day(Now()) & Hour(Now()) & Minute(Now()) & Second(Now()) &"_"& Rand(10) &".rar"
+		BakFileName = "backup_"& Year(Now()) & Right("0"& Month(Now()), 2) & Right("0"& Day(Now()), 2) & Right("0"& Hour(Now()), 2) & Right("0"& Minute(Now()), 2) & Right("0"& Second(Now()), 2) &"_"& Rand(10) &".rar"
 
 		'复制当前数据库到备份目录
 		Fso.CopyFile dbFullPath, dbBakFolder & BakFileName
@@ -281,7 +281,7 @@ End Sub
 '========================================================
 Sub Main()
 	Dim dbBakFolder, dbFolder, TEMP
-	Dim Fso, bakFolder, bakFiles, Files
+	Dim Fso, bakFolder, bakFiles, CurrentDbSize, File, Files
 
 	'获得当前目录完整路径以及数据库所在的目录
 	dbBakFolder = Left(dbFullPath, InstrRev(dbFullPath, "\")) &"backup\"
@@ -290,8 +290,13 @@ Sub Main()
 
 	'打开Fso组件，读取备份文件夹
 	Set Fso = CreateObject("Scripting.FileSystemObject")
+
+	Set File = Fso.GetFile(dbFullPath)
+	CurrentDbSize = FormatNumber(File.Size / (1024 * 1024), 2) &" MB"
+	Set File = Nothing
+
 	If Not Fso.FolderExists(dbBakFolder) Then
-	   Fso.CreateFolder(dbBakFolder)
+		Fso.CreateFolder(dbBakFolder)
 	End If
 
 	Set bakFolder = Fso.GetFolder(dbBakFolder)
@@ -321,7 +326,7 @@ Sub Main()
   <input type="hidden" name="do" value="compressdatabase" />
   <table width="98%" class="tableborder" cellspacing="0" cellPadding="0" align="center" border="0">
     <tr class="header">
-      <td height="25" colspan="2"><strong>压缩数据库</strong></td>
+      <td height="25" colspan="2"><strong>压缩数据库</strong>(当前数据库大小：<%= CurrentDbSize %>)</td>
     </tr>
     <tr height="25">
       <td class="altbg1"></td>
