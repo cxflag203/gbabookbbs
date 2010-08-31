@@ -84,12 +84,16 @@ Sub BaseSettings()
       <td width="70%"><input type="text" name="basesettings_2" size="40" value="<%= Base_Settings(2) %>" /></td>
     </tr>
     <tr height="25">
+      <td class="altbg1"><strong>网站第三方统计代码:</strong><br />在页面底部显示</td>
+      <td width="70%"><textarea name="basesettings_3" rows="4" cols="40" /><%= Base_Settings(3) %></textarea></td>
+    </tr>
+    <tr height="25">
       <td class="altbg1"><strong>关闭论坛:</strong><br />论坛关闭后，只有站长才能进入。</td>
-      <td width="70%"><input type="checkbox" class="radio" name="basesettings_3" id="basesettings_3" value="1"<% If Base_Settings(3) = "1" Then Response.Write " checked" End If %> /><label for="basesettings_3">是的</label></td>
+      <td width="70%"><input type="checkbox" class="radio" name="basesettings_4" id="basesettings_4" value="1"<% If Base_Settings(4) = "1" Then Response.Write " checked" End If %> /><label for="basesettings_4">是的</label></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>关闭后的提示文字:</strong><br />支持HTML语言</td>
-      <td width="70%"><textarea name="basesettings_4" rows="4" cols="40" /><%= Base_Settings(4) %></textarea></td>
+      <td width="70%"><textarea name="basesettings_5" rows="4" cols="40" /><%= Base_Settings(5) %></textarea></td>
     </tr>
     <tr height="25">
 	  <td class="altbg1">&nbsp;</td>
@@ -104,12 +108,13 @@ End Sub
 '保存基本设置
 '========================================================
 Sub SaveBaseSettings()
-	Dim Base_Settings(4)
+	Dim Base_Settings(5)
 	Base_Settings(0) = SafeRequest(2, "basesettings_0", 1, "", 0)
 	Base_Settings(1) = SafeRequest(2, "basesettings_1", 1, "", 0)
 	Base_Settings(2) = SafeRequest(2, "basesettings_2", 1, "", 0)
-	Base_Settings(3) = SafeRequest(2, "basesettings_3", 0, 0, 0)
-	Base_Settings(4) = SafeRequest(2, "basesettings_4", 1, "", 1)
+	Base_Settings(3) = Replace(Request.Form("basesettings_3"), "'", "''")
+	Base_Settings(4) = SafeRequest(2, "basesettings_4", 0, 0, 0)
+	Base_Settings(5) = SafeRequest(2, "basesettings_5", 1, "", 1)
 
 	RQ.Execute("UPDATE "& TablePre &"settings SET base_settings = N'"& Join(Base_Settings, "{settings}") &"'")
 	Call RQ.Reload_Site_Settings()

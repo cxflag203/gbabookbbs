@@ -174,7 +174,11 @@ Sub ShowItemLog()
 	Dim Keyword
 	Dim strSQL, SqlTop, LogListArray
 
+	'删除过期的道具异动报告
 	RQ.Execute("DELETE FROM "& TablePre &"itemmarketlogs WHERE posttime < #"& DateAdd("d", -IntCode(RQ.Item_Settings(1)), Now()) &"#")
+
+	'删除过期的道具使用记录
+	RQ.Execute("DELETE FROM "& TablePre &"itemuselogs WHERE posttime < #"& DateAdd("d", -IntCode(RQ.Item_Settings(1)), Now()) &"#")
 
 	Keyword = Replace(Replace(Replace(SafeRequest(3, "keyword", 1, "", 0), "%", "[%]"), "[", "[[]"), "_", "[_]")
 

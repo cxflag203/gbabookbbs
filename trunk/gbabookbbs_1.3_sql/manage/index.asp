@@ -119,7 +119,7 @@ Sub Show_Menu()
 		Erase MenuArray
 
 		MenuArray(0) = "database.asp?action=sql,执行SQL语句"
-		MenuArray(1) = "database.asp,数据库信息"
+		MenuArray(1) = "database.asp,数据库信息和备份"
 		Call ListMenu("系统工具", MenuArray)
 		Erase MenuArray
 	Else

@@ -134,9 +134,9 @@ Class Cls_Forum
 		Call IpBanned()
 
 		'论坛是否关闭
-		If Base_Settings(3) = "1" And Not (ScriptName = "login" Or AdminGroupID = 1) Then
+		If Base_Settings(4) = "1" And Not (ScriptName = "login" Or AdminGroupID = 1) Then
 			Call ClearCookies()
-			Call showTips(Base_Settings(4), "", "NOPERM")
+			Call showTips(Base_Settings(5), "", "NOPERM")
 		End If
 
 		'检查版面是否有时间设定
@@ -743,7 +743,7 @@ Class Cls_Forum
 	'页面尾部内容
 	'========================================================
 	Public Sub Footer()
-		Response.Write "<div class=""copyright"">Powered by <a href=""http://www.gbabook.com/"" target=""_blank"" class=""bluelink"">GBABook Board "& SHOWVERSION &"</a> &copy; 2004-2009<br />Processed in "& FormatNumber(Timer() - StartTime, 6, -1) &" second(s), "& dbQueryNum &" queries</div>"& SpecialInterface &"</body></html>"
+		Response.Write "<div class=""copyright"">Powered by <a href=""http://www.gbabook.com/"" target=""_blank"" class=""bluelink"">GBABook Board "& SHOWVERSION &"</a> &copy; 2004-2009<br />Processed in "& FormatNumber(Timer() - StartTime, 6, -1) &" second(s), "& dbQueryNum &" queries</div>"& SpecialInterface & Base_Settings(3) &"</body></html>"
 	End Sub
 
 	'========================================================
