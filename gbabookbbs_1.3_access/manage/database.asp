@@ -244,7 +244,7 @@ Sub SQL()
 <br />
 <table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
   <tr>
-    <td><a href="?" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;执行SQL语句</td>
+    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;执行SQL语句</td>
   </tr>
 </table>
 <br />
@@ -308,7 +308,7 @@ Sub Main()
 <br />
 <table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
   <tr>
-    <td><a href="?" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;数据库压缩和备份</td>
+    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;数据库压缩和备份</td>
   </tr>
 </table>
 <br />

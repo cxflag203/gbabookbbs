@@ -62,7 +62,7 @@ Sub NewTopic()
 	End If
 
 	Message = Replace(Message, vbCrLf, "<br />")
-	Message = Message &"<br /><em>(发帖时间:"& Now() &")</em><br />"
+	'Message = Message &"<br /><em>(发帖时间:"& Now() &")</em><br />"
 
 	'如果是登录用户则读取称号和签名
 	If RQ.UserID > 0 Then
@@ -246,7 +246,7 @@ Sub NewReply()
 	End If
 
 	'获取回复帖子后的跳转页数
-	PageCount = ABS(Int(-(TopicInfo(4, 0) / IntCode(RQ.Topic_Settings(4)))))
+	PageCount = ABS(Int(-((TopicInfo(4, 0) + 1) / IntCode(RQ.Wap_Settings(4)))))
 
 	Call closeDatabase()
 	Call WapMessage("您的回复已经成功发布。<br /><a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& PageCount &""">进入刚才发表的帖子</a><br /><a href=""forumdisplay.asp?fid="& RQ.ForumID &""">返回帖子列表</a>", "")
