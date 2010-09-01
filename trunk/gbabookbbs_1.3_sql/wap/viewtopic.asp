@@ -75,12 +75,16 @@ If PostID = 0 Then
 		Call WapMessage("帖子出错。","")
 	End If
 
-	Call closeDatabase()
-
 	Call Append("标题:"& WapCode(TopicInfo(5, 0), 0) &"("& TopicInfo(8, 0) &"条回复)<br /><br />")
 
 	CountArray = UBound(PostListArray, 2)
 	For i = 0 To CountArray
+
+		'处理回复可见和金钱限制的内容
+		If InStr(PostListArray(5, i), "[/hide]") > 0 Then
+			PostListArray(5, i) = ProcessHiddenMessage(PostListArray(5, i))
+		End If
+
 		PostListArray(5, i) = TopicCode(PostListArray(5, i))
 		If PostListArray(1, i) = 1 Then
 			FirstMessage = PostListArray(5, i)
@@ -136,7 +140,7 @@ If PostID = 0 Then
 			Call Append("回复("& theFloorNumber &"):")
 
 			If Len(PostListArray(5, i)) > IntCode(RQ.Wap_Settings(5)) Then
-				Call Append("<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;page="& Page &""">"& ReverseCode(Left(Replace(PostListArray(5, i), Chr(12), " "), IntCode(RQ.Wap_Settings(5)))) &"...</a>")
+				Call Append(""& ReverseCode(Left(Replace(PostListArray(5, i), Chr(12), " "), IntCode(RQ.Wap_Settings(5)))) &"<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostListArray(0, i) &"&amp;f="& theFloorNumber &"&amp;offset="& RQ.Wap_Settings(5) &"&amp;page="& Page &""">（剩"& Len(PostListArray(5, i)) - IntCode(RQ.Wap_Settings(5)) &"字...）</a>")
 			Else
 				Call Append(ReverseCode(PostListArray(5, i)))
 			End If
@@ -164,11 +168,12 @@ Else
 		Call WapMessage("该回复内容不存在或者已经被删除。", "")
 	End If
 
-	Call closeDatabase()
+	'处理回复可见和金钱限制的内容
+	If InStr(PostInfo(3, 0), "[/hide]") > 0 Then
+		PostInfo(3, 0) = ProcessHiddenMessage(PostInfo(3, 0))
+	End If
 
 	theFloorNumber = SafeRequest(3, "f", 0, 0, 0)
-	Call Append("帖子:<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& Page &""">"& TopicCode(TopicInfo(5, 0)) &"</a><br /><br />回复("& IIF(theFloorNumber = 0, "*", theFloorNumber) &"):")
-
 	FirstMessage = TopicCode(PostInfo(3, 0))
 
 	If Offset > Len(FirstMessage) Then
@@ -184,7 +189,7 @@ Else
 		blnBreakString = True
 	End If
 
-	Call Append(ReverseCode(FirstMessage) &"<br />---"& IIF(PostInfo(0, 0) > 0 And PostInfo(5, 0) = 0, "<a href=""pm.asp?action=sendpm&amp;u="& Server.URLEncode(PostInfo(1, 0)) &""">"& PostInfo(1, 0) &"</a>", PostInfo(2, 0)) &"("& PostInfo(4, 0) &")")
+	Call Append("帖子:<a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;page="& Page &""">"& WapCode(TopicInfo(5, 0), 0) &"</a><br /><br />回复("& IIF(theFloorNumber = 0, "*", theFloorNumber) &"):"& ReverseCode(FirstMessage) &"<br />---"& IIF(PostInfo(0, 0) > 0 And PostInfo(5, 0) = 0, "<a href=""pm.asp?action=sendpm&amp;u="& Server.URLEncode(PostInfo(1, 0)) &""">"& PostInfo(1, 0) &"</a>", PostInfo(2, 0)) &"("& PostInfo(4, 0) &")")
 
 	If blnBreakString Then
 		Call Append(" <a href=""viewtopic.asp?fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"&amp;pid="& PostID &"&amp;f="& theFloorNumber &"&amp;offset="& Offset + IntCode(RQ.Wap_Settings(5)) &"&amp;page="& Page &""">下页</a>")
@@ -196,6 +201,8 @@ Else
 
 	Call Append("<br /><br />")
 End If
+
+Call closeDatabase()
 
 If blnAllowReply Then
 	Call Append("<input type=""text"" name=""message"" value="""" size=""10"" emptyok=""true""/><anchor title=""提交"">快速回复<go method=""post"" href=""post.asp?action=newreply&amp;fid="& RQ.ForumID &"&amp;tid="& RQ.TopicID &"""><postfield name=""message"" value=""$(message)""/></go></anchor><br />")
@@ -281,6 +288,46 @@ Sub Check_Status_Post()
 End Sub
 
 '========================================================
+'处理回复可见和金钱限制的内容
+'========================================================
+Function ProcessHiddenMessage(str)
+	Dim regEx, Matches, Match
+	Set regEx = New Regexp
+	regEx.IgnoreCase = True
+	regEx.Global = True
+
+	'处理回复可见
+	If InStr(str, "[/hide]") > 0 Then
+		regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
+		If InStr(str, "[hide]") > 0 Then
+			If Not Conn.Execute("SELECT TOP 1 1 FROM "& TablePre &"posts WHERE tid = "& RQ.TopicID &" AND "& IIF(RQ.UserID > 0, "uid = "& RQ.UserID, "uid = 0 AND userip = '"& RQ.UserIP &"'")).EOF Then
+				str = regEx.Replace(str, "$1")
+			Else
+				str = regEx.Replace(str, "***隐藏内容***")
+			End If
+			dbQueryNum = dbQueryNum + 1
+		End If
+	End If
+
+	'处理金钱限制
+	If InStr(str, "[hide=") > 0 Then
+		regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
+		Set Matches = regEx.Execute(str)
+		regEx.Global = False
+		For Each Match In Matches
+			If RQ.UserCredits < IntCode(Match.SubMatches(0)) And Not RQ.IsModerator Then
+				str = regEx.Replace(str, "***"& RQ.Other_Settings(0) &"达到$1才能浏览***")
+			Else
+				str = regEx.Replace(str, "$2")
+			End If
+		Next
+	End If
+
+	Set regEx = Nothing
+	ProcessHiddenMessage = str
+End Function
+
+'========================================================
 '帖子内容转义和处理特殊内容
 '========================================================
 Function TopicCode(str)
@@ -291,10 +338,10 @@ Function TopicCode(str)
 	regEx.Global = True
 	regEx.Pattern = "<br(.*?)>"
 	str = regEx.Replace(str, Chr(12))
-	regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
-	str = regEx.Replace(str, "[隐藏内容]")
-	regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
-	str = regEx.Replace(str, "[隐藏内容]")
+	'regEx.Pattern = "\[hide\](.+?)\[\/hide\]"
+	'str = regEx.Replace(str, "[隐藏内容]")
+	'regEx.Pattern = "\[hide=(\d+)\](.+?)\[\/hide\]"
+	'str = regEx.Replace(str, "[隐藏内容]")
 	regEx.Pattern = "\[attach\](\d+)\[\/attach\]"
 	str = regEx.Replace(str, "")
 	regEx.Pattern = "<(.[^>]*)>"

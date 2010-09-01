@@ -266,7 +266,7 @@ Sub DeleteAllFavor()
 	If SafeRequest(2, "do", 1, "", 0) = "confirm" Then
 		RQ.Execute("DELETE FROM "& TablePre &"pms WHERE uid = "& RQ.UserID)
 	End If
-	
+
 	Call closeDatabase()
 	Call RQ.showTips("传呼记录已经全部删除。", "?action=showfavor", "")
 End Sub
@@ -281,7 +281,7 @@ Sub SaveIgnorePm()
 		UserName = CheckContent(SafeRequest(2, "username", 1, "", 0))
 		RQ.Execute("UPDATE "& TablePre &"memberfields SET ignorepm = '"& UserName &"' WHERE uid = "& RQ.UserID)
 	End If
-	
+
 	Call closeDatabase()
 	Call RQ.showTips("传呼黑名单设置成功。", "membercp.asp", "")
 End Sub
