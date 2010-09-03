@@ -715,7 +715,7 @@ Class Cls_Forum
 	'置顶帖子相关操作
 	'========================================================
 	Public Sub UpdateStickTopic(ForumID, TopicID, DisplayOrder)
-		Execute("DELETE FROM "& TablePre &"sticktopics WHERE tid IN("& TopicID &")")
+		Execute("DELETE FROM "& TablePre &"sticktopics WHERE tid = "& TopicID)
 		Select Case DisplayOrder
 			Case 3
 				Execute("INSERT INTO "& TablePre &"sticktopics (tid, fid) SELECT "& TopicID &", fid FROM "& TablePre &"forums")

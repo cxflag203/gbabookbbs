@@ -57,7 +57,7 @@ Sub Main()
   <body>
     <p><a href="forumdisplay.asp?fid=<%= RQ.Other_Settings(3) %>">列表页面</a></p>
     <p><a href="index.asp?action=top">菜单栏</a></p>
- </body>
+  </body>
 </noframes>
 </html>
 <% 
@@ -122,7 +122,7 @@ Sub Top()
 <script type="text/javascript" src="js/common.js"></script>
 </head>
 
-<body style="padding: 0px; background: none;">
+<body style="padding:0px; background:none;">
 <div class="mainbg">
   <div class="leftstuff">
     <div class="topmsg"><iframe name="<%= CacheName %>online" src="session.asp" width="0" height="0" scrolling="no" frameborder="0"></iframe><span id="newmsg"></span></div>

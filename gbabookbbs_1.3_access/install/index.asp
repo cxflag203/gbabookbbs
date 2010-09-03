@@ -73,7 +73,7 @@ End Function
 Sub Install()
 	Dim dbSource, BBSName
 	Dim UserName, Password, rePassword, UserID, UserIP
-	Dim CacheName, PrivateKey, ROOTPATH, strConfig
+	Dim CacheName, EncodeString, PrivateKey, ROOTPATH, strConfig
 	Dim Fso
 
 	BBSName = SafeRequest(2, "bbsname", 1, "", 0)
@@ -138,8 +138,13 @@ Sub Install()
 
 	Call closeDatabase()
 
-	CacheName = Randc(6)
+	EncodeString = "gbabook bbs is very good"
 	PrivateKey = Randc(10)
+	Do Until Len(CookieCode(EncodeString, "ENCODE")) > 0
+		PrivateKey = Randc(10)
+	Loop
+
+	CacheName = Randc(6)
 
 	strConfig = LoadFile("common.tpl")
 	strConfig = Replace(strConfig, "{cachename}", CacheName)

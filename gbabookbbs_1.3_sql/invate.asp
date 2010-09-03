@@ -90,6 +90,7 @@ Sub SetNum()
 	Call closeDatabase()
 	RQ.Header()
 %>
+<body>
 <form name="setnum" method="post" action="?action=updatenum">
   <div style="border: 1px #d6bc65 solid; background: #f2eace; padding: 10px; color:#0080ff; width: 400px;">
     <h1>设置推荐码数量</h1>
@@ -135,6 +136,7 @@ Sub Main()
 	Call closeDatabase()
 	RQ.Header()
 %>
+<body>
 <form action="?" method="get">
   查询某用户的推荐人:<input type="text" name="username" size="10" value="<%= UserName %>" /><input type="submit" value="查!" class="button" />
 </form>
