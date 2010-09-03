@@ -73,7 +73,7 @@ Sub Install()
 	Dim dbSource, dbPort, dbName, dbUser, dbPwd, TablePre, BBSName
 	Dim strSQL, TEMP, Fso
 	Dim UserName, Password, rePassword, UserID, UserIP
-	Dim CacheName, PrivateKey, ROOTPATH, strConfig
+	Dim CacheName, EncodeString, PrivateKey, ROOTPATH, strConfig
 
 	dbSource = SafeRequest(2, "dbsource", 1, "", 0)
 	dbPort = SafeRequest(2, "dbport", 0, 1433, 0)
@@ -171,8 +171,13 @@ Sub Install()
 
 	Call closeDatabase()
 
-	CacheName = Randc(6)
+	EncodeString = "gbabook bbs is very good"
 	PrivateKey = Randc(10)
+	Do Until Len(CookieCode(EncodeString, "ENCODE")) > 0
+		PrivateKey = Randc(10)
+	Loop
+
+	CacheName = Randc(6)
 	ROOTPATH = Preg_Replace(Request.ServerVariables("PATH_INFO"), "install/", "")
 	ROOTPATH = Preg_Replace(ROOTPATH, "index.asp", "")
 
