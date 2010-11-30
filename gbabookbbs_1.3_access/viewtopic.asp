@@ -227,7 +227,7 @@ For i = 0 To CountArray
 			If ViewAuthorID = 0 Then
 				Response.Write "<a href=""#quot"" onclick=""showquot('"& PostListArray(0, i) &"', '"& theFloorNumber &"');"""
 				If PostListArray(1, i) = 0 And TopicInfo(12, 0) = 0 And TopicInfo(2, 0) = PostListArray(2, i) And TopicInfo(2, 0) > 0 Then
-					Response.Write " style=""color:#009;"" title=""楼主"""
+					Response.Write " style=""color:#FF1493;"" title=""楼主"""
 				End If
 				Response.Write ">"& IIF(PostListArray(1, i) = 1, "楼主", theFloorNumber &"楼") &"</a>"
 			Else

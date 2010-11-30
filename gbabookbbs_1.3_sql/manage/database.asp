@@ -172,8 +172,12 @@ End Sub
 '数据库压缩界面
 '========================================================
 Sub Main()
-	Dim dbBakFolder, Fso, bakFolder, bakFiles, Files
-	Dim dbListArray
+	Dim dbVersion, dbBakFolder, Fso, bakFolder, bakFiles, Files
+	Dim dbListArray, VersionInfo
+
+	'读取数据库版本
+	VersionInfo = RQ.Query("SELECT SERVERPROPERTY('ProductVersion')")
+	dbVersion = CLng(Split(VersionInfo(0, 0), ".")(0))
 
 	'读取数据库信息
 	dbListArray = RQ.Query("SELECT groupid, size, maxsize, name FROM dbo.sysfiles")
@@ -191,6 +195,7 @@ Sub Main()
 		End If
 	End If
 
+	i = 0
 	Set bakFolder = Fso.GetFolder(dbBakFolder)
 	Set bakFiles = bakFolder.Files
 	Set bakFolder = Nothing
@@ -208,8 +213,12 @@ Sub Main()
     <td>提示</td>
   </tr>
   <tr class="altbg2">
-    <td>1. 备份数据库最好在“基本设置”中关闭论坛后进行，如果一定要联机备份，请尽量选择在访问人数较少的时段进行；<br />
-	  2. 如果您发现数据库日志文件较大，需要清除日志，那么在清除日志前请<span class="red">务必做好数据库备份</span>，以防不测。</td>
+    <td>
+	  1. 只有数据库和网站在一台服务器上才能进行备份；<br />
+	  2. 备份数据库最好在“基本设置”中关闭论坛后进行，如果一定要联机备份，请尽量选择在访问人数较少的时段进行；<br />
+	  3. 如果您发现数据库日志文件较大，需要清除日志，那么在清除日志前请<span class="red">务必做好数据库备份</span>，以防不测；<br />
+	  4. 清除日志功能不支持SQL Server 2008以及以上版本。
+	</td>
   </tr>
 </table>
 <br />
@@ -237,7 +246,6 @@ Sub Main()
       <td>文件大小</td>
       <td>备份时间</td>
     </tr>
-	<% i = 0 %>
 	<% For Each Files In bakFiles %>
 	<% i = i + 1 %>
     <tr>
@@ -290,7 +298,7 @@ Sub Main()
 	<% Next %>
 	<% End If %>
   </table>
-  <p align="center"><input type="submit" id="btndelete" value="截断并清空日志" class="button" /></p>
+  <p align="center"><% If dbVersion < 10 Then %><input type="submit" id="btndelete" value="截断并清空日志" class="button" /><% End If %></p>
 </form>
 <%
 End Sub

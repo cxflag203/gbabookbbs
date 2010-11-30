@@ -299,11 +299,11 @@ Sub Main()
 		Fso.CreateFolder(dbBakFolder)
 	End If
 
+	i = 0
 	Set bakFolder = Fso.GetFolder(dbBakFolder)
 	Set bakFiles = bakFolder.Files
 	Set bakFolder = Nothing
 	Set Fso = Nothing
-	i = 0
 %>
 <br />
 <table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
