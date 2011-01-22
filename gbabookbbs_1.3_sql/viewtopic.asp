@@ -430,6 +430,15 @@ End If
     <input type="submit" name="submit" id="btnsubmit" value="提交回复" class="button" />
 	<% If RQ.UserID = 0 And RQ.AllowPostAttach Then %><span id="spanButtonPlaceholder"></span><% End If %>
 </form>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript">
+document.body.ondblclick = function(){
+	if (parent.$('<%= CacheName %>bodys')){
+		parent.$('<%= CacheName %>bodys').cols = parent.$('<%= CacheName %>bodys').cols !== "0,100%" ? "0,100%" : "50%,50%";
+	}
+}
+f_autowap();
+</script>
 <% If RQ.AllowPostAttach Then %>
 <link href="js/swfupload/default.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/swfupload/swfupload.js"></script>
@@ -470,15 +479,6 @@ window.onload = function() {
  }
 </script>
 <% End If %>
-<script type="text/javascript" src="js/ajax.js"></script>
-<script type="text/javascript">
-document.body.ondblclick = function(){
-	if (parent.$('<%= CacheName %>bodys')){
-		parent.$('<%= CacheName %>bodys').cols = parent.$('<%= CacheName %>bodys').cols !== "0,100%" ? "0,100%" : "50%,50%";
-	}
-}
-f_autowap();
-</script>
 <p><span class="blue">回帖请遵守本站规则，如果您不是很清楚建议您仔细阅读<a href="htmls/help.html" target="_blank"><span class="blue underline">用户必读</span></a>。</span>
 <p>&nbsp;</p>
 <p>&nbsp;</p>

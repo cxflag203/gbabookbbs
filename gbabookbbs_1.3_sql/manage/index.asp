@@ -78,6 +78,7 @@ Sub Show_Menu()
 		MenuArray(5) = "settings.asp?action=othersettings,搜索和其他设置"
 		MenuArray(6) = "settings.asp?action=chatsettings,聊天室设置"
 		MenuArray(7) = "settings.asp?action=wapsettings,WAP设置"
+		MenuArray(8) = "settings.asp?action=attachsettings,附件设置"
 		Call ListMenu("站点设置", MenuArray)
 		Erase MenuArray
 
@@ -121,6 +122,10 @@ Sub Show_Menu()
 		MenuArray(0) = "database.asp?action=sql,执行SQL语句"
 		MenuArray(1) = "database.asp,数据库信息和备份"
 		Call ListMenu("系统工具", MenuArray)
+		Erase MenuArray
+
+		MenuArray(0) = "banner.asp,广告管理"
+		Call ListMenu("其他设置", MenuArray)
 		Erase MenuArray
 	Else
 		If RQ.AdminGroupID = 2 And RQ.AllowEditUser = 1 Then
