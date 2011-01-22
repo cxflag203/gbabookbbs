@@ -41,6 +41,10 @@ Select Case Action
 		Call WapSettings()
 	Case "savewapsettings"
 		Call SaveWapSettings()
+	Case "attachsettings"
+		Call AttachSettings()
+	Case "saveattachsettings"
+		Call SaveAttachSettings()
 End Select
 AdminFooter()
 
@@ -888,5 +892,66 @@ Sub SaveWapSettings()
 	
 	Call closeDatabase()
 	Call AdminshowTips("WAP设置保存成功。", "?action=wapsettings")
+End Sub
+
+'========================================================
+'附件设置
+'========================================================
+Sub AttachSettings()
+	Dim SettingsInfo, Wap_Settings
+
+	SettingsInfo = RQ.Query("SELECT wap_settings FROM "& TablePre &"settings")
+	Call closeDatabase()
+
+	If Not IsArray(SettingsInfo) Then
+		Call RQ.showTips("错误的站点设置。", "")
+	End If
+
+	Wap_Settings = Split(SettingsInfo(0, 0), "{settings}")
+%>
+<br />
+<table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
+  <tr>
+    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;WAP设置</td>
+  </tr>
+</table>
+<br />
+<form method="post" name="attachsettings" action="?action=saveattachsettings" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+  <table width="98%" class="tableborder" cellSpacing="0" cellPadding="0" align="center" border="0">
+    <tr class="header">
+      <td colspan="2" height="25"><strong>WAP设置</strong></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>附件保存路径：</strong></td>
+      <td width="70%"><input type="text" name="attachsettings_1" size="30" /></td>
+    </tr>
+    <tr>
+      <td class="altbg1"><strong>帖子内显示图片附件：</strong><br />在帖子中直接将图片显示出来，而不需要点击附件链接</td>
+      <td><input type="radio" name="wapsettings_2" id="wapsettings_2_0" value="1" class="radio"<% If Wap_Settings(2) = "1" Then Response.Write " checked" End If %> /><label for="wapsettings_2_0">是</label>
+	    <br /><input type="radio" name="wapsettings_2" id="wapsettings_2_1" value="0" class="radio"<% If Wap_Settings(2) = "0" Then Response.Write " checked" End If %> /><label for="wapsettings_2_1">否</label></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>缩略图质量：</strong><br />设置图片附件缩略图的质量参数，范围为 0～100 的整数，数值越大结果图片效果越好，但尺寸也越大</td>
+      <td width="70%"><input type="text" name="attachsettings_2" size="20" /></td>
+    </tr>
+    <tr>
+      <td class="altbg1"><strong>WAP页面每页显示帖子数量：</strong></td>
+      <td><input type="text" name="wapsettings_3" size="5" value="<%= Wap_Settings(3) %>" /> 条</td>
+    </tr>
+    <tr>
+      <td class="altbg1"><strong>WAP页面每页显示回复数量：</strong></td>
+      <td><input type="text" name="wapsettings_4" size="5" value="<%= Wap_Settings(4) %>" /> 条</td>
+    </tr>
+	<tr>
+      <td class="altbg1"><strong>WAP帖子内容每页显示字符数量：</strong><br />用于控制WAP看帖页面长度，并根据该长度对帖子内容进行拆分。建议设置为300~3000以内的整数，以便获得更多的兼容性和浏览易用性。</td>
+      <td><input type="text" name="wapsettings_5" size="5" value="<%= Wap_Settings(5) %>" /> 字</td>
+    </tr>
+    <tr height="25">
+	  <td class="altbg1">&nbsp;</td>
+	  <td width="70%"><input type="submit" id="btnsubmit" value="提交设置" class="button" /></td>
+    </tr>
+  </table>
+</form>
+<%
 End Sub
 %>
