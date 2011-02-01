@@ -241,7 +241,7 @@ For i = 0 To CountArray
 
 		If PostListArray(7, i) = 0 Then
 			If PostListArray(2, i) > 0 Then
-				Response.Write "<span id=""userinfo"& PostListArray(0, i) &"_a""><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""avatar"" onclick=""return shows3(this.href);""><img src=""avatars/"& Left(PostListArray(2, i), 1) &"/"& PostListArray(2, i) &".jpg"" onerror=""this.onerror=null;this.src='images/common/noavatar.jpg';"" class=""avatar"" align=""absmiddle"" /></a></span> "
+				Response.Write "<span id=""userinfo"& PostListArray(0, i) &"_a""><a href=""topicedit.asp?pid="& PostListArray(0, i) &""" class=""avatar"" onclick=""return shows3(this.href);""><img src=""images/common/noavatar.jpg"" file=""avatars/"& Left(PostListArray(2, i), 1) &"/"& PostListArray(2, i) &".jpg"" class=""avatar"" align=""absmiddle"" /></a></span> "
 
 				'用变通的方式来实现不联合查询数据库得到显示发帖人。原来的方式如果用户匿名失败以及匿名被红之后都显示不出来
 				If InStr(PostListArray(4, i), "【") > 0 Then
