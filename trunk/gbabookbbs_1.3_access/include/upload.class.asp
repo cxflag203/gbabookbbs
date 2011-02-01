@@ -366,7 +366,7 @@ Class File
 
 		'生成缩略图
 		IfThumb = 0
-		If IfImage = 1 And RQ.Attach_Settings(3) = "1" Then
+		If SaveToFile And IfImage = 1 And RQ.Attach_Settings(3) = "1" Then
 			Call Thumb(Path)
 		End If
 	End Function
