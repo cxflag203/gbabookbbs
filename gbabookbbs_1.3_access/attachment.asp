@@ -125,7 +125,7 @@ Sub GetAttach()
 	End If
 
 	'获取版面允许下载附件的用户组列表
-	RQ.Forum_GetAttachPerm = RQ.Get_Forum_Settings(AttachInfo(4, 0), 27)
+	RQ.Forum_GetAttachPerm = RQ.Get_Forum_Settings(AttachInfo(6, 0), 27)
 
 	'根据版面设置判断允许当前用户是否允许下载附件
 	If Len(RQ.Forum_GetAttachPerm) > 0 And Not InStr(","& RQ.Forum_GetAttachPerm &",", ","& RQ.UserGroupID &",") > 0 Then
