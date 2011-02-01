@@ -333,12 +333,6 @@ Class File
 
 		On Error Resume Next
 
-		'生成缩略图
-		IfThumb = 0
-		If IfImage = 1 And RQ.Attach_Settings(3) = "1" Then
-			Call Thumb(Path)
-		End If
-
 		Dim Stream
 		Set Stream = Server.CreateObject("ADODB.Stream")
 		Stream.Type = 1
@@ -361,12 +355,20 @@ Class File
 			Else
 				SaveToFile = True
 			End If
+
+			Err.Clear
 		Else
 			SaveToFile = True
 		End If
 
 		Stream.Close
 		Set Stream = Nothing
+
+		'生成缩略图
+		IfThumb = 0
+		If IfImage = 1 And RQ.Attach_Settings(3) = "1" Then
+			Call Thumb(Path)
+		End If
 	End Function
 
 	'========================================================
