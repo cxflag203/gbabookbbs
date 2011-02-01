@@ -83,7 +83,7 @@ Sub Show_SetSecquePanel()
 		<option value="1">小时候梦想长大后的职业是？</option>
 		<option value="2">最喜欢的游戏角色是？</option>
 		<option value="3">最喜欢动漫中的哪个人物？</option>
-		<option value="4">还记得初恋情人的生日吗？</option>
+		<option value="4">还记得初恋情人的模样吗？</option>
 	  </select></td>
 	</tr>
 	<tr>
@@ -167,7 +167,7 @@ Sub Show_ChangePwdPanel()
 		<option value="1">小时候梦想长大后的职业是？</option>
 		<option value="2">最喜欢的游戏角色是？</option>
 		<option value="3">最喜欢动漫中的哪个人物？</option>
-		<option value="4">还记得初恋情人的生日吗？</option>
+		<option value="4">还记得初恋情人的模样吗？</option>
 	  </select></td>
 	</tr>
 	<tr>
