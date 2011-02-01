@@ -10,7 +10,7 @@ End If
 Sub ReadAttachments()
 	Dim AttachListArray
 	'读取附件
-	AttachListArray = RQ.Query("SELECT aid, pid, filename, filesize, savepath, downloads, ifimage, description, posttime FROM "& TablePre &"attachments WHERE tid = "& RQ.TopicID)
+	AttachListArray = RQ.Query("SELECT aid, pid, filename, filesize, savepath, downloads, ifimage, ifthumb, description, posttime FROM "& TablePre &"attachments WHERE tid = "& RQ.TopicID)
 
 	'建立字典对象
 	Set Dic = Server.CreateObject("Scripting.Dictionary")
@@ -24,13 +24,13 @@ Sub ReadAttachments()
 	If IsArray(AttachListArray) Then
 		For i = 0 To UBound(AttachListArray, 2)
 			'根据aid来分组把附件加入字典
-			Call Dic.Add("a"& AttachListArray(0, i), ShowAttachInPost(AttachListArray(0, i), AttachListArray(2, i), AttachListArray(3, i), AttachListArray(4, i), AttachListArray(5, i), AttachListArray(6, i), AttachListArray(7, i), AttachListArray(8, i), True))
+			Call Dic.Add("a"& AttachListArray(0, i), ShowAttachInPost(AttachListArray(0, i), AttachListArray(2, i), AttachListArray(3, i), AttachListArray(4, i), AttachListArray(5, i), AttachListArray(6, i), AttachListArray(7, i), AttachListArray(8, i), AttachListArray(9, i), True))
 
 			'根据pid来分组把附件加入字典
 			If Dic.Exists(AttachListArray(1, i)) Then
-				Dic.Item(AttachListArray(1, i)) = Dic.Item(AttachListArray(1, i)) & ShowAttachInPost(AttachListArray(0, i), AttachListArray(2, i), AttachListArray(3, i), AttachListArray(4, i), AttachListArray(5, i), AttachListArray(6, i), AttachListArray(7, i), AttachListArray(8, i), False)
+				Dic.Item(AttachListArray(1, i)) = Dic.Item(AttachListArray(1, i)) & ShowAttachInPost(AttachListArray(0, i), AttachListArray(2, i), AttachListArray(3, i), AttachListArray(4, i), AttachListArray(5, i), AttachListArray(6, i), AttachListArray(7, i), AttachListArray(8, i), AttachListArray(9, i), False)
 			Else
-				Call Dic.Add(AttachListArray(1, i), ShowAttachInPost(AttachListArray(0, i), AttachListArray(2, i), AttachListArray(3, i), AttachListArray(4, i), AttachListArray(5, i), AttachListArray(6, i), AttachListArray(7, i), AttachListArray(8, i), False))
+				Call Dic.Add(AttachListArray(1, i), ShowAttachInPost(AttachListArray(0, i), AttachListArray(2, i), AttachListArray(3, i), AttachListArray(4, i), AttachListArray(5, i), AttachListArray(6, i), AttachListArray(7, i), AttachListArray(8, i), AttachListArray(9, i), False))
 			End If
 		Next
 	Else
@@ -72,27 +72,54 @@ End Function
 '========================================================
 '根据附件在帖子里的状态来显示附件
 '========================================================
-Function ShowAttachInPost(AttachID, FileName, FileSize, SavePath, Downloads, IfImage, Description, PostTime, InPost)
-	Dim FileExt
-	If InStr(FileName, ".") > 0 Then
-		FileExt = LCase(Right(FileName, Len(FileName) - InstrRev(FileName, ".")))
-	End If
+Function ShowAttachInPost(AttachID, FileName, FileSize, SavePath, Downloads, IfImage, IfThumb, Description, PostTime, InPost)
+	Dim FileExt, PicInfo, PicURL, ThumbURL, AttachInfo
 
-	If IfImage = 0 Then
+	FileExt = GetFileExt(SavePath)
+
+	'是否直接显示图片附件
+	If IfImage = 1 Then
+		If RQ.Attach_Settings(2) = "1" Then
+			PicURL = RQ.Attach_Settings(0) &"/"& SavePath
+			ThumbURL = RQ.Attach_Settings(0) &"/"& IIF(IfThumb = 1, SavePath &".thumb."& FileExt, SavePath)
+		Else
+			PicURL = "attachment.asp?action=get&aid="& AttachID &"&nothumb=1"
+			ThumbURL = "attachment.asp?action=get&aid="& AttachID &"&noupdate=1"
+		End If
+
+		If RQ.Attach_Settings(1) = "1" Then
+			PicInfo = "<a href="""& PicURL &""" target=""_blank""><img src="""& ThumbURL &""" alt="""& Description &""""
+			
+			'如果没有缩略图那么加上js调整图片大小
+			If IfThumb = 0 Then
+				PicInfo = PicInfo &" onload=""if(this.width>document.body.clientWidth-100)this.width=document.body.clientWidth-100"""
+			End If
+
+			PicInfo = PicInfo &"/></a>"
+
+			If InPost Then
+				ShowAttachInPost = PicInfo
+			Else
+				ShowAttachInPost = "<dl class=""t_attachlist"" id="""& AttachID &"""><dt></dt><dd><p>"& PicInfo &"</p></dd></dl>"
+			End If
+		Else
+			PicInfo = "<img src=""images/attachicons/"& ShowFileType(FileExt) &""" align=""absmiddle"" />&nbsp;<a href="""& PicURL &""" class=""underline"" target=""_blank"">"& FileName &"</a>"
+
+			If InPost Then
+				ShowAttachInPost = PicInfo
+			Else
+				ShowAttachInPost = "<dl class=""t_attachlist"" id="""& AttachID &"""><dt></dt><dd><p>"& PicInfo &"</p></dd></dl>"
+			End If
+		End If
+	Else
 		If InPost Then
 			If FileExt = "mp3" Then
-				ShowAttachInPost = "<embed wmode=""transparent"" menu=""false"" type=""application/x-shockwave-flash"" quality=""high"" height=""24"" width=""290"" src=""js/player.swf?bg=0xCDDFF3&leftbg=0x357DCE&lefticon=0xF2F2F2&rightbg=0xF06A51&rightbghover=0xAF2910&righticon=0xF2F2F2&righticonhover=0xFFFFFF&text=0x357DCE&slider=0x357DCE&track=0xFFFFFF&border=0xFFFFFF&loader=0xAF2910&soundFile="& Server.URLEncode("attachments/"& SavePath) &"""></embed>"
+				ShowAttachInPost = "<embed wmode=""transparent"" menu=""false"" type=""application/x-shockwave-flash"" quality=""high"" height=""24"" width=""290"" src=""js/player.swf?bg=0xCDDFF3&leftbg=0x357DCE&lefticon=0xF2F2F2&rightbg=0xF06A51&rightbghover=0xAF2910&righticon=0xF2F2F2&righticonhover=0xFFFFFF&text=0x357DCE&slider=0x357DCE&track=0xFFFFFF&border=0xFFFFFF&loader=0xAF2910&soundFile="& Server.URLEncode(RQ.Attach_Settings(0) &"/"& SavePath) &"""></embed>"
 			Else
 				ShowAttachInPost = "<img src=""images/attachicons/"& ShowFileType(FileExt) &""" align=""absmiddle"" />&nbsp;<a href=""attachment.asp?action=get&aid="& AttachID &""" class=""underline"" target=""_blank"">"& FileName &"</a>"
 			End If
 		Else
 			ShowAttachInPost = "<dl class=""t_attachlist"" id="""& AttachID &"""><dt><img src=""images/attachicons/"& ShowFileType(FileExt) &""" />&nbsp;<a href=""attachment.asp?action=get&aid="& AttachID &""" class=""underline"" target=""_blank"">"& FileName &"</a><em>("& ShowFileSize(FileSize) &")</em></dt><dd><p>"& PostTime &"，下载次数: "& Downloads &"</p>"& IIF(Len(Description) > 0, "<p>"& Description &"</p>", "") &"</dd></dl>"
-		End If
-	Else
-		If InPost Then
-			ShowAttachInPost = "<a href=""attachments/"& SavePath &""" target=""_blank""><img src=""attachments/"& SavePath &""" alt="""& Description &""" onload=""if(this.width>document.body.clientWidth-100)this.width=document.body.clientWidth-100"" /></a>"
-		Else
-			ShowAttachInPost = "<dl class=""t_attachlist"" id="""& AttachID &"""><dt></dt><dd><p><a href=""attachments/"& SavePath &""" target=""_blank""><img src=""attachments/"& SavePath &"""  alt="""& Description &""" onload=""if(this.width>document.body.clientWidth-110)this.width=document.body.clientWidth-110"" /></a></p></dd></dl>"
 		End If
 	End If
 End Function

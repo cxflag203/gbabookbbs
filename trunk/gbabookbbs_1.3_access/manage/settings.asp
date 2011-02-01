@@ -41,6 +41,10 @@ Select Case Action
 		Call WapSettings()
 	Case "savewapsettings"
 		Call SaveWapSettings()
+	Case "attachsettings"
+		Call AttachSettings()
+	Case "saveattachsettings"
+		Call SaveAttachSettings()
 End Select
 AdminFooter()
 
@@ -888,5 +892,132 @@ Sub SaveWapSettings()
 	
 	Call closeDatabase()
 	Call AdminshowTips("WAP设置保存成功。", "?action=wapsettings")
+End Sub
+
+'========================================================
+'保存附件设置
+'========================================================
+Sub SaveAttachSettings()
+	Dim Attach_Settings(7)
+
+	Attach_Settings(0) = SafeRequest(2, "attachsettings_0", 1, "", 0)
+	Attach_Settings(1) = SafeRequest(2, "attachsettings_1", 0, 0, 0)
+	Attach_Settings(2) = SafeRequest(2, "attachsettings_2", 0, 0, 0)
+	Attach_Settings(3) = SafeRequest(2, "attachsettings_3", 0, 0, 0)
+	Attach_Settings(4) = SafeRequest(2, "attachsettings_4", 0, 400, 0)
+	Attach_Settings(5) = SafeRequest(2, "attachsettings_5", 0, 300, 0)
+	Attach_Settings(6) = SafeRequest(2, "attachsettings_6", 0, 0, 0)
+	Attach_Settings(7) = SafeRequest(2, "attachsettings_7", 0, 90, 0)
+
+	If Len(CheckContent(Attach_Settings(0))) = 0 Then
+		Call AdminshowTips("请填写附件保存路径。", "")
+	End If
+
+	If Not CheckObjAspJpeg() Then
+		Attach_Settings(3) = 0
+	End If
+
+	Attach_Settings(0) = Replace(Attach_Settings(0), "//", "/")
+
+	If Right(Attach_Settings(0), 1) = "/" Then
+		Attach_Settings(0) = Left(Attach_Settings(0), Len(Attach_Settings(0)) - 1)
+	End If
+
+	Call CheckFolder("../"& Attach_Settings(0))
+
+	RQ.Execute("UPDATE "& TablePre &"settings SET attach_settings = '"& Join(Attach_Settings, "{settings}") &"'")
+	Call RQ.Reload_Site_Settings()
+	
+	Call closeDatabase()
+	Call AdminshowTips("附件设置保存成功。", "?action=attachsettings")
+End Sub
+
+'========================================================
+'检查服务器是否支持aspjpeg组件
+'========================================================
+Function CheckObjAspJpeg()
+	On Error Resume Next
+	Dim obj
+	Set obj = Server.CreateObject("Persits.Jpeg")
+	If Err Then
+		Err.Clear
+		CheckObjAspJpeg = False
+	Else
+		CheckObjAspJpeg = True
+	End If
+	Set obj = Nothing
+End Function
+
+'========================================================
+'附件设置
+'========================================================
+Sub AttachSettings()
+	Dim SettingsInfo, Attach_Settings, blnSupportAspJpeg
+
+	SettingsInfo = RQ.Query("SELECT attach_settings FROM "& TablePre &"settings")
+	Call closeDatabase()
+
+	If Not IsArray(SettingsInfo) Then
+		Call RQ.showTips("错误的站点设置。", "")
+	End If
+
+	Attach_Settings = Split(SettingsInfo(0, 0), "{settings}")
+	blnSupportAspJpeg = CheckObjAspJpeg()
+%>
+<br />
+<table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
+  <tr>
+    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;附件设置</td>
+  </tr>
+</table>
+<br />
+<form method="post" name="attachsettings" action="?action=saveattachsettings" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+  <table width="98%" class="tableborder" cellSpacing="0" cellPadding="0" align="center" border="0">
+    <tr class="header">
+      <td colspan="2" height="25"><strong>附件设置</strong></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>附件保存路径：</strong><br />结尾不要填写/</td>
+      <td width="70%"><input type="text" name="attachsettings_0" size="30" value="<%= Attach_Settings(0) %>" /></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>帖子内直接显示图片附件：</strong><br />在帖子中直接将图片显示出来，而不需要点击附件链接</td>
+      <td><input type="checkbox" name="attachsettings_1" id="attachsettings_1" value="1" class="radio"<% If Attach_Settings(1) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_1">是</label></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>显示图片的真实地址：</strong><br />可以配合“游客用户组不允许下载附件”的方式来防止图片盗链，但是会加大服务器负担</td>
+      <td><input type="checkbox" name="attachsettings_2" id="attachsettings_2" value="1" class="radio"<% If Attach_Settings(2) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_2">是</label></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>图片附件生成缩略图：</strong><br />如果经常上传比较大的照片推荐启用缩略图<% If Not blnSupportAspJpeg Then %><br /><span class="red">您的空间不支持AspJpeg组件，无法使用缩略图功能</span><% End If %></td>
+      <td><input type="checkbox" name="attachsettings_3" id="attachsettings_3" value="1" class="radio"<% If Attach_Settings(3) = "1" And blnSupportAspJpeg Then Response.Write " checked" End If %> onclick="showthumbpanel();" /><label for="attachsettings_3">是</label></td>
+    </tr>
+    <tr height="25" id="pnl_thumbsize">
+      <td class="altbg1"><strong>缩略图大小：</strong><br />小于该尺寸的图片将不生成缩略图</td>
+      <td width="70%"><input type="text" name="attachsettings_4" size="10" value="<%= Attach_Settings(4) %>" /> x <input type="text" name="attachsettings_5" size="10" value="<%= Attach_Settings(5) %>" />(宽x高)</td>
+    </tr>
+    <tr height="25" id="pnl_thummethod">
+      <td class="altbg1"><strong>缩图方式：</strong><br />推荐方式1和方式2</td>
+      <td width="70%"><input type="radio" name="attachsettings_6" id="attachsettings_6_0" value="0" class="radio"<% If Attach_Settings(6) = "0" Then Response.Write " checked" End If %> /><label for="attachsettings_6_0">小等于指定大小，保持比率</label><br />
+	    <input type="radio" name="attachsettings_6" id="attachsettings_6_1" value="1" class="radio"<% If Attach_Settings(6) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_6_1">宽高小等于指定大小则不处理，否则生成指定大小相同的图片，保持比率，超出的部分剪掉</label><br />
+		<input type="radio" name="attachsettings_6" id="attachsettings_6_2" value="2" class="radio"<% If Attach_Settings(6) = "2" Then Response.Write " checked" End If %> /><label for="attachsettings_6_2">与指定大小相同，保持比率，完整显示图片</label></td>
+    </tr>
+    <tr height="25" id="pnl_thumbquanlity">
+      <td class="altbg1"><strong>缩略图质量：</strong><br />设置图片附件缩略图的质量参数，范围为1~100的整数，数值越大结果图片效果越好，但尺寸也越大。推荐90</td>
+      <td width="70%"><input type="text" name="attachsettings_7" size="20" value="<%= Attach_Settings(7) %>" /></td>
+    </tr>
+    <tr height="25">
+	  <td class="altbg1">&nbsp;</td>
+	  <td width="70%"><input type="submit" id="btnsubmit" value="提交设置" class="button" /></td>
+    </tr>
+  </table>
+</form>
+<script type="text/javascript">
+function showthumbpanel() {
+	$('pnl_thumbsize').style.display = $('pnl_thummethod').style.display = $('pnl_thumbquanlity').style.display = $('attachsettings_3').checked ? '' : 'none';
+}
+showthumbpanel();
+</script>
+<%
 End Sub
 %>
