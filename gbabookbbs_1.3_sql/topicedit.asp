@@ -131,11 +131,17 @@ Sub SavePost()
 	'删除附件
 	d_AttachID = NumberGroupFilter(Replace(SafeRequest(2, "d_aid", 1, "", 0), " ", ""))
 	If Len(d_AttachID) > 0 Then
-		AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE aid IN("& d_AttachID &") AND uid = "& RQ.UserID)
+		AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE aid IN("& d_AttachID &") AND uid = "& RQ.UserID)
 		If IsArray(AttachListArray) Then
 			For i = 0 To UBound(AttachListArray, 2)
-				Call DeleteFile("./attachments/"& AttachListArray(0, i))
+				Call DeleteFile(RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+				'删除缩略图
+				If AttachListArray(1, i) = 1 Then
+					Call DeleteFile(RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+				End If
 			Next
+
 			RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE aid IN("& d_AttachID &") AND uid = "& RQ.UserID)
 		End If
 	End If
@@ -269,13 +275,19 @@ Sub DeletePost()
 	End If
 
 	'读取附件
-	AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE "& strSQL)
+	AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE "& strSQL)
 
 	'删除附件
 	If IsArray(AttachListArray) Then
 		For i = 0 To UBound(AttachListArray, 2)
-			Call DeleteFile("./attachments/"& AttachListArray(0, i))
+			Call DeleteFile(RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+			'删除缩略图
+			If AttachListArray(1, i) = 1 Then
+				Call DeleteFile(RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+			End If
 		Next
+
 		RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE "& strSQL)
 	End If
 

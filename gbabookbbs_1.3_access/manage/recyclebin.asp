@@ -51,11 +51,17 @@ Sub Post()
 		End If
 
 		'删除附件
-		AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE tid IN("& OperationTopicID &")")
+		AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE tid IN("& OperationTopicID &")")
 		If IsArray(AttachListArray) Then
 			For i = 0 To UBound(AttachListArray, 2)
-				Call DeleteFile("../attachments/"& AttachListArray(0, i))
+				Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+				'删除缩略图
+				If AttachListArray(1, i) = 1 Then
+					Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+				End If
 			Next
+
 			RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE tid IN("& OperationTopicID &")")
 		End If
 

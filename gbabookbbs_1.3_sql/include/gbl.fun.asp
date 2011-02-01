@@ -494,9 +494,55 @@ Public Sub MakeFile(strContent, FileName)
 End Sub
 
 '========================================================
+'根据路径检查目录，如果不存在则新建目录
+'========================================================
+Public Sub CheckFolder(Folder)
+	Dim Fso
+	Dim sParent
+
+	Set Fso = Server.CreateObject("Scripting.FileSystemObject")
+
+	If Not InStr(Folder, ":") > 0 Then
+		Folder = Server.MapPath(Folder)
+	End If
+
+	sParent = Fso.GetParentFolderName(Folder)
+	
+	If sParent = "" Then
+		Set Fso = Nothing
+		Exit Sub
+	End If
+	
+	If Not Fso.FolderExists(sParent) Then
+		Call CheckFolder(sParent)
+	End If
+
+	If Not Fso.FolderExists(Folder) Then
+		Fso.CreateFolder(Folder)
+		Fso.CreateTextFile(Folder &"\index.html")
+	End If
+
+	Set Fso = Nothing
+End Sub
+
+'========================================================
+'获取文件扩展名
+'========================================================
+Public Function GetFileExt(FileName)
+	If Not InStr(FileName, ".") > 0 Then
+		GetFileExt = ""
+		Exit Function
+	End If
+
+	Dim tAry
+	tAry = Split(FileName, ".")
+	GetFileExt = LCase(tAry(UBound(tAry)))
+End Function
+
+'========================================================
 '动态包含文件
 '========================================================
-Function Include(FileName)
+Public Function Include(FileName)
 	Dim strContent
 	strContent = LoadFile(FileName)
 	strContent = Replace(Replace(strContent, "<"&"%", ""), "%"&">", "")

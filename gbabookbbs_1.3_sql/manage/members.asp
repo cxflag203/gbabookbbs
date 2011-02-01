@@ -654,11 +654,17 @@ Sub Delete_Topics()
 			RQ.Execute("DELETE FROM "& TablePre &"polloptions WHERE tid IN("& TopicID &")")
 
 			'删除附件
-			AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE tid IN("& TopicID &")")
+			AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE tid IN("& TopicID &")")
 			If IsArray(AttachListArray) Then
 				For i = 0 To UBound(AttachListArray, 2)
-					Call DeleteFile("../attachments/"& AttachListArray(0, i))
+					Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+					'删除缩略图
+					If AttachListArray(1, i) = 1 Then
+						Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+					End If
 				Next
+
 				RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE tid IN("& TopicID &")")
 			End If
 
@@ -762,11 +768,17 @@ Sub Delete_Posts()
 		RQ.Execute("DELETE FROM "& TablePre &"posts WHERE pid IN("& PostID &") AND iffirst = 0")
 
 		'删除附件
-		AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE pid IN("& PostID &")")
+		AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE pid IN("& PostID &")")
 		If IsArray(AttachListArray) Then
 			For i = 0 To UBound(AttachListArray, 2)
-				Call DeleteFile("../attachments/"& AttachListArray(0, i))
+				Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+				'删除缩略图
+				If AttachListArray(1, i) = 1 Then
+					Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+				End If
 			Next
+
 			RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE pid IN("& PostID &")")
 		End If
 	End If

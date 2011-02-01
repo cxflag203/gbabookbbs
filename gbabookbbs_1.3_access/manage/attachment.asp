@@ -30,7 +30,7 @@ Sub DeleteChoosed()
 		Call AdminshowTips("请选中要删除的附件。", "")
 	End If
 
-	AttachListArray = RQ.Query("SELECT tid, pid, savepath FROM "& TablePre &"attachments WHERE aid IN("& AttachID &")")
+	AttachListArray = RQ.Query("SELECT tid, pid, savepath, ifthumb FROM "& TablePre &"attachments WHERE aid IN("& AttachID &")")
 	If IsArray(AttachListArray) Then
 		For i = 0 To UBound(AttachListArray, 2)
 			TopicIDs = TopicIDs & AttachListArray(0, i)
@@ -39,8 +39,15 @@ Sub DeleteChoosed()
 				TopicIDs = TopicIDs &","
 				PostIDs = PostIDs &","
 			End If
-			Call DeleteFile("../attachments/"& AttachListArray(2, i))
+
+			Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(2, i))
+
+			'删除缩略图
+			If AttachListArray(3, i) = 1 Then
+				Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(2, i) &".thumb."& GetFileExt(AttachListArray(2, i)))
+			End If
 		Next
+
 		RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE aid IN("& AttachID &")")
 
 		TopicListArray = RQ.Query("SELECT tid FROM "& TablePre &"topics WHERE tid IN("& TopicIDs &")")
@@ -71,11 +78,17 @@ End Sub
 '========================================================
 Sub DeleteInvalid()
 	Dim AttachListArray
-	AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE pid = 0 AND posttime < #"& DATEADD("d", -1, Now()) &"#")
+	AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE pid = 0 AND posttime < #"& DATEADD("d", -1, Now()) &"#")
 	If IsArray(AttachListArray) Then
 		For i = 0 To UBound(AttachListArray, 2)
-			Call DeleteFile("../attachments/"& AttachListArray(0, i))
+			Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+			'删除缩略图
+			If AttachListArray(1, i) = 1 Then
+				Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+			End If
 		Next
+
 		RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE pid = 0 AND posttime < #"& DATEADD("d", -1, Now()) &"#")
 	End If
 
@@ -213,13 +226,13 @@ Sub Main()
     <tr>
       <td class="altbg1"><input type="checkbox" name="attachid" class="radio" value="<%= AttachListArray(0, i) %>" /></td>
       <td class="altbg2"><img src="../images/attachicons/<%= ShowFileType(FileExt) %>" align="bottom" />
-	    <% If AttachListArray(6, i) = 1 Then %><a href="../attachments/<%= AttachListArray(4, i) %>" target="_blank"><% Else %><a href="../attachment.asp?action=get&aid=<%= AttachListArray(0, i) %>" target="_blank"><% End If %><%= AttachListArray(2, i) %></a></td>
+	    <% If AttachListArray(6, i) = 1 Then %><a href="../<%= RQ.Attach_Settings(0) %>/<%= AttachListArray(4, i) %>" target="_blank"><% Else %><a href="../attachment.asp?action=get&aid=<%= AttachListArray(0, i) %>" target="_blank"><% End If %><%= AttachListArray(2, i) %></a></td>
       <td class="altbg1"><%= ShowFileSize(AttachListArray(3, i)) %></td>
       <td class="altbg2"><% If AttachListArray(8, i) > 0 Then %><a href="../topicmisc.asp?action=redirectpost&pid=<%= AttachListArray(1, i) %>" target="_blank"><%= dfc(AttachListArray(9, i) )%></a><% Else %><em>该附件还没有关联到任何帖子</em><% End If %></td>
       <td class="altbg1"><%= AttachListArray(5, i) %></td>
       <td class="altbg2"><%= AttachListArray(10, i) %></td>
       <td class="altbg1"><%= AttachListArray(7, i) %></td>
-      <td class="altbg2"><% If Fso.FileExists(Server.MapPath("../attachments/"& AttachListArray(4, i))) Then %>正常<% Else %><span class="red">丢失</span><% End If %></td>
+      <td class="altbg2"><% If Fso.FileExists(Server.MapPath("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(4, i))) Then %>正常<% Else %><span class="red">丢失</span><% End If %></td>
     </tr>
 	<% Next %>
 	<% Set Fso = Nothing %>

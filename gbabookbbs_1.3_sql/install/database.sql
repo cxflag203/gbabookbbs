@@ -154,6 +154,7 @@ CREATE TABLE [dbo].[{tablepre}settings](
 	[chat_settings] [ntext] NOT NULL,
 	[wap_settings] [ntext] NOT NULL,
 	[item_settings] [ntext] NOT NULL,
+	[attach_settings] [ntext] NOT NULL,
 	[wordsfilter] [ntext] NOT NULL,
 	[banip] [text] NOT NULL,
 	[banner] [ntext] NOT NULL,
@@ -871,6 +872,7 @@ CREATE TABLE [dbo].[{tablepre}attachments](
 	[savepath] [varchar](100) NOT NULL,
 	[downloads] [int] NOT NULL,
 	[ifimage] [tinyint] NOT NULL,
+	[ifthumb] [tinyint] NOT NULL,
 	[description] [nvarchar](100) NOT NULL,
 	[posttime] [datetime] NOT NULL,
  CONSTRAINT [PK_{tablepre}attachments] PRIMARY KEY CLUSTERED 
@@ -1532,6 +1534,8 @@ ALTER TABLE [dbo].[{tablepre}attachments] ADD  CONSTRAINT [DF_{tablepre}attachme
 {next}
 ALTER TABLE [dbo].[{tablepre}attachments] ADD  CONSTRAINT [DF_{tablepre}attachments_ifimage]  DEFAULT ((0)) FOR [ifimage]
 {next}
+ALTER TABLE [dbo].[{tablepre}attachments] ADD  CONSTRAINT [DF_{tablepre}attachments_ifthumb]  DEFAULT ((0)) FOR [ifthumb]
+{next}
 ALTER TABLE [dbo].[{tablepre}attachments] ADD  CONSTRAINT [DF_{tablepre}attachments_description]  DEFAULT ('') FOR [description]
 {next}
 ALTER TABLE [dbo].[{tablepre}attachments] ADD  CONSTRAINT [DF_{tablepre}attachments_posttime]  DEFAULT (getdate()) FOR [posttime]
@@ -1560,7 +1564,7 @@ INSERT [dbo].[{tablepre}usergroups] ([name], [types], [initialize], [allowvisit]
 {next}
 INSERT [dbo].[{tablepre}usergroups] ([name], [types], [initialize], [allowvisit], [disableperiodctrl], [allowpost], [allowdirectpost], [allowreply], [anonymitysuc], [allowpostpoll], [allowpoll], [allowsearch], [allowgetattach], [allowpostattach], [maxattachsize], [attachextensions], [allowviewuserinfo], [allowuseitem], [allowhtml], [allowchat], [specialinterface], [allowinvate], [invateprice], [invatemaxnum], [invateexpiryday]) VALUES (N'脑残一族', CONVERT(TEXT, N'restricted'), 1, 1, 0, 1, 1, 1, 50, 1, 1, 1, 0, 0, 0, CONVERT(TEXT, N''), 1, 1, 1, 1, N'<script type="text/javascript" src="js/marsconver.js"></script>', 0, 0, 0, 0)
 {next}
-INSERT [dbo].[{tablepre}settings] ([base_settings], [time_settings], [login_settings], [user_settings], [topic_settings], [other_settings], [chat_settings], [wap_settings], [item_settings], [wordsfilter], [banip], [banner], [todayposts], [invatenum]) VALUES (N'{bbsname}{settings}{settings}{settings}{settings}0{settings}站点维护中', N'{settings}{settings}{settings}', N'0{settings}login.asp{settings}{settings}1{settings}20{settings}100{settings}5', N'15{settings}3{settings}3{settings}20{settings}200{settings}5{settings}0{settings}15', N'100{settings}10000{settings}100{settings}0{settings}100{settings}2{settings}<p>{settings}标题党帖{settings}3{settings}5{settings}3{settings}1{settings}神秘黑衣大哥哥{settings}0{settings}1{settings}60{settings}{username}企图匿名，但是可耻的失败了<img src="face/846.gif" />{settings}edit', N'金币{settings}60{settings}1000{settings}1{settings}0{settings}1', N'1{settings}300{settings}5{settings}15{settings}500{settings}300{settings}20{settings}100{settings}勤劳的家庭主妇{username}把房间打扫得干干净净。', N'1{settings}0{settings}0{settings}10{settings}10{settings}800', N'1{settings}60{settings}24{settings}72{settings}2{settings}4{settings}100{settings}4700{settings}470{settings}170{settings}17{settings}7', N'', CONVERT(TEXT, N''), N'当初所坚持的心情，是不是还依然存在', 0, 99)
+INSERT [dbo].[{tablepre}settings] ([base_settings], [time_settings], [login_settings], [user_settings], [topic_settings], [other_settings], [chat_settings], [wap_settings], [item_settings], [attach_settings], [wordsfilter], [banip], [banner], [todayposts], [invatenum]) VALUES (N'{bbsname}{settings}{settings}{settings}{settings}0{settings}站点维护中', N'{settings}{settings}{settings}', N'0{settings}login.asp{settings}{settings}1{settings}20{settings}100{settings}5', N'15{settings}3{settings}3{settings}20{settings}200{settings}5{settings}0{settings}15', N'100{settings}10000{settings}100{settings}0{settings}100{settings}2{settings}<p>{settings}标题党帖{settings}3{settings}5{settings}3{settings}1{settings}神秘黑衣大哥哥{settings}0{settings}1{settings}60{settings}{username}企图匿名，但是可耻的失败了<img src="face/846.gif" />{settings}edit', N'金币{settings}60{settings}1000{settings}1{settings}0{settings}1', N'1{settings}300{settings}5{settings}15{settings}500{settings}300{settings}20{settings}100{settings}勤劳的家庭主妇{username}把房间打扫得干干净净。', N'1{settings}0{settings}0{settings}10{settings}10{settings}800', N'1{settings}60{settings}24{settings}72{settings}2{settings}4{settings}100{settings}4700{settings}470{settings}170{settings}17{settings}7', N'./attachments{settings}1{settings}1{settings}0{settings}400{settings}300{settings}0{settings}90', N'', CONVERT(TEXT, N''), N'当初所坚持的心情，是不是还依然存在', 0, 99)
 {next}
 INSERT [dbo].[{tablepre}items] ([name], [types], [identifier], [available], [iflog], [description], [displayorder]) VALUES (N'MP转让器', CONVERT(TEXT, N'member'), CONVERT(TEXT, N'credittransfer'), 0, 1, N'转让金钱到其他用户处，处理结果记录到异动报告。', 1)
 {next}

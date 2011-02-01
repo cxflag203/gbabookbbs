@@ -7,7 +7,7 @@ Class Cls_Forum
 	Public UserIP, UserSessionID
 
 	Public Base_Settings, Time_Settings, Login_Settings, User_Settings, Topic_Settings, Other_Settings
-	Public Chat_Settings, Wap_Settings, Item_Settings, WordsFilter_Settings, Gbl_Banner
+	Public Chat_Settings, Wap_Settings, Item_Settings, Attach_Settings, WordsFilter_Settings, Gbl_Banner
 	Public UserGroupName, IsModerator
 
 	'版面内容
@@ -125,8 +125,9 @@ Class Cls_Forum
 		Chat_Settings = Split(SettingsInfo(6, 0), "{settings}")
 		Wap_Settings = Split(SettingsInfo(7, 0), "{settings}")
 		Item_Settings = Split(SettingsInfo(8, 0), "{settings}")
-		WordsFilter_Settings = SettingsInfo(9, 0)
-		Gbl_Banner = SettingsInfo(11, 0)
+		Attach_Settings = Split(SettingsInfo(9, 0), "{settings}")
+		WordsFilter_Settings = SettingsInfo(10, 0)
+		Gbl_Banner = SettingsInfo(12, 0)
 
 		Erase SettingsInfo
 
@@ -269,7 +270,7 @@ Class Cls_Forum
 	'========================================================
 	Private Sub IpBanned()
 		Dim BanIP
-		BanIP = Application(CacheName &"_site_settings")(10, 0)
+		BanIP = Application(CacheName &"_site_settings")(11, 0)
 
 		If Len(BanIP) = 0 Then
 			Exit Sub
@@ -688,7 +689,7 @@ Class Cls_Forum
 		Dim ForumListArray, strForumID
 		strForumID = "0,"
 
-		ForumListArray = Query("SELECT f.fid, f.visitndcredits, ff.viewperm FROM "& TablePre &"forums f INNER JOIN "& TablePre &"forumfields ff ON f.fid = ff.fid ORDER BY f.fid ASC")
+		ForumListArray = Query("SELECT f.fid, f.visitndcredits, ff.viewperm FROM "& TablePre &"forums f INNER JOIN "& TablePre &"forumfields ff ON f.fid = ff.fid ORDER BY f.displayorder ASC")
 		If IsArray(ForumListArray) Then
 			For i = 0 To UBound(ForumListArray, 2)
 				If (ForumListArray(1, i) = 0 Or UserCredits >= ForumListArray(1, i)) And (Len(ForumListArray(2, i)) = 0 Or InStr(","& ForumListArray(2, i) &",", ","& UserGroupID &",") > 0) Then

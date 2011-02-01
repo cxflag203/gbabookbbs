@@ -62,7 +62,7 @@ End Sub
 '管理员设置推荐码的可购买数量
 '========================================================
 Sub UpdateNum()
-	If Not InArray(Array(1,2), RQ.AdminGroupID) Then
+	If Not InArray(Array(1, 2), RQ.AdminGroupID) Then
 		Call RQ.showTips("您无权进行操作。", "", "")
 	End If
 

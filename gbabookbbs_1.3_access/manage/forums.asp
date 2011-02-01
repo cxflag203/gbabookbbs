@@ -386,7 +386,7 @@ Sub Update_Moderators()
 		For i = 0 To UBound(ModeratorListArray, 2)
 			strModerators = strModerators & ModeratorListArray(1, i)
 			If i <> UBound(ModeratorListArray, 2) Then
-				strModerators = strModerators &"_____SPLIT_____"
+				strModerators = strModerators &"{moderators}"
 			End If
 		Next
 	End If
@@ -411,6 +411,7 @@ Sub Moderators()
 	End If
 
 	ModeratorListArray = RQ.Query("SELECT mo.uid, m.username FROM "& TablePre &"moderators mo INNER JOIN "& TablePre &"members m ON mo.uid = m.uid WHERE mo.fid = "& ForumID)
+
 	Call closeDatabase()
 %>
 <br />
@@ -741,11 +742,17 @@ Sub DeleteConfirm()
 	End If
 
 	'删除附件
-	AttachListArray = RQ.Query("SELECT savepath FROM "& TablePre &"attachments WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& ForumID &")")
+	AttachListArray = RQ.Query("SELECT savepath, ifthumb FROM "& TablePre &"attachments WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& ForumID &")")
 	If IsArray(AttachListArray) Then
 		For i = 0 To UBound(AttachListArray, 2)
-			Call DeleteFile("../attachments/"& AttachListArray(0, i))
+			Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i))
+
+			'删除缩略图
+			If AttachListArray(1, i) = 1 Then
+				Call DeleteFile("../"& RQ.Attach_Settings(0) &"/"& AttachListArray(0, i) &".thumb."& GetFileExt(AttachListArray(0, i)))
+			End If
 		Next
+
 		RQ.Execute("DELETE FROM "& TablePre &"attachments WHERE tid IN(SELECT tid FROM "& TablePre &"topics WHERE fid = "& ForumID &")")
 	End If
 
@@ -803,7 +810,7 @@ Sub Main()
 <%
 If Len(ForumListArray(5, i)) > 0 Then
 	Response.Write "<select>"
-	TEMP = Split(ForumListArray(5, i), "_____SPLIT_____")
+	TEMP = Split(ForumListArray(5, i), "{moderators}")
 	For n = 0 To UBound(TEMP)
 		Response.Write "<option>"& TEMP(n	) &"</option>"
 	Next
