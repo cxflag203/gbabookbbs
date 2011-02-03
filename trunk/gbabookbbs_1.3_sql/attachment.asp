@@ -165,40 +165,39 @@ Sub GetAttach()
 	Set File = Nothing
 	Set Fso = Nothing
 
-	If FileSize > 4096000 Then
-		Response.Redirect AttachURL
+	'清除缓冲直接输出文件
+	Response.Buffer = False
+
+	Set Stream = Server.CreateObject("ADODB.Stream")
+	Stream.Open
+	Stream.Type = 1
+	'读取文件
+	Stream.LoadFromFile Server.MapPath(AttachURL)
+
+	'如果是IE浏览器，则使用URLEncode编码来发送文件名
+	If InStr(LCase(Request.ServerVariables("HTTP_USER_AGENT")), "msie") > 0 Then
+		Response.AddHeader "Content-Disposition", "attachment; filename="& Replace(LCase(Server.URLEncode(AttachInfo(1, 0))), "%2e", ".")
 	Else
-		Set Stream = Server.CreateObject("ADODB.Stream")
-		Stream.Open
-		Stream.Type = 1
-		'读取文件
-		Stream.LoadFromFile Server.MapPath(AttachURL)
-
-		'如果是IE浏览器，则使用URLEncode编码来发送文件名
-		If InStr(LCase(Request.ServerVariables("HTTP_USER_AGENT")), "msie") > 0 Then
-			Response.AddHeader "Content-Disposition", "attachment; filename="& Replace(LCase(Server.URLEncode(AttachInfo(1, 0))), "%2e", ".")
-		Else
-			Response.AddHeader "Content-Disposition", "attachment; filename="& AttachInfo(1, 0)
-		End If
-
-		Response.AddHeader "Content-Length", FileSize
-		Response.ContentType = "application/octet-stream"
-
-		If Response.IsClientConnected Then
-			If FileSize >= 102400 Then
-				Do While FileSize > 0
-					Response.BinaryWrite Stream.Read(102400)
-					FileSize = FileSize - 102400
-				Loop
-			Else
-				Response.BinaryWrite Stream.Read
-			End If
-		End If
-
-		Response.Flush
-		Response.Clear()
-		Stream.Close
-		Set Stream = Nothing
+		Response.AddHeader "Content-Disposition", "attachment; filename="& AttachInfo(1, 0)
 	End If
+
+	Response.AddHeader "Content-Length", FileSize
+	Response.ContentType = "application/octet-stream"
+
+	If Response.IsClientConnected Then
+		If FileSize >= 102400 Then
+			Do While FileSize > 0
+				Response.BinaryWrite Stream.Read(102400)
+				FileSize = FileSize - 102400
+			Loop
+		Else
+			Response.BinaryWrite Stream.Read
+		End If
+	End If
+
+	Response.Flush
+	Response.Clear()
+	Stream.Close
+	Set Stream = Nothing
 End Sub
 %>

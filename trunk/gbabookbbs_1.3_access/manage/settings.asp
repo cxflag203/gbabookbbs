@@ -997,10 +997,10 @@ Sub AttachSettings()
       <td width="70%"><input type="text" name="attachsettings_4" size="10" value="<%= Attach_Settings(4) %>" /> x <input type="text" name="attachsettings_5" size="10" value="<%= Attach_Settings(5) %>" />(宽x高)</td>
     </tr>
     <tr height="25" id="pnl_thummethod">
-      <td class="altbg1"><strong>缩图方式：</strong><br />推荐方式1和方式2</td>
+      <td class="altbg1"><strong>缩图方式：</strong></td>
       <td width="70%"><input type="radio" name="attachsettings_6" id="attachsettings_6_0" value="0" class="radio"<% If Attach_Settings(6) = "0" Then Response.Write " checked" End If %> /><label for="attachsettings_6_0">小等于指定大小，保持比率</label><br />
-	    <input type="radio" name="attachsettings_6" id="attachsettings_6_1" value="1" class="radio"<% If Attach_Settings(6) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_6_1">宽高小等于指定大小则不处理，否则生成指定大小相同的图片，保持比率，超出的部分剪掉</label><br />
-		<input type="radio" name="attachsettings_6" id="attachsettings_6_2" value="2" class="radio"<% If Attach_Settings(6) = "2" Then Response.Write " checked" End If %> /><label for="attachsettings_6_2">与指定大小相同，保持比率，完整显示图片</label></td>
+	    <input type="radio" name="attachsettings_6" id="attachsettings_6_1" value="1" class="radio"<% If Attach_Settings(6) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_6_1">宽高小等于指定大小则不处理，否则生成与指定大小相同的图片，保持比率，超出的部分剪掉</label><br />
+		<input type="radio" name="attachsettings_6" id="attachsettings_6_2" value="2" class="radio"<% If Attach_Settings(6) = "2" Then Response.Write " checked" End If %> /><label for="attachsettings_6_2">宽高小等于指定大小则不处理，否则生成与指定大小相同的图片，保持比率，完整显示图片</label></td>
     </tr>
     <tr height="25" id="pnl_thumbquanlity">
       <td class="altbg1"><strong>缩略图质量：</strong><br />设置图片附件缩略图的质量参数，范围为1~100的整数，数值越大结果图片效果越好，但尺寸也越大。推荐90</td>
