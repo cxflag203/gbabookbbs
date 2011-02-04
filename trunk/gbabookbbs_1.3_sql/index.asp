@@ -175,6 +175,6 @@ switchtab('f_<%= IIF(RQ.ForumID = 0, RQ.Other_Settings(3), RQ.ForumID) %>');
 End Sub
 
 Sub Version()
-	Response.Write "GBABOOK BBS V1.3 for SQL Server Released at 2010-06-01"
+	Response.Write "GBABOOK BBS V1.3 for SQL Server Released at 2011-04-01"
 End Sub
 %>

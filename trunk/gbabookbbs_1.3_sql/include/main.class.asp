@@ -738,7 +738,7 @@ Class Cls_Forum
 	'页面尾部内容
 	'========================================================
 	Public Sub Footer()
-		Response.Write "<div class=""copyright"">Powered by <a href=""http://www.gbabook.com/"" target=""_blank"" class=""bluelink"">GBABook Board "& SHOWVERSION &"</a> &copy; 2004-2009<br />Processed in "& FormatNumber(Timer() - StartTime, 6, -1) &" second(s), "& dbQueryNum &" queries</div>"& SpecialInterface & Base_Settings(3) &"</body></html>"
+		Response.Write "<div class=""copyright"">Powered by <a href=""http://www.gbabook.com/"" target=""_blank"" class=""bluelink"">GBABook Board "& SHOWVERSION &"</a> &copy; 2004-2011<br />Processed in "& FormatNumber(Timer() - StartTime, 6, -1) &" second(s), "& dbQueryNum &" queries</div>"& SpecialInterface & Base_Settings(3) &"</body></html>"
 	End Sub
 
 	'========================================================

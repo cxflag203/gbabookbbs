@@ -15,7 +15,7 @@ Const CacheName = "pRJkfc"
 Const TablePre = "gb_"
 Const PrivateKey = "HJWYHKXSxj"
 Const INGBABOOK = True
-Const SHOWVERSION = "1.2"
+Const SHOWVERSION = "1.3"
 
 '数据库路径
 dbSource = "database/#PHkJvBvCBxnzvNGKjyGD.mdb"
