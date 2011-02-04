@@ -328,7 +328,7 @@ Sub Edit_UserGroup()
       <td width="70%"><input type="checkbox" name="allowpostattach" id="allowpostattach" class="radio" value="1" onclick="showattach();"<% If AllowPostAttach = 1 Then Response.Write " checked" End If %> /><label for="allowpostattach">是的</label></td>
     </tr>
 	<tr height="25" id="p_maxattachsize">
-      <td class="altbg1"><strong>最大附件尺寸:</strong><br />上传单个附件的最大尺寸，设置为0则限制在100MB以内。</td>
+      <td class="altbg1"><strong>最大附件尺寸:</strong><br />上传单个附件的最大尺寸，设置为0则限制在100MB以内。大小最好控制在4000KB(4MB)以内，否则会给服务器内存带来较大压力</td>
       <td width="70%"><input type="text" name="maxattachsize" size="10" value="<%= MaxAttachSize %>" /> KB</td>
     </tr>
 	<tr height="25" id="p_attachextensions">
