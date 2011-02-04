@@ -17,6 +17,9 @@ Select Case Action
 End Select
 AdminFooter()
 
+'========================================================
+'保存道具设置
+'========================================================
 Sub SaveSettings()
 	Dim Item_Settings(11), Settings
 
@@ -49,9 +52,12 @@ Sub SaveSettings()
 	Call RQ.Reload_Site_Settings()
 
 	Call closeDatabase()
-	Call AdminshowTips("道具设置已经更新.", "?")
+	Call AdminshowTips("道具设置已经更新。", "?")
 End Sub
 
+'========================================================
+'道具设置界面
+'========================================================
 Sub Main()
 	Dim ItemListArray, ItemDic
 	Dim SettingsInfo, Item_Settings
