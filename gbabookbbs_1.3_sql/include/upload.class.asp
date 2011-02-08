@@ -379,14 +379,18 @@ Class File
 
 		Dim Img
 		Set Img = New Image
-		Img.PicBin = GetBytes()
-		Img.ThumbSavePath = Path &".thumb."& Ext
-		Img.ThumbWidth = CLng(RQ.Attach_Settings(4))
-		Img.ThumbHeight = CLng(RQ.Attach_Settings(5))
-		Img.ReizeOption = CLng(RQ.Attach_Settings(6))
-		Img.JpegQuality = CLng(RQ.Attach_Settings(7))
-		Img.ResizeImage()
-		IfThumb = IIF(Img.blnCancelProcess, 0, 1)
+		If Not Img.blnCancelProcess Then
+			Img.PicBin = GetBytes()
+			Img.ThumbSavePath = Path &".thumb."& Ext
+			Img.ThumbWidth = CLng(RQ.Attach_Settings(4))
+			Img.ThumbHeight = CLng(RQ.Attach_Settings(5))
+			Img.ReizeOption = CLng(RQ.Attach_Settings(6))
+			Img.JpegQuality = CLng(RQ.Attach_Settings(7))
+			Img.ResizeImage()
+			IfThumb = 1
+		Else
+			IfThumb = 0
+		End If
 		Set Img = Nothing
 
 		Err.Clear
@@ -425,6 +429,15 @@ Class Image
 	Private Sub Class_Initialize()
 		On Error Resume Next
 		Set Jpeg = Server.Createobject("Persits.Jpeg")
+
+		'如果创建AspJpeg对象出错则关闭缩略图设置
+		If Err Then
+			RQ.Attach_Settings(3) = "0"
+			RQ.Execute("UPDATE "& TablePre &"settings SET attach_settings = '"& Join(RQ.Attach_Settings, "{settings}") &"'")
+			Call RQ.Reload_Site_Settings()
+			blnCancelProcess = True
+			Err.Clear
+		End If
 
 		'缩图设置，0：直接缩图；1：切图；2：缩图并遵循指定的比率，不够的地方用空白填充
 		ReizeOption = 0

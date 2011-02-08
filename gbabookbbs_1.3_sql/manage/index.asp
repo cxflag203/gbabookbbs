@@ -79,6 +79,7 @@ Sub Show_Menu()
 		MenuArray(6) = "settings.asp?action=chatsettings,聊天室设置"
 		MenuArray(7) = "settings.asp?action=wapsettings,WAP设置"
 		MenuArray(8) = "settings.asp?action=attachsettings,附件设置"
+		MenuArray(9) = "settings.asp?action=wmsettings,水印设置"
 		Call ListMenu("站点设置", MenuArray)
 		Erase MenuArray
 

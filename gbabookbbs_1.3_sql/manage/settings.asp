@@ -45,6 +45,10 @@ Select Case Action
 		Call AttachSettings()
 	Case "saveattachsettings"
 		Call SaveAttachSettings()
+	Case "wmsettings"
+		Call WMSettings()
+	Case "savewmsettings"
+		Call SaveWMSettings()
 End Select
 AdminFooter()
 
@@ -983,6 +987,94 @@ Sub AttachSettings()
     <tr height="25">
       <td class="altbg1"><strong>帖子内直接显示图片附件：</strong><br />在帖子中直接将图片显示出来，而不需要点击附件链接</td>
       <td><input type="checkbox" name="attachsettings_1" id="attachsettings_1" value="1" class="radio"<% If Attach_Settings(1) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_1">是</label></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>显示图片的真实地址：</strong><br />可以配合“游客用户组不允许下载附件”的方式来防止图片盗链，但是会加大服务器负担</td>
+      <td><input type="checkbox" name="attachsettings_2" id="attachsettings_2" value="1" class="radio"<% If Attach_Settings(2) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_2">是</label></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>图片附件生成缩略图：</strong><br />如果经常上传比较大的照片推荐启用缩略图<% If Not blnSupportAspJpeg Then %><br /><span class="red">您的空间不支持AspJpeg组件，无法使用缩略图功能</span><% End If %></td>
+      <td><input type="checkbox" name="attachsettings_3" id="attachsettings_3" value="1" class="radio"<% If Attach_Settings(3) = "1" And blnSupportAspJpeg Then Response.Write " checked" End If %> onclick="showthumbpanel();" /><label for="attachsettings_3">是</label></td>
+    </tr>
+    <tr height="25" id="pnl_thumbsize">
+      <td class="altbg1"><strong>缩略图大小：</strong><br />小于该尺寸的图片将不生成缩略图</td>
+      <td width="70%"><input type="text" name="attachsettings_4" size="10" value="<%= Attach_Settings(4) %>" /> x <input type="text" name="attachsettings_5" size="10" value="<%= Attach_Settings(5) %>" />(宽x高)</td>
+    </tr>
+    <tr height="25" id="pnl_thummethod">
+      <td class="altbg1"><strong>缩图方式：</strong></td>
+      <td width="70%"><input type="radio" name="attachsettings_6" id="attachsettings_6_0" value="0" class="radio"<% If Attach_Settings(6) = "0" Then Response.Write " checked" End If %> /><label for="attachsettings_6_0">小等于指定大小，保持比率</label><br />
+	    <input type="radio" name="attachsettings_6" id="attachsettings_6_1" value="1" class="radio"<% If Attach_Settings(6) = "1" Then Response.Write " checked" End If %> /><label for="attachsettings_6_1">宽高小等于指定大小则不处理，否则生成指定大小相同的图片，保持比率，超出的部分剪掉</label><br />
+		<input type="radio" name="attachsettings_6" id="attachsettings_6_2" value="2" class="radio"<% If Attach_Settings(6) = "2" Then Response.Write " checked" End If %> /><label for="attachsettings_6_2">宽高小等于指定大小则不处理，否则生成与指定大小相同的图片，保持比率，完整显示图片</label></td>
+    </tr>
+    <tr height="25" id="pnl_thumbquanlity">
+      <td class="altbg1"><strong>缩略图质量：</strong><br />设置图片附件缩略图的质量参数，范围为1~100的整数，数值越大结果图片效果越好，但尺寸也越大。推荐90</td>
+      <td width="70%"><input type="text" name="attachsettings_7" size="20" value="<%= Attach_Settings(7) %>" /></td>
+    </tr>
+    <tr height="25">
+	  <td class="altbg1">&nbsp;</td>
+	  <td width="70%"><input type="submit" id="btnsubmit" value="提交设置" class="button" /></td>
+    </tr>
+  </table>
+</form>
+<script type="text/javascript">
+function showthumbpanel() {
+	$('pnl_thumbsize').style.display = $('pnl_thummethod').style.display = $('pnl_thumbquanlity').style.display = $('attachsettings_3').checked ? '' : 'none';
+}
+showthumbpanel();
+</script>
+<%
+End Sub
+
+'========================================================
+'水印设置
+'========================================================
+Sub WMSettings()
+	Dim SettingsInfo, WM_Settings, blnSupportAspJpeg
+
+	SettingsInfo = RQ.Query("SELECT wm_settings FROM "& TablePre &"settings")
+	Call closeDatabase()
+
+	If Not IsArray(SettingsInfo) Then
+		Call RQ.showTips("错误的站点设置。", "")
+	End If
+
+	WM_Settings = Split(SettingsInfo(0, 0), "{settings}")
+	blnSupportAspJpeg = CheckObjAspJpeg()
+%>
+<br />
+<table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
+  <tr>
+    <td><a href="index.asp" target="_parent">系统中心</a>&nbsp;&raquo;&nbsp;水印设置</td>
+  </tr>
+</table>
+<br />
+<form method="post" name="attachsettings" action="?action=saveattachsettings" onsubmit="$('btnsubmit').value='正在提交,请稍后...';$('btnsubmit').disabled=true;">
+  <table width="98%" class="tableborder" cellSpacing="0" cellPadding="0" align="center" border="0">
+    <tr class="header">
+      <td colspan="2" height="25"><strong>水印设置</strong></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>水印位置：</strong></td>
+      <td width="70%"><select name="wmsettings_0">
+	    <option value="0">不开启水印功能</option>
+		<option value="1">左上</option>
+		<option value="2">右上</option>
+		<option value="3">正中间</option>
+		<option value="4">左下</option>
+		<option value="5">右下</option>
+	  </select></td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>水印添加条件：</strong><br />小于此尺寸的图片不添加水印</td>
+      <td><input type="text" name="wmsettings_1" size="10" value="<%= WM_Settings(1) %>" /> x <input type="text" name="attachsettings_5" size="10" value="<%= WM_Settings(2) %>" />(宽x高)</td>
+    </tr>
+    <tr height="25">
+      <td class="altbg1"><strong>水印类型：</strong><br />GIF水印图片路径为images/common/watermark.gif，PNG水印图片路径为images/common/watermark.png，你可替换水印文件以实现不同的水印效果。</td>
+      <td width="70%"><select name="wmsettings_2">
+	    <option value="0">GIF水印文件</option>
+		<option value="1">PNG水印文件</option>
+		<option value="2">文字水印</option>
+	  </select></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>显示图片的真实地址：</strong><br />可以配合“游客用户组不允许下载附件”的方式来防止图片盗链，但是会加大服务器负担</td>
