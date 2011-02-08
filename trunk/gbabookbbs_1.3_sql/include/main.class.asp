@@ -7,7 +7,7 @@ Class Cls_Forum
 	Public UserIP, UserSessionID
 
 	Public Base_Settings, Time_Settings, Login_Settings, User_Settings, Topic_Settings, Other_Settings
-	Public Chat_Settings, Wap_Settings, Item_Settings, Attach_Settings, WordsFilter_Settings, Gbl_Banner
+	Public Chat_Settings, Wap_Settings, Item_Settings, Attach_Settings, WM_Settings, WordsFilter_Settings, Gbl_Banner
 	Public UserGroupName, IsModerator
 
 	'版面内容
@@ -126,8 +126,9 @@ Class Cls_Forum
 		Wap_Settings = Split(SettingsInfo(7, 0), "{settings}")
 		Item_Settings = Split(SettingsInfo(8, 0), "{settings}")
 		Attach_Settings = Split(SettingsInfo(9, 0), "{settings}")
-		WordsFilter_Settings = SettingsInfo(10, 0)
-		Gbl_Banner = SettingsInfo(12, 0)
+		WM_Settings = Split(SettingsInfo(10, 0), "{settings}")
+		WordsFilter_Settings = SettingsInfo(11, 0)
+		Gbl_Banner = SettingsInfo(13, 0)
 
 		Erase SettingsInfo
 
@@ -270,7 +271,7 @@ Class Cls_Forum
 	'========================================================
 	Private Sub IpBanned()
 		Dim BanIP
-		BanIP = Application(CacheName &"_site_settings")(11, 0)
+		BanIP = Application(CacheName &"_site_settings")(12, 0)
 
 		If Len(BanIP) = 0 Then
 			Exit Sub
@@ -759,7 +760,7 @@ Class Cls_Forum
 
 				Case Else
 					If Len(URL) > 0 Then
-						Response.Redirect URL
+						Response.Write "<a href="""& URL &""" target=""_self"">如果您的浏览器没有跳转，请点击这里。</a><script type=""text/javascript"">setTimeout(""self.location.replace('"& URL &"');"", 1000);</script>"
 					Else
 						Call closeDatabase()
 						Response.Write "<a href=""javascript:history.go(-1);"" target=""_self"">点击这里返回上一页</a>"
