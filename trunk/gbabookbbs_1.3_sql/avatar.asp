@@ -100,7 +100,7 @@ Sub SaveAvatar()
 	Dim SavePath, Stream
 
 	SavePath = "./avatars/"& Left(RQ.UserID, 1) &"/"
-	Call RebuildFolder(SavePath)
+	Call CheckFolder(SavePath)
 
 	Set Stream = CreateObject("ADODB.Stream")
 	Stream.Mode = 3
