@@ -1041,6 +1041,9 @@ Sub WMSettings()
 	WM_Settings = Split(SettingsInfo(0, 0), "{settings}")
 	blnSupportAspJpeg = CheckObjAspJpeg()
 %>
+<style>
+.tb td{padding:0px 10px 0px 0px;margin:0px;height:18px;border:0px;}
+</style>
 <br />
 <table width="98%" cellpadding="0" cellspacing="0" align="center" class="guide">
   <tr>
@@ -1055,25 +1058,35 @@ Sub WMSettings()
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>水印位置：</strong></td>
-      <td width="70%"><select name="wmsettings_0">
-	    <option value="0">不开启水印功能</option>
-		<option value="1">左上</option>
-		<option value="2">右上</option>
-		<option value="3">正中间</option>
-		<option value="4">左下</option>
-		<option value="5">右下</option>
-	  </select></td>
+      <td width="70%"><table border="0" class="tb" cellSpacing="0" cellPadding="0">
+	    <tr><td colspan="3"><input type="radio" name="wmsettings_0" value="0" class="radio"<% If WM_Settings(0) = "0" Then Response.Write " checked" End If %> />不使用水印</td></tr>
+	    <tr>
+		  <td><input type="radio" name="wmsettings_0" value="1" class="radio"<% If WM_Settings(0) = "1" Then Response.Write " checked" End If %> />#1</td>
+		  <td><input type="radio" name="wmsettings_0" value="2" class="radio"<% If WM_Settings(0) = "2" Then Response.Write " checked" End If %> />#2</td>
+		  <td><input type="radio" name="wmsettings_0" value="3" class="radio"<% If WM_Settings(0) = "3" Then Response.Write " checked" End If %> />#3</td>
+		</tr>
+		<tr>
+		  <td><input type="radio" name="wmsettings_0" value="4" class="radio"<% If WM_Settings(0) = "4" Then Response.Write " checked" End If %> />#4</td>
+		  <td><input type="radio" name="wmsettings_0" value="5" class="radio"<% If WM_Settings(0) = "5" Then Response.Write " checked" End If %> />#5</td>
+		  <td><input type="radio" name="wmsettings_0" value="6" class="radio"<% If WM_Settings(0) = "6" Then Response.Write " checked" End If %> />#6</td>
+		</tr>
+		<tr>
+		  <td><input type="radio" name="wmsettings_0" value="7" class="radio"<% If WM_Settings(0) = "7" Then Response.Write " checked" End If %> />#7</td>
+		  <td><input type="radio" name="wmsettings_0" value="8" class="radio"<% If WM_Settings(0) = "8" Then Response.Write " checked" End If %> />#8</td>
+		  <td><input type="radio" name="wmsettings_0" value="9" class="radio"<% If WM_Settings(0) = "9" Then Response.Write " checked" End If %> />#9</td>
+		</tr>
+	  </table></td>
     </tr>
     <tr height="25">
       <td class="altbg1"><strong>水印添加条件：</strong><br />小于此尺寸的图片不添加水印</td>
       <td><input type="text" name="wmsettings_1" size="10" value="<%= WM_Settings(1) %>" /> x <input type="text" name="attachsettings_5" size="10" value="<%= WM_Settings(2) %>" />(宽x高)</td>
     </tr>
     <tr height="25">
-      <td class="altbg1"><strong>水印类型：</strong><br />GIF水印图片路径为images/common/watermark.gif，PNG水印图片路径为images/common/watermark.png，你可替换水印文件以实现不同的水印效果。</td>
+      <td class="altbg1"><strong>水印类型：</strong><br />GIF水印图片路径为images/common/watermark.gif<br />PNG水印图片路径为images/common/watermark.png</td>
       <td width="70%"><select name="wmsettings_2">
-	    <option value="0">GIF水印文件</option>
-		<option value="1">PNG水印文件</option>
-		<option value="2">文字水印</option>
+	    <option value="0">文字水印</option>
+		<option value="1">GIF水印文件</option>
+		<option value="2">PNG水印文件</option>
 	  </select></td>
     </tr>
     <tr height="25">
