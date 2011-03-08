@@ -1,5 +1,6 @@
 ﻿<% @LANGUAGE="VBSCRIPT" CODEPAGE = 65001 EnableSessionState = False %>
 <% Option Explicit %>
+<% Dim PrivateKey %>
 <!--#include file="../include/gbl.fun.asp"-->
 <!--#include file="../include/md5.inc.asp"-->
 <%
@@ -73,7 +74,7 @@ Sub Install()
 	Dim dbSource, dbPort, dbName, dbUser, dbPwd, TablePre, BBSName
 	Dim strSQL, TEMP, Fso
 	Dim UserName, Password, rePassword, UserID, UserIP
-	Dim CacheName, EncodeString, PrivateKey, ROOTPATH, strConfig
+	Dim CacheName, EncodeString, ROOTPATH, strConfig
 
 	dbSource = SafeRequest(2, "dbsource", 1, "", 0)
 	dbPort = SafeRequest(2, "dbport", 0, 1433, 0)

@@ -1,5 +1,6 @@
 ﻿<% @LANGUAGE="VBSCRIPT" CODEPAGE = 65001 EnableSessionState = False %>
 <% Option Explicit %>
+<% Dim PrivateKey %>
 <!--#include file="../include/gbl.fun.asp"-->
 <!--#include file="../include/md5.inc.asp"-->
 <%
@@ -73,7 +74,7 @@ End Function
 Sub Install()
 	Dim dbSource, BBSName
 	Dim UserName, Password, rePassword, UserID, UserIP
-	Dim CacheName, EncodeString, PrivateKey, ROOTPATH, strConfig
+	Dim CacheName, EncodeString, ROOTPATH, strConfig
 	Dim Fso
 
 	BBSName = SafeRequest(2, "bbsname", 1, "", 0)
