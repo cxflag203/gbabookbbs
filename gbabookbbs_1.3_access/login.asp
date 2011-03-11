@@ -94,7 +94,7 @@ Sub Login()
 
 	Call closeDataBase()
 
-	Response.Cookies(CacheName &"uc") = CookieCode(UserID & Chr(9) & Password, "ENCODE")
+	Response.Cookies(CacheName &"uc") = XXTEA.encrypt(UserID & Chr(9) & Password, PrivateKey)
 	Response.Cookies(CacheName &"uc").Expires = Date() + 365
 	'Response.Redirect "index.asp"
 	'用js跳转，防止登陆页面在框架里跳转时版面乱掉
@@ -158,7 +158,7 @@ Sub InvateRegist()
 
 	Call closeDataBase()
 
-	Response.Cookies(CacheName &"uc") = CookieCode(UserID & Chr(9) & Password, "ENCODE")
+	Response.Cookies(CacheName &"uc") = XXTEA.encrypt(UserID & Chr(9) & Password, PrivateKey)
 	Response.Cookies(CacheName &"uc").Expires = Date() + 365
 	'Response.Redirect "index.asp"
 	'用js跳转，防止登陆页面在框架里跳转时版面乱掉
