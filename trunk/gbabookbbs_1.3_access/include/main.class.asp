@@ -384,12 +384,15 @@ Class Cls_Forum
 	'检测用户是否登陆
 	'========================================================
 	Public Sub CheckUserLogin()
-		Dim AryUP
+		Dim AuthString, AryAuth
 		If Len(UserCode) > 0 Then
-			AryUP = Split(CookieCode(UserCode, "DECODE"), Chr(9))
-			If UBound(AryUP) = 1 Then
-				UserID = IntCode(AryUP(0))
-				UserPassword = strFilter(AryUP(1))
+			AuthString = XXTEA.decrypt(UserCode, PrivateKey)
+			If Not IsNull(AuthString) Then
+				AryAuth = Split(AuthString, Chr(9))
+				If UBound(AryAuth) = 1 Then
+					UserID = IntCode(AryAuth(0))
+					UserPassword = strFilter(AryAuth(1))
+				End If
 			End If
 		End If
 

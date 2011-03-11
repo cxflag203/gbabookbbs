@@ -105,7 +105,7 @@ Sub Login()
 
 	RQ.UserName = UserName
 
-	Response.Cookies(CacheName &"uc") = CookieCode(UserID & Chr(9) & Password, "ENCODE")
+	Response.Cookies(CacheName &"uc") = XXTEA.encrypt(UserID & Chr(9) & Password, PrivateKey)
 	Response.Cookies(CacheName &"uc").Expires = Date() + 365
 	Response.Redirect "index.asp"
 End Sub
@@ -169,7 +169,7 @@ Sub InvateRegist()
 
 	RQ.UserName = UserName
 
-	Response.Cookies(CacheName &"uc") = CookieCode(UserID & Chr(9) & Password, "ENCODE")
+	Response.Cookies(CacheName &"uc") = XXTEA.encrypt(UserID & Chr(9) & Password, PrivateKey)
 	Response.Cookies(CacheName &"uc").Expires = Date() + 365
 	Response.Redirect "index.asp"
 End Sub

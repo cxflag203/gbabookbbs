@@ -19,7 +19,7 @@ Const SHOWVERSION = "1.3"
 
 '数据库信息
 Const dbSource = "(local)"
-Const dbName = "sq_gbabookbbs"
+Const dbName = "sq_gbabookbbs13"
 Const dbUser = "sq_gbabook"
 Const dbPwd = "iloveyou"
 
