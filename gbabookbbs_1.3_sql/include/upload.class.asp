@@ -449,6 +449,7 @@ Class Image
 	'类结束
 	'========================================================
 	Private Sub Class_Terminate()
+		PicBin = Null
 		Set Jpeg = Nothing
 	End Sub
 
@@ -523,7 +524,6 @@ Class Image
 			Jpeg.Open Server.MapPath(PicURL)
 		Else
 			Jpeg.OpenBinary(PicBin)
-			PicBin = Null
 		End If
 		ImgOrgWidth = CLng(Jpeg.OriginalWidth)
 		ImgOrgHeight = CLng(Jpeg.OriginalHeight)
