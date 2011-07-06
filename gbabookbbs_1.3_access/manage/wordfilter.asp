@@ -41,7 +41,7 @@ Sub Post()
 			replaceWith = Replace(strFilter(Request.Form("replacewith")(i)), """", """""")
 
 			If id > 0 And Len(theWord) > 0 And Len(replaceWith) > 0 Then
-				RQ.Execute("UPDATE "& TablePre &"wordsfilter SET theword = '"& theWord &"', replacewith = '"& replaceWith &"' WHERE id = "& id)
+				RQ.Execute("UPDATE "& TablePre &"wordsfilter SET theword = '"& theWord &"', replacewith = '"& replaceWith &"' WHERE id = "& id & IIF(RQ.AdminGroupID <> 1, " AND username = '"& RQ.UserName &"'", ""))
 			End If
 		Next
 	End If

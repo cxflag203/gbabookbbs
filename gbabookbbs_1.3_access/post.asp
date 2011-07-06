@@ -625,14 +625,14 @@ Sub Check_Status_Topic()
 		End If
 	End If
 
-	'版面只读
-	If RQ.F_AllowPost = 0 And RQ.DisablePostCtrl = 0 Then
-		Call RQ.showTips("当前版面为只读状态……", "", "NOPERM")
-	End If
-
 	'整站只读
 	If RQ.CheckTimeSetting(RQ.Time_Settings(1)) And RQ.DisablePeriodCtrl = 0 Then
 		Call RQ.showTips("在以下的时间段里，论坛处于只读状态:<br />"& Replace(RQ.Time_Settings(1), "_", "<br />"), "", "NOPERM")
+	End If
+
+	'版面只读
+	If RQ.F_AllowPost = 0 And RQ.DisablePostCtrl = 0 Then
+		Call RQ.showTips("当前版面为只读状态……", "", "NOPERM")
 	End If
 
 	'发帖防灌水控制
@@ -666,14 +666,14 @@ Sub Check_Status_Post()
 		Call RQ.showTips(RQ.Other_Settings(0) &"达到"& RQ.F_ReplyNdCredits &"就可以回帖了哟，加油！", "", "")
 	End If
 
-	'版面只读
-	If RQ.F_AllowPost = 0 And RQ.DisablePostCtrl = 0 Then
-		Call RQ.showTips("当前版面为只读状态……", "", "NOPERM")
-	End If
-
 	'整站只读
 	If RQ.CheckTimeSetting(RQ.Time_Settings(1)) And RQ.DisablePeriodCtrl = 0 Then
 		Call RQ.showTips("在以下的时间段里，论坛处于只读状态：<br />"& Replace(RQ.Time_Settings(1), "_", "<br />"), "", "NOPERM")
+	End If
+
+	'版面只读
+	If RQ.F_AllowPost = 0 And RQ.DisablePostCtrl = 0 Then
+		Call RQ.showTips("当前版面为只读状态……", "", "NOPERM")
 	End If
 
 	'回帖防灌水控制

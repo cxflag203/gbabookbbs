@@ -120,13 +120,6 @@ Sub Save_Forum()
 	Forum_PostAttachPerm = Replace(SafeRequest(2, "postattachperm", 1, "", 0), " ", "")
 	Forum_GetAttachPerm = Replace(SafeRequest(2, "getattachperm", 1, "", 0), " ", "")
 
-	'验证版面是否存在帖子分类
-	TopicTypeInfo = RQ.Query("SELECT TOP 1 1 FROM "& TablePre &"topictypes WHERE fid = "& ForumID)
-	If Not IsArray(TopicTypeInfo) Then
-		F_ShowTopicType = 0
-		F_ChooseTopicType = 0
-	End If
-
 	If Action = "save_forum" Then
 		DisplayOrder = Conn.Execute("SELECT IIF(MAX(displayorder) IS NULL, 0, MAX(displayorder)) + 1 FROM "& TablePre &"forums WHERE parentid = 0")(0)
 		'保存版面
@@ -145,6 +138,13 @@ Sub Save_Forum()
 		If Not IsArray(ForumInfo) Then
 			Call AdminShowTips("版面不存在或者已经被删除。", "")
 		End If
+
+		'验证版面是否存在帖子分类
+		'TopicTypeInfo = RQ.Query("SELECT TOP 1 1 FROM "& TablePre &"topictypes WHERE fid = "& ForumID)
+		'If Not IsArray(TopicTypeInfo) Then
+		'	F_ShowTopicType = 0
+		'	F_ChooseTopicType = 0
+		'End If
 
 		RQ.Execute("UPDATE "& TablePre &"forums SET name = '"& Forum_Name &"', allowpost = "& F_AllowPost &", adultingpost = "& F_AdultingPost &", showtopictype = "& F_ShowTopicType &", choosetopictype = "& F_ChooseTopicType &", allowpolltopic = "& F_AllowPollTopic &", autoclose = "& F_AutoClose &", recyclebin = "& F_RecycleBin &", visitndcredits = "& F_VisitNdCredits &", postndcredits = "& F_PostNdCredits &", replyndcredits = "& F_ReplyNdCredits &", anonyndmitycredits = "& F_AnonymityNdCredits &", htmlndcredits = "& F_HtmlNdCredits &" WHERE fid = "& ForumID)
 
