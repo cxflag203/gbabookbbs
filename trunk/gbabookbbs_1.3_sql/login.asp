@@ -190,7 +190,7 @@ Sub RecordFailedLogins()
 	FailedInfo = RQ.Query("SELECT 1 FROM "& TablePre &"failedlogins WHERE userip = '"& RQ.UserIP &"'")
 
 	If IsArray(FailedInfo) Then
-		RQ.Execute("UPDATE "& TablePre &"failedlogins SET falsecount = falsecount + 1 WHERE userip = '"& RQ.UserIP &"'")
+		RQ.Execute("UPDATE "& TablePre &"failedlogins SET falsecount = falsecount + 1, locktime = DateAdd(n, 30, GETDATE()) WHERE userip = '"& RQ.UserIP &"'")
 	Else
 		RQ.Execute("INSERT INTO "& TablePre &"failedlogins (userip, locktime) VALUES ('"& RQ.UserIP &"', DateAdd(n, 30, GETDATE()))")
 	End If
