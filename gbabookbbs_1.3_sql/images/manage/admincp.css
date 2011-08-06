@@ -25,7 +25,7 @@ a:hover { text-decoration:underline; color:#09C;}
 
 .guide td { border:1px solid #7BCF63; background:#fbffe1; line-height:1.2em; height:28px; text-indent:20px; color:#FF6600;}
 .tableborder { outline:1px solid #525C3D; border:0px!important; > border:1px solid #525C3D !important; border:1px solid #525C3D; empty-cells:show; border-collapse:separate !important; > border-collapse:collapse !important; border-collapse:collapse;}
-.tableborder td { border-bottom:1px solid #ccc; line-height:1.5em; height:2em; padding-left:12px; background:#FFF; height:36px;}
+.tableborder td { border-bottom:1px solid #ccc; line-height:1.5em; padding-left:12px; background:#FFF; height:36px;}
 .tableborder tbody tr:hover th, .tableborder tbody tr:hover td { background-color:#f4fbe1; }
 .tableborder td img { margin-top:8px;}
 .category td { color:#333333; background:#fdfce8;}
