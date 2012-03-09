@@ -447,7 +447,7 @@ f_autowap();
 var upload;
 window.onload = function() {
 	upload = new SWFUpload({
-		upload_url: "attachment.asp?action=upload&uc=<%= RQ.UserCode %>",
+		upload_url: "attachment.asp?action=upload&uc=<%= Server.URLEncode(RQ.UserCode) %>",
 		file_size_limit : "<%= IIF(RQ.MaxAttachSize = 0, 100 * 1024, RQ.MaxAttachSize) %>",
 		file_types : "<%= IIF(Len(RQ.AttachExtensions) = 0, "*.*", Replace("*."& RQ.AttachExtensions, ",", ";*.")) %>",
 		file_types_description : "附件文件",
