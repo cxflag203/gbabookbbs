@@ -501,15 +501,17 @@ End Sub
 '========================================================
 Public Sub CheckFolder(Folder)
 	Dim Fso
-	Dim sParent
+	Dim sParent, tFolder
 
 	Set Fso = Server.CreateObject("Scripting.FileSystemObject")
 
-	If Not InStr(Folder, ":") > 0 Then
-		Folder = Server.MapPath(Folder)
+	tFolder = Folder
+
+	If Not InStr(tFolder, ":") > 0 Then
+		tFolder = Server.MapPath(tFolder)
 	End If
 
-	sParent = Fso.GetParentFolderName(Folder)
+	sParent = Fso.GetParentFolderName(tFolder)
 	
 	If sParent = "" Then
 		Set Fso = Nothing
@@ -520,9 +522,9 @@ Public Sub CheckFolder(Folder)
 		Call CheckFolder(sParent)
 	End If
 
-	If Not Fso.FolderExists(Folder) Then
-		Fso.CreateFolder(Folder)
-		Fso.CreateTextFile(Folder &"\index.html")
+	If Not Fso.FolderExists(tFolder) Then
+		Fso.CreateFolder(tFolder)
+		Fso.CreateTextFile(tFolder &"\index.html")
 	End If
 
 	Set Fso = Nothing
