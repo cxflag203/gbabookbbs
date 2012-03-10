@@ -31,8 +31,10 @@ End Select
 '删除头像
 '========================================================
 Sub DeleteAvatar()
-	RQ.Execute("UPDATE "& TablePre &"memberfields SET avatar = '' WHERE uid = "& RQ.UserID)
-	Call DeleteFile("./avatars/"& Left(RQ.UserID, 1) &"/"& RQ.UserID &".jpg")
+	If Request.Form("do") = "delete" Then
+		RQ.Execute("UPDATE "& TablePre &"memberfields SET avatar = '' WHERE uid = "& RQ.UserID)
+		Call DeleteFile("./avatars/"& Left(RQ.UserID, 1) &"/"& RQ.UserID &".jpg")
+	End If
 
 	Call closeDatabase()
 	Call RQ.showTips("头像已经成功删除。", "?", "")
@@ -209,7 +211,7 @@ Sub Main()
 <div style="border: 1px #ccc solid; width: 48px; height: 48px;"><img id="myavatar" src="<%= IIF(Len(UserInfo(0, 0)) > 0, "avatars/"& UserInfo(0, 0), "images/common/noavatar.jpg") %>" /></div>
 <% If Len(UserInfo(0, 0)) > 0 Then %>
 <br />
-[<a href="?action=deleteavatar" class="underline">删除头像</a>]
+[<a href="###" onclick="postvalue('?action=deleteavatar', 'do', 'delete')" class="underline">删除头像</a>]
 <% End If %>
 <p>
 上传新头像(图片大小请控制在500KB以内)：
