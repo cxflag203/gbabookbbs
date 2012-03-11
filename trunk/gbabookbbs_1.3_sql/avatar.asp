@@ -4,7 +4,7 @@
 If RQ.UserID = 0 Then
 	Call RQ.showTips("游客无法使用头像功能。", "", "")
 End If
-f
+
 Dim Action, PathInfo, SITEURL
 
 Action = Request.QueryString("action")
