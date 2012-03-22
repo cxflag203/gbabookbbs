@@ -373,6 +373,7 @@ Sub NewReply()
 			Call RQ.showTips("帖子已经被删除。", "", "")
 	End Select
 
+	'帖子是否允许回复
 	If TopicInfo(7, 0) > 0 Then
 		Call RQ.showTips("该帖子被设为不接受回复。", "", "")
 	End If
@@ -443,10 +444,8 @@ Sub NewReply()
 		Message = Message & "<img src=""face/"& Face &".gif"" /><br />"
 	End If
 
-	Temp_AboutLink = SafeRequest(2, "aboutlink", 1, "", 0)
-	Temp_ImgLink = SafeRequest(2, "imglink", 1, "", 0)
-
 	'相关链接
+	Temp_AboutLink = SafeRequest(2, "aboutlink", 1, "", 0)
 	If Len(Temp_AboutLink) > 0 And Temp_AboutLink <> "http://" Then
 		Temp_AboutLink = Split(Temp_AboutLink, ",")
 		For i = 0 To UBound(Temp_AboutLink)
@@ -456,6 +455,7 @@ Sub NewReply()
 	End If
 
 	'相关图片
+	Temp_ImgLink = SafeRequest(2, "imglink", 1, "", 0)
 	If Len(Temp_ImgLink) > 0 And Temp_ImgLink <> "http://" Then
 		Temp_ImgLink = Split(Temp_ImgLink, ",")
 		For i = 0 To UBound(Temp_ImgLink)
@@ -464,6 +464,7 @@ Sub NewReply()
 		Message = Message & "<br />"& ImgLink
 	End If
 
+	'是否选择了匿名
 	IfAnonymity = SafeRequest(2, "ifanonymity", 0, 0, 0)
 
 	'在回复中显示的名称(匿名、称号、正常)
@@ -488,6 +489,10 @@ Sub NewReply()
 				End If
 
 				Erase UserInfo
+			Else
+				'如果用户附表信息丢失则插入用户数据
+				RQ.Execute("INSERT INTO "& TablePre &"memberfields (uid) VALUES ("& RQ.UserID &")")
+				UserShow = RQ.UserName
 			End If
 		Else
 			'游客
@@ -505,7 +510,7 @@ Sub NewReply()
 		'查询楼主信息
 		AuthorInfo = RQ.Query("SELECT credits FROM "& TablePre &"members WHERE uid = "& TopicInfo(1, 0))
 		If IsArray(AuthorInfo) Then
-			'扣除当前回复人金钱
+			'扣除当前回复人金钱(数量超出就是自爆)
 			RQ.Execute("UPDATE "& TablePre &"members SET credits = credits - "& SendCredits &" WHERE uid = "& RQ.UserID)
 
 			'判断发帖人是否匿名

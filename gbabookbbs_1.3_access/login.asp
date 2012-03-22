@@ -24,7 +24,9 @@ Sub Login()
 	End If
 
 	'检查用户是否由于多次登陆失败被锁定
-	Call CheckFailedLogins()
+	If IntCode(Login_Settings(6)) > 0 Then
+		Call CheckFailedLogins()
+	End If
 
 	Dim UserID, UserName, Password, InvateCode
 	Dim UserInfo
@@ -57,7 +59,11 @@ Sub Login()
 		If UserInfo(1, 0) = Password Then'判断密码是否正确
 			UserID = UserInfo(0, 0)
 		Else
-			Call RecordFailedLogins()'如果密码错误则记录登陆失败
+			'如果密码错误则记录登陆失败
+			If IntCode(Login_Settings(6)) > 0 Then
+				Call RecordFailedLogins()
+			End If
+
 			Call RQ.showTips("该用户已被占用或者密码输入错误。您最多有"& RQ.Login_Settings(6) &"次尝试。", "", "")
 		End If
 	Else
