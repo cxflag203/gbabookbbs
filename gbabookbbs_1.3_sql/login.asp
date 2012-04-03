@@ -60,7 +60,7 @@ Sub Login()
 			UserID = UserInfo(0, 0)
 		Else
 			'如果密码错误则记录登陆失败
-			If IntCode(Login_Settings(6)) > 0 Then
+			If IntCode(RQ.Login_Settings(6)) > 0 Then
 				Call RecordFailedLogins()
 			End If
 
