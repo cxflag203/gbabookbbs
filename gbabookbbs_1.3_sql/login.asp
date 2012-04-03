@@ -24,7 +24,7 @@ Sub Login()
 	End If
 
 	'检查用户是否由于多次登陆失败被锁定
-	If IntCode(Login_Settings(6)) > 0 Then
+	If IntCode(RQ.Login_Settings(6)) > 0 Then
 		Call CheckFailedLogins()
 	End If
 
