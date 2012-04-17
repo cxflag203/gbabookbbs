@@ -11,7 +11,7 @@ Action = Request.QueryString("action")
 If Len(Action) = 0 Then
 	Action = Request.QueryString("a")
 End If
- 
+
 PathInfo = Request.ServerVariables("PATH_INFO")
 PathInfo = Mid(PathInfo, 1, InstrRev(PathInfo, "/"))
 SITEURL = "http://"& Request.ServerVariables("SERVER_NAME") & PathInfo
